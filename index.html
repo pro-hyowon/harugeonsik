@@ -570,7 +570,21 @@ function sendMsg(){
 
 function addUB(text,names){var c=document.getElementById('msgs'),d=document.createElement('div');d.className='msg user';var bg=names.map(function(n){var ic=getFI(n);return'<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:3px 8px;font-size:11px;margin-bottom:4px"><i class="ti '+ic.ic+'"></i>'+n+'</div>';}).join('');d.innerHTML='<div class="mv usr"><i class="ti ti-user"></i></div><div class="bbl">'+(bg?'<div>'+bg+'</div>':'')+(text?'<div>'+text+'</div>':'')+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 
-function addAB(text){var c=document.getElementById('msgs'),d=document.createElement('div');d.className='msg ai';var h=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^#{1,3} (.+)$/gm,function(m,t){return'<br><strong style="font-size:14px;color:var(--g)">'+t+'</strong>';}).replace(/^- (.+)$/gm,'&nbsp;&nbsp;• $1').replace(/\n/g,'<br>');d.innerHTML='<div class="mv ai"><i class="ti ti-leaf"></i></div><div class="bbl">'+h+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function escHtml(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+function addAB(text){
+  var c=document.getElementById('msgs'),d=document.createElement('div');
+  d.className='msg ai';
+  // 줄별로 처리해서 특수문자 깨짐 방지
+  var lines=text.split('\n');
+  var html=lines.map(function(line){
+    var safe=escHtml(line);
+    if(/^#{1,3} /.test(line)) return '<strong style="font-size:14px;color:var(--g);display:block;margin-top:6px">'+escHtml(line.replace(/^#{1,3} /,''))+'</strong>';
+    if(/^- /.test(line)) return '&nbsp;&nbsp;• '+escHtml(line.replace(/^- /,''));
+    return safe.replace(/\*\*(.*?)\*\*/g,function(m,inner){return'<strong>'+inner+'</strong>';});
+  }).join('<br>');
+  d.innerHTML='<div class="mv ai"><i class="ti ti-leaf"></i></div><div class="bbl">'+html+'</div>';
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
 function showTyp(){var c=document.getElementById('msgs'),d=document.createElement('div');d.className='tw-wrap';d.id='typing';d.innerHTML='<div class="mv ai"><i class="ti ti-leaf"></i></div><div class="tw-bbl"><span></span><span></span><span></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function remTyp(){var e=document.getElementById('typing');if(e)e.remove();}
 function resetChat(){if(!confirm('상담 내용을 초기화할까요?'))return;chatHistory=[];showWelcome();}
