@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>#하루건식</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F2;--sf:#fff;--mu:#F0EEE8;
+  --tx:#1A1A18;--sub:#5F5E5A;--hint:#9A9892;
+  --bd:rgba(0,0,0,.1);--bdl:rgba(0,0,0,.18);
+  --g:#3B6D11;--gl:#EAF3DE;--gb:#C0DD97;
+  --am:#633806;--al:#FAEEDA;
+  --bu:#0C447C;--bl:#E6F1FB;
+  --r:#791F1F;--rl:#FCEBEB;
+  --r8:8px;--r12:12px;--r16:16px;
+}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx)}
+/* ─── DESKTOP ─── */
+.app{display:grid;grid-template-columns:280px 1fr;height:100vh;max-width:1280px;margin:0 auto;background:var(--sf);box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.sidebar{display:flex;flex-direction:column;background:var(--mu);border-right:1px solid var(--bd);overflow:hidden}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--bd)}
+.lo-row{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+.lo-ic{width:34px;height:34px;background:var(--g);border-radius:var(--r8);display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0}
+.lo-tit{font-size:18px;font-weight:700}
+.lo-sub{font-size:11px;color:var(--hint);padding-left:44px}
+.sb-pr{padding:14px 18px;border-bottom:1px solid var(--bd)}
+.pr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.slbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--hint);text-transform:uppercase}
+.edbtn{display:flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-size:11px;color:var(--hint);font-family:'Noto Sans KR',sans-serif;padding:2px 6px;border-radius:6px}
+.edbtn:hover{color:var(--g);background:var(--gl)}
+.pr-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r12);padding:11px 13px;cursor:pointer}
+.pr-card:hover{border-color:var(--gb)}
+.pr-name{font-size:13px;font-weight:500;margin-bottom:7px}
+.pr-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px}
+.tw{background:var(--al);color:var(--am)}.ti{background:var(--bl);color:var(--bu)}
+.tok{background:var(--gl);color:var(--g)}.tb{background:var(--rl);color:var(--r)}
+.sb-tp{padding:14px 18px;flex:1;overflow-y:auto}
+.tbtn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;background:transparent;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--sub);cursor:pointer;text-align:left;margin-bottom:2px;transition:all .12s}
+.tbtn:hover{background:var(--sf);color:var(--tx)}
+.tbtn i{font-size:14px;color:var(--g);flex-shrink:0}
+.sb-sc{padding:13px 18px;border-top:1px solid var(--bd)}
+.sc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.sc-lbl{font-size:11px;color:var(--sub);font-weight:500}
+.sc-val{font-size:13px;font-weight:700;color:var(--g)}
+.sc-bar{height:5px;background:var(--bd);border-radius:99px;overflow:hidden}
+.sc-fill{height:100%;background:var(--g);border-radius:99px;transition:width .6s}
+.sc-hint{font-size:10px;color:var(--hint);margin-top:4px}
+.mob-top{display:none}
+/* ─── CHAT ─── */
+.chat{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.ch-hdr{padding:13px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--sf);flex-shrink:0}
+.hl{display:flex;align-items:center;gap:10px}
+.ai-av{width:34px;height:34px;border-radius:50%;background:var(--gl);border:1.5px solid var(--gb);display:flex;align-items:center;justify-content:center;color:var(--g);font-size:16px}
+.ai-nm{font-size:14px;font-weight:600}
+.ai-st{font-size:11px;color:var(--g);display:flex;align-items:center;gap:4px}
+.dot{width:6px;height:6px;background:#639922;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hbtns{display:flex;gap:5px}
+.hbtn{width:32px;height:32px;background:transparent;border:1px solid var(--bd);border-radius:var(--r8);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:15px;transition:all .12s}
+.hbtn:hover{background:var(--mu);color:var(--tx)}
+.msgs{flex:1;overflow-y:auto;padding:22px 22px 14px;display:flex;flex-direction:column;gap:16px}
+.msgs::-webkit-scrollbar{width:4px}
+.msgs::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.msg{display:flex;gap:9px;max-width:85%;animation:fu .2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.mv{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:2px}
+.mv.ai{background:var(--gl);color:var(--g);border:1px solid var(--gb)}
+.mv.usr{background:var(--mu);color:var(--sub);border:1px solid var(--bd)}
+.bbl{padding:10px 14px;font-size:13.5px;line-height:1.7}
+.msg.ai .bbl{background:var(--mu);border:1px solid var(--bd);border-radius:4px 13px 13px 13px;color:var(--tx)}
+.msg.user .bbl{background:var(--g);color:#fff;border-radius:13px 4px 13px 13px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.scard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r8);padding:9px 11px;cursor:pointer;transition:all .15s}
+.scard:hover{border-color:var(--gb);background:var(--gl)}
+.sn{font-size:12px;font-weight:600;margin-bottom:3px}
+.sw{font-size:11px;color:var(--sub);line-height:1.4}
+.sbdg{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:4px}
+.bs{background:var(--gl);color:var(--g)}.br{background:var(--bl);color:var(--bu)}.bm{background:var(--al);color:var(--am)}
+.tw-wrap{display:flex;gap:9px}
+.tw-bbl{display:flex;gap:5px;align-items:center;background:var(--mu);border:1px solid var(--bd);border-radius:4px 13px 13px 13px;padding:11px 15px}
+.tw-bbl span{width:7px;height:7px;background:var(--hint);border-radius:50%;animation:bo 1.1s infinite}
+.tw-bbl span:nth-child(2){animation-delay:.18s}
+.tw-bbl span:nth-child(3){animation-delay:.36s}
+@keyframes bo{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+/* ─── INPUT ─── */
+.ia{padding:12px 16px 14px;border-top:1px solid var(--bd);background:var(--sf);flex-shrink:0}
+.dz{border:1.5px dashed var(--bdl);border-radius:var(--r12);padding:12px;text-align:center;cursor:pointer;transition:all .2s;background:var(--mu);margin-bottom:8px;position:relative}
+.dz:hover,.dz.drag{border-color:var(--gb);background:var(--gl)}
+.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-ic{font-size:20px;color:var(--g);margin-bottom:3px}
+.dz-ti{font-size:12px;font-weight:500;margin-bottom:2px}
+.dz-su{font-size:10px;color:var(--hint)}
+.dz-fm{display:flex;justify-content:center;gap:5px;margin-top:6px;flex-wrap:wrap}
+.fmt{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;border:1px solid var(--bd);color:var(--sub);background:var(--sf)}
+.fq{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.fi{display:flex;align-items:center;gap:7px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:7px 11px}
+.fi-ic{font-size:17px;flex-shrink:0}
+.fi-pdf{color:#E24B4A}.fi-img{color:#185FA5}.fi-txt{color:var(--g)}.fi-hwp{color:#854F0B}.fi-oth{color:var(--hint)}
+.fi-info{flex:1;min-width:0}
+.fi-nm{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-sz{font-size:10px;color:var(--hint)}
+.fi-del{background:none;border:none;cursor:pointer;color:var(--hint);font-size:15px;padding:2px;border-radius:4px;display:flex;align-items:center}
+.fi-del:hover{color:var(--r);background:var(--rl)}
+.prog{display:none;margin-bottom:8px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:10px 14px}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prog-nm{font-size:12px;font-weight:500;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75%}
+.prog-pct{font-size:12px;font-weight:700;color:var(--g)}
+.prog-bar{height:6px;background:var(--bd);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:var(--g);border-radius:99px;transition:width .3s}
+.prog-st{font-size:10px;color:var(--hint);margin-top:4px}
+.ir{display:flex;gap:7px;align-items:flex-end}
+.mi{flex:1;padding:9px 13px;font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r12);color:var(--tx);resize:none;min-height:40px;max-height:100px;outline:none;line-height:1.5;transition:border-color .15s}
+.mi:focus{border-color:var(--gb)}
+.mi::placeholder{color:var(--hint)}
+.sbtn{width:40px;height:40px;background:var(--g);border:none;border-radius:var(--r8);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.sbtn:hover{background:#27500A}.sbtn:active{transform:scale(.94)}.sbtn:disabled{background:var(--bd);cursor:not-allowed}
+.disc{font-size:10px;color:var(--hint);text-align:center;margin-top:7px}
+/* ─── MODAL ─── */
+.mbg{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.45);align-items:center;justify-content:center}
+.mbg.open{display:flex}
+.modal{background:var(--sf);border-radius:var(--r16);border:1px solid var(--bd);padding:24px;width:380px;max-width:92vw;max-height:88vh;overflow-y:auto}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.mtit{font-size:15px;font-weight:600}
+.mcls{background:none;border:none;cursor:pointer;color:var(--hint);font-size:19px;padding:2px;border-radius:5px}
+.mcls:hover{color:var(--tx);background:var(--mu)}
+.fg{margin-bottom:15px}
+.fl{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--hint);text-transform:uppercase;margin-bottom:6px}
+.fin{width:100%;padding:8px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none}
+.fin:focus{border-color:var(--gb)}
+.frow{display:flex;gap:8px}
+.fsel{flex:1;padding:8px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none;cursor:pointer}
+.cks{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.ci{display:none}
+.cl{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--mu);color:var(--sub);cursor:pointer;user-select:none;transition:all .12s}
+.ci:checked+.cl{border-color:transparent}
+.ci.cw:checked+.cl{background:var(--al);color:var(--am)}
+.ci.co:checked+.cl{background:var(--gl);color:var(--g)}
+.ci.cb:checked+.cl{background:var(--rl);color:var(--r)}
+.ci.cm:checked+.cl{background:var(--bl);color:var(--bu)}
+.crow{display:flex;gap:6px;margin-top:8px}
+.ctgs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.mbtns{display:flex;gap:8px;margin-top:22px}
+.bsave{flex:1;padding:9px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+.bsave:hover{background:#27500A}
+.bcancel{padding:9px 16px;background:transparent;color:var(--sub);border:1px solid var(--bd);border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer}
+.addbtn{padding:8px 12px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-size:12px;cursor:pointer;white-space:nowrap}
+/* ─── BOTTOM SHEET ─── */
+.sh-bg{display:none;position:fixed;inset:0;z-index:990;background:rgba(0,0,0,.4)}
+.sh-bg.open{display:block}
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:991;background:var(--sf);border-radius:20px 20px 0 0;padding:16px 20px 40px;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s ease}
+.sheet.open{transform:translateY(0)}
+.sh-hdl{width:36px;height:4px;background:var(--bd);border-radius:99px;margin:0 auto 16px}
+.sh-tit{font-size:14px;font-weight:600;margin-bottom:12px}
+.sh-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:none;background:transparent;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--sub);cursor:pointer;text-align:left;transition:all .12s}
+.sh-btn:hover{background:var(--mu);color:var(--tx)}
+.sh-btn i{font-size:16px;color:var(--g);flex-shrink:0}
+/* ─── MOBILE ─── */
+@media(max-width:768px){
+  .app{display:flex;flex-direction:column;height:100dvh;height:100vh;max-width:100%;box-shadow:none}
+  .sidebar{display:none}
+  .mob-top{display:flex;flex-direction:column;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
+  .mob-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 14px 8px}
+  .mob-logo{display:flex;align-items:center;gap:8px}
+  .mob-li{width:28px;height:28px;background:var(--g);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+  .mob-lt{font-size:15px;font-weight:700}
+  .mob-acts{display:flex;gap:5px}
+  .mob-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:14px}
+  .mob-btn:active{background:var(--mu)}
+  .mob-pr{padding:0 14px 10px}
+  .mob-prc{display:flex;align-items:center;justify-content:space-between;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:9px 12px;cursor:pointer}
+  .mob-prc:active{border-color:var(--gb)}
+  .mob-prl{flex:1;min-width:0}
+  .mob-prn{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:5px}
+  .mob-prt{display:flex;flex-wrap:wrap;gap:4px}
+  .mob-prr{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:10px}
+  .mob-sn{font-size:15px;font-weight:700;color:var(--g)}
+  .mob-sl{font-size:9px;color:var(--hint);text-align:right}
+  .mob-q{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+  .mob-q::-webkit-scrollbar{display:none}
+  .mob-qb{display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;padding:5px 11px;background:var(--mu);border:1px solid var(--bd);border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:var(--sub);cursor:pointer}
+  .mob-qb:active{background:var(--gl);border-color:var(--gb);color:var(--g)}
+  .mob-qb i{font-size:13px;color:var(--g)}
+  .mob-mb{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;padding:5px 11px;background:var(--g);border:none;border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:#fff;cursor:pointer}
+  .ch-hdr{display:none}
+  .msgs{padding:14px 12px 10px}
+  .msg{max-width:92%}
+  .bbl{font-size:13px;padding:9px 12px}
+  .ia{padding:10px 12px 12px}
+  .dz{padding:10px}
+  .dz-ti{font-size:11px}
+  .mi{font-size:14px;padding:10px 12px}
+  .sbtn{width:42px;height:42px;font-size:17px}
+  .disc{font-size:9px}
+  .sgrid{gap:6px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- 모바일 상단 -->
+  <div class="mob-top">
+    <div class="mob-hdr">
+      <div class="mob-logo"><div class="mob-li"><i class="ti ti-leaf"></i></div><span class="mob-lt">#하루건식</span></div>
+      <div class="mob-acts">
+        <button class="mob-btn" onclick="openModal()"><i class="ti ti-edit"></i></button>
+        <button class="mob-btn" onclick="exportChat()"><i class="ti ti-download"></i></button>
+        <button class="mob-btn" onclick="resetChat()"><i class="ti ti-refresh"></i></button>
+      </div>
+    </div>
+    <div class="mob-pr">
+      <div class="mob-prc" onclick="openModal()">
+        <div class="mob-prl">
+          <div class="mob-prn" id="mobName">프로필을 입력해 주세요 →</div>
+          <div class="mob-prt" id="mobTags"><span style="font-size:10px;color:var(--hint)">편집 버튼을 눌러 건강 정보를 입력하세요</span></div>
+        </div>
+        <div class="mob-prr">
+          <div><div class="mob-sn" id="mobScore">—</div><div class="mob-sl">건강점수</div></div>
+          <i class="ti ti-chevron-right" style="font-size:13px;color:var(--hint)"></i>
+        </div>
+      </div>
+    </div>
+    <div class="mob-q">
+      <button class="mob-qb" onclick="qa('내 건강 프로필을 분석하고 맞춤 영양제를 추천해주세요')"><i class="ti ti-sparkles"></i>맞춤 추천</button>
+      <button class="mob-qb" onclick="qa('콜레스테롤 관리에 좋은 영양제를 알려주세요')"><i class="ti ti-heart-rate-monitor"></i>콜레스테롤</button>
+      <button class="mob-qb" onclick="qa('비타민D 부족 시 복용법을 알려주세요')"><i class="ti ti-sun"></i>비타민D</button>
+      <button class="mob-qb" onclick="qa('혈압 관리에 도움이 되는 영양제는?')"><i class="ti ti-activity"></i>혈압</button>
+      <button class="mob-qb" onclick="qa('면역력 강화 영양제를 추천해주세요')"><i class="ti ti-shield-check"></i>면역</button>
+      <button class="mob-qb" onclick="qa('영양제 복용 시간과 방법을 알려주세요')"><i class="ti ti-clock"></i>복용법</button>
+      <button class="mob-mb" onclick="openSheet()"><i class="ti ti-dots" style="font-size:12px"></i> 더보기</button>
+    </div>
+  </div>
+
+  <!-- 데스크탑 사이드바 -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="lo-row"><div class="lo-ic"><i class="ti ti-leaf"></i></div><span class="lo-tit">#하루건식</span></div>
+      <div class="lo-sub">건강검진 기반 맞춤형 영양 상담</div>
+    </div>
+    <div class="sb-pr">
+      <div class="pr-top"><span class="slbl">내 건강 프로필</span><button class="edbtn" id="editBtn"><i class="ti ti-edit" style="font-size:12px"></i>편집</button></div>
+      <div class="pr-card" id="prCard">
+        <div class="pr-name" id="prName">프로필을 입력해 주세요</div>
+        <div class="pr-tags" id="prTags"><span style="font-size:11px;color:var(--hint)">편집 버튼을 눌러 입력하세요</span></div>
+      </div>
+    </div>
+    <div class="sb-tp">
+      <div class="slbl" style="margin-bottom:10px">빠른 상담</div>
+      <button class="tbtn" onclick="qa('내 건강 프로필을 분석하고 맞춤 영양제를 추천해주세요')"><i class="ti ti-report-medical"></i>맞춤 영양제 추천</button>
+      <button class="tbtn" onclick="qa('건강검진 결과를 종합 분석해 주세요')"><i class="ti ti-file-analytics"></i>검진 결과 분석</button>
+      <button class="tbtn" onclick="qa('콜레스테롤 관리에 좋은 영양제를 알려주세요')"><i class="ti ti-heart-rate-monitor"></i>콜레스테롤 관리</button>
+      <button class="tbtn" onclick="qa('비타민D 부족 시 복용법을 알려주세요')"><i class="ti ti-sun"></i>비타민D 보충</button>
+      <button class="tbtn" onclick="qa('혈압 관리에 도움이 되는 영양제는?')"><i class="ti ti-activity"></i>혈압 관리</button>
+      <button class="tbtn" onclick="qa('면역력 강화 영양제를 추천해주세요')"><i class="ti ti-shield-check"></i>면역력 강화</button>
+      <button class="tbtn" onclick="qa('영양제 복용 시간과 방법을 알려주세요')"><i class="ti ti-clock"></i>복용 시간 가이드</button>
+      <button class="tbtn" onclick="qa('갱년기 여성에게 필요한 영양제는?')"><i class="ti ti-woman"></i>갱년기 영양</button>
+      <button class="tbtn" onclick="qa('뼈 건강과 골다공증 예방 영양제는?')"><i class="ti ti-bone"></i>뼈 건강</button>
+      <button class="tbtn" onclick="qa('영양제 상호작용 주의사항을 알려주세요')"><i class="ti ti-alert-triangle"></i>상호작용 주의</button>
+    </div>
+    <div class="sb-sc">
+      <div class="sc-row"><span class="sc-lbl">종합 건강 점수</span><span class="sc-val" id="scVal">— / 100</span></div>
+      <div class="sc-bar"><div class="sc-fill" id="scFill" style="width:0%"></div></div>
+      <div class="sc-hint">프로필 입력 시 자동 계산됩니다</div>
+    </div>
+  </aside>
+
+  <!-- 채팅 -->
+  <div class="chat">
+    <div class="ch-hdr">
+      <div class="hl">
+        <div class="ai-av"><i class="ti ti-robot"></i></div>
+        <div><div class="ai-nm">#하루건식 AI</div><div class="ai-st"><span class="dot"></span>GPT-4o 연결됨</div></div>
+      </div>
+      <div class="hbtns">
+        <button class="hbtn" onclick="exportChat()"><i class="ti ti-download"></i></button>
+        <button class="hbtn" onclick="resetChat()"><i class="ti ti-refresh"></i></button>
+      </div>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="ia">
+      <div class="dz" id="dz"
+        ondragover="event.preventDefault();document.getElementById('dz').classList.add('drag')"
+        ondragleave="document.getElementById('dz').classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.txt,.hwp,.docx,.csv" multiple onchange="handleFileSelect(event)">
+        <div class="dz-ic"><i class="ti ti-cloud-upload"></i></div>
+        <div class="dz-ti">건강검진 결과 파일 업로드</div>
+        <div class="dz-su">클릭하거나 드래그하세요 • GPT-4o가 직접 분석합니다</div>
+        <div class="dz-fm"><span class="fmt">PDF</span><span class="fmt">JPG/PNG</span><span class="fmt">TXT</span><span class="fmt">HWP</span><span class="fmt">DOCX</span></div>
+      </div>
+      <div class="fq" id="fq"></div>
+      <div class="prog" id="prog">
+        <div class="prog-top"><span class="prog-nm" id="progNm">분석 중...</span><span class="prog-pct" id="progPct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <div class="prog-st" id="progSt">준비 중...</div>
+      </div>
+      <div class="ir">
+        <textarea class="mi" id="mi" placeholder="건강 상태나 검진 수치를 자유롭게 입력하거나 파일을 업로드하세요..." rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+        <button class="sbtn" id="sbtn" onclick="sendMsg()"><i class="ti ti-send"></i></button>
+      </div>
+      <div class="disc">본 서비스는 의학적 진단을 대체하지 않습니다. 건강 이상 시 반드시 전문의와 상담하세요.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 하단 시트 -->
+<div class="sh-bg" id="shBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sh-hdl"></div>
+  <div class="sh-tit">빠른 상담 주제</div>
+  <button class="sh-btn" onclick="shQa('건강검진 결과를 종합 분석해 주세요')"><i class="ti ti-file-analytics"></i>검진 결과 분석</button>
+  <button class="sh-btn" onclick="shQa('갱년기 여성에게 필요한 영양제는?')"><i class="ti ti-woman"></i>갱년기 영양</button>
+  <button class="sh-btn" onclick="shQa('뼈 건강과 골다공증 예방 영양제는?')"><i class="ti ti-bone"></i>뼈 건강</button>
+  <button class="sh-btn" onclick="shQa('영양제 상호작용 주의사항을 알려주세요')"><i class="ti ti-alert-triangle"></i>상호작용 주의</button>
+  <button class="sh-btn" onclick="shQa('마그네슘 효능과 복용법을 알려주세요')"><i class="ti ti-pill"></i>마그네슘</button>
+  <button class="sh-btn" onclick="shQa('오메가3 효능과 복용법을 알려주세요')"><i class="ti ti-fish"></i>오메가3</button>
+  <button class="sh-btn" onclick="shQa('코엔자임Q10 효능을 알려주세요')"><i class="ti ti-bolt"></i>코엔자임Q10</button>
+  <button class="sh-btn" onclick="shQa('빈혈 개선을 위한 철분 복용법은?')"><i class="ti ti-droplet"></i>빈혈·철분</button>
+  <button class="sh-btn" onclick="shQa('간 건강에 좋은 영양제는?')"><i class="ti ti-heart"></i>간 건강</button>
+  <button class="sh-btn" onclick="shQa('혈당 관리에 도움이 되는 영양제는?')"><i class="ti ti-droplet-half-2"></i>혈당 관리</button>
+</div>
+
+<!-- 프로필 모달 -->
+<div class="mbg" id="modal">
+  <div class="modal">
+    <div class="mhd"><span class="mtit">내 건강 프로필 편집</span><button class="mcls" onclick="closeModal()"><i class="ti ti-x"></i></button></div>
+    <div class="fg"><div class="fl">이름</div><input class="fin" id="inN" placeholder="예: 홍길동" maxlength="20"></div>
+    <div class="fg">
+      <div class="fl">나이 / 성별</div>
+      <div class="frow">
+        <input class="fin" id="inA" placeholder="나이" type="number" min="1" max="120" style="width:80px;flex:none">
+        <select class="fsel" id="inG"><option value="">성별 선택</option><option value="남성">남성</option><option value="여성">여성</option></select>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl">건강 상태 선택</div>
+      <div class="cks">
+        <input type="checkbox" class="ci cw" id="c1"><label class="cl" for="c1">고지혈증 경계</label>
+        <input type="checkbox" class="ci cb" id="c2"><label class="cl" for="c2">고지혈증</label>
+        <input type="checkbox" class="ci cw" id="c3"><label class="cl" for="c3">혈압 경계</label>
+        <input type="checkbox" class="ci cb" id="c4"><label class="cl" for="c4">고혈압</label>
+        <input type="checkbox" class="ci co" id="c5"><label class="cl" for="c5">혈압 정상</label>
+        <input type="checkbox" class="ci cw" id="c6"><label class="cl" for="c6">혈당 경계</label>
+        <input type="checkbox" class="ci cb" id="c7"><label class="cl" for="c7">당뇨</label>
+        <input type="checkbox" class="ci co" id="c8"><label class="cl" for="c8">혈당 정상</label>
+        <input type="checkbox" class="ci cw" id="c9"><label class="cl" for="c9">비타민D 부족</label>
+        <input type="checkbox" class="ci cw" id="c10"><label class="cl" for="c10">빈혈 경계</label>
+        <input type="checkbox" class="ci cb" id="c11"><label class="cl" for="c11">빈혈</label>
+        <input type="checkbox" class="ci cw" id="c12"><label class="cl" for="c12">간수치 경계</label>
+        <input type="checkbox" class="ci cw" id="c13"><label class="cl" for="c13">신장 기능 주의</label>
+        <input type="checkbox" class="ci cm" id="c14"><label class="cl" for="c14">골다공증 주의</label>
+        <input type="checkbox" class="ci cm" id="c15"><label class="cl" for="c15">갱년기</label>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl">기타 직접 입력</div>
+      <div class="crow"><input class="fin" id="inC" placeholder="예: 만성피로" maxlength="15" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addCT()}"><button class="addbtn" onclick="addCT()">추가</button></div>
+      <div class="ctgs" id="ctgs"></div>
+    </div>
+    <div class="mbtns"><button class="bcancel" onclick="closeModal()">취소</button><button class="bsave" onclick="saveP()">저장하기</button></div>
+  </div>
+</div>
+
+<script>
+if(typeof pdfjsLib!=='undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
+}
+
+// ── STATE ──
+var chatHistory = [];
+var pendingFiles = [];
+var isLoading = false;
+var UP = { name:'', age:'', gender:'', ids:[], custom:[] };
+var TM = {
+  c1:{label:'고지혈증 경계',cls:'tw'}, c2:{label:'고지혈증',cls:'tb'},
+  c3:{label:'혈압 경계',cls:'tw'},     c4:{label:'고혈압',cls:'tb'},
+  c5:{label:'혈압 정상',cls:'tok'},    c6:{label:'혈당 경계',cls:'tw'},
+  c7:{label:'당뇨',cls:'tb'},          c8:{label:'혈당 정상',cls:'tok'},
+  c9:{label:'비타민D 부족',cls:'tw'},  c10:{label:'빈혈 경계',cls:'tw'},
+  c11:{label:'빈혈',cls:'tb'},         c12:{label:'간수치 경계',cls:'tw'},
+  c13:{label:'신장 기능 주의',cls:'tw'}, c14:{label:'골다공증 주의',cls:'ti'},
+  c15:{label:'갱년기',cls:'ti'}
+};
+
+// ── GPT 시스템 프롬프트 ──
+function getSysPrompt() {
+  var parts = [UP.name, UP.age ? UP.age+'세' : '', UP.gender].filter(Boolean);
+  var tags = getAllTags().map(function(t){return t.label;});
+  return '당신은 #하루건식 AI, 건강기능식품 전문 상담사입니다.\n\n'
+    + '[사용자 건강 프로필]\n'
+    + '- 이름/나이/성별: ' + (parts.join(' ') || '미입력') + '\n'
+    + '- 건강 상태: ' + (tags.join(', ') || '미입력') + '\n\n'
+    + '[역할]\n'
+    + '- 건강검진 결과(PDF, 이미지, 텍스트)를 분석하고 수치를 해석합니다\n'
+    + '- 분석 결과와 프로필을 기반으로 맞춤형 건강기능식품을 추천합니다\n'
+    + '- 영양소별 복용량, 복용 시간, 주의사항, 상호작용을 상세히 안내합니다\n'
+    + '- 수치별 정상/경계/이상 범위를 명확히 알려줍니다\n\n'
+    + '[답변 스타일]\n'
+    + '- 한국어로 친근하고 전문적으로 답변\n'
+    + '- 수치를 구체적으로 언급하며 설명\n'
+    + '- 심각한 이상 수치는 반드시 전문의 상담 권고\n'
+    + '- 마크다운 형식(##, **굵게**, - 목록)으로 구조화\n'
+    + '- 답변은 핵심 위주로 명확하게 (너무 길지 않게)';
+}
+
+window.onload = function() {
+  document.getElementById('editBtn').onclick = openModal;
+  document.getElementById('prCard').onclick = openModal;
+  document.getElementById('modal').onclick = function(e){ if(e.target===this) closeModal(); };
+  showWelcome();
+};
+
+// ── SHEET ──
+function openSheet(){document.getElementById('sheet').classList.add('open');document.getElementById('shBg').classList.add('open');}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');document.getElementById('shBg').classList.remove('open');}
+function shQa(t){closeSheet();setTimeout(function(){qa(t);},200);}
+
+// ── WELCOME ──
+function showWelcome(){
+  var c=document.getElementById('msgs');c.innerHTML='';
+  var d=document.createElement('div');d.className='msg ai';
+  d.innerHTML='<div class="mv ai"><i class="ti ti-leaf"></i></div>'
+    +'<div><div class="bbl">안녕하세요! 저는 <strong>#하루건식</strong> AI 상담사입니다 🌿<br><br>'
+    +'<strong>GPT-4o</strong>가 건강검진 결과를 직접 분석하고<br>맞춤형 영양제를 추천해 드립니다.<br><br>'
+    +'파일 업로드 또는 수치를 입력해 주세요!</div>'
+    +'<div class="sgrid">'
+    +'<div class="scard" onclick="qa(\'오메가3 효능과 복용법을 알려주세요\')"><div class="sn">🐟 오메가3</div><div class="sw">콜레스테롤·중성지방 개선</div><span class="sbdg bs">강력 권장</span></div>'
+    +'<div class="scard" onclick="qa(\'비타민D3 복용법을 알려주세요\')"><div class="sn">☀️ 비타민D3</div><div class="sw">면역·뼈 건강 필수</div><span class="sbdg bs">필수 보충</span></div>'
+    +'<div class="scard" onclick="qa(\'마그네슘 효능과 복용법을 알려주세요\')"><div class="sn">💊 마그네슘</div><div class="sw">수면·혈압·근육 이완</div><span class="sbdg br">권장</span></div>'
+    +'<div class="scard" onclick="qa(\'코엔자임Q10 효능을 알려주세요\')"><div class="sn">⚡ CoQ10</div><div class="sw">항산화·에너지 대사</div><span class="sbdg bm">고려</span></div>'
+    +'</div></div>';
+  c.appendChild(d);
+}
+
+// ── PROFILE ──
+function openModal(){
+  document.getElementById('inN').value=UP.name;
+  document.getElementById('inA').value=UP.age;
+  document.getElementById('inG').value=UP.gender;
+  for(var id in TM){var el=document.getElementById(id);if(el)el.checked=UP.ids.indexOf(id)>-1;}
+  renderCT();
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function addCT(){var inp=document.getElementById('inC'),v=inp.value.trim();if(!v)return;if(UP.custom.indexOf(v)<0)UP.custom.push(v);inp.value='';renderCT();}
+function renderCT(){var c=document.getElementById('ctgs');c.innerHTML='';UP.custom.forEach(function(t){var s=document.createElement('span');s.className='tag ti';s.style.cursor='pointer';s.innerHTML=t+' <i class="ti ti-x" style="font-size:10px"></i>';s.onclick=(function(x){return function(){UP.custom=UP.custom.filter(function(a){return a!==x;});renderCT();};}(t));c.appendChild(s);});}
+function saveP(){
+  UP.name=document.getElementById('inN').value.trim();
+  UP.age=document.getElementById('inA').value.trim();
+  UP.gender=document.getElementById('inG').value;
+  UP.ids=[];
+  for(var id in TM){var el=document.getElementById(id);if(el&&el.checked)UP.ids.push(id);}
+  closeModal();renderSB();
+}
+function renderSB(){
+  var parts=[UP.name,UP.age?UP.age+'세':'',UP.gender].filter(Boolean);
+  var nm=parts.join(' · ')||'프로필을 입력해 주세요';
+  document.getElementById('prName').textContent=nm;
+  document.getElementById('mobName').textContent=nm;
+  var all=getAllTags();
+  var te=document.getElementById('prTags');te.innerHTML='';
+  if(!all.length)te.innerHTML='<span style="font-size:11px;color:var(--hint)">건강 상태를 추가해 보세요</span>';
+  else all.forEach(function(t){var s=document.createElement('span');s.className='tag '+t.cls;s.textContent=t.label;te.appendChild(s);});
+  var mte=document.getElementById('mobTags');mte.innerHTML='';
+  if(!all.length)mte.innerHTML='<span style="font-size:10px;color:var(--hint)">건강 상태를 추가해 보세요</span>';
+  else{all.slice(0,4).forEach(function(t){var s=document.createElement('span');s.className='tag '+t.cls;s.textContent=t.label;mte.appendChild(s);});if(all.length>4){var m=document.createElement('span');m.className='tag ti';m.textContent='+' +(all.length-4);mte.appendChild(m);}}
+  var bad=UP.ids.filter(function(id){return TM[id]&&TM[id].cls==='tb';}).length;
+  var warn=UP.ids.filter(function(id){return TM[id]&&TM[id].cls==='tw';}).length;
+  var sc=Math.max(40,100-bad*15-warn*8);
+  document.getElementById('scVal').textContent=sc+' / 100';
+  document.getElementById('scFill').style.width=sc+'%';
+  document.getElementById('mobScore').textContent=sc;
+}
+function getAllTags(){var r=[];UP.ids.forEach(function(id){if(TM[id])r.push(TM[id]);});UP.custom.forEach(function(t){r.push({label:t,cls:'ti'});});return r;}
+
+// ── FILE ──
+function getFI(n){var e=n.split('.').pop().toLowerCase();if(e==='pdf')return{ic:'ti-file-type-pdf',cls:'fi-pdf'};if(['jpg','jpeg','png','webp','gif'].indexOf(e)>-1)return{ic:'ti-photo',cls:'fi-img'};if(e==='txt')return{ic:'ti-file-text',cls:'fi-txt'};if(['hwp','hwpx'].indexOf(e)>-1)return{ic:'ti-file-description',cls:'fi-hwp'};return{ic:'ti-file',cls:'fi-oth'};}
+function fmtB(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+function handleFileSelect(e){Array.from(e.target.files).forEach(function(f){pendingFiles.push({file:f,id:Date.now()+Math.random()});});e.target.value='';renderFQ();}
+function handleDrop(e){e.preventDefault();document.getElementById('dz').classList.remove('drag');Array.from(e.dataTransfer.files).forEach(function(f){pendingFiles.push({file:f,id:Date.now()+Math.random()});});renderFQ();}
+function removeFile(id){pendingFiles=pendingFiles.filter(function(f){return f.id!==id;});renderFQ();}
+function renderFQ(){var q=document.getElementById('fq');q.innerHTML='';pendingFiles.forEach(function(f){var ic=getFI(f.file.name),d=document.createElement('div');d.className='fi';d.innerHTML='<i class="ti '+ic.ic+' fi-ic '+ic.cls+'"></i><div class="fi-info"><div class="fi-nm">'+f.file.name+'</div><div class="fi-sz">'+fmtB(f.file.size)+'</div></div><button class="fi-del" onclick="removeFile('+f.id+')"><i class="ti ti-x"></i></button>';q.appendChild(d);});}
+
+function setProg(nm,pct,st){var w=document.getElementById('prog');if(pct<0){w.style.display='none';return;}w.style.display='block';document.getElementById('progNm').textContent=nm;document.getElementById('progPct').textContent=pct+'%';document.getElementById('progFill').style.width=pct+'%';document.getElementById('progSt').textContent=st;}
+
+// ── FILE READING ──
+function readTxt(file){return new Promise(function(resolve){setProg(file.name,30,'파일 읽는 중...');var r=new FileReader();r.onload=function(){setProg(file.name,90,'완료');setTimeout(function(){setProg('',-1,'');resolve(r.result||'');},200);};r.onerror=function(){setProg('',-1,'');resolve('');};r.readAsText(file,'UTF-8');});}
+
+function readPDF(file){return new Promise(function(resolve){if(typeof pdfjsLib==='undefined'){resolve('');return;}setProg(file.name,10,'PDF 로딩...');var r=new FileReader();r.onload=function(e){setProg(file.name,30,'파싱 중...');pdfjsLib.getDocument({data:new Uint8Array(e.target.result)}).promise.then(function(pdf){var total=Math.min(pdf.numPages,15),done=0,pp=[],i;for(i=1;i<=total;i++){pp.push(pdf.getPage(i).then(function(pg){return pg.getTextContent().then(function(tc){done++;setProg(file.name,Math.round(40+(done/total)*50),done+'/'+total+' 페이지');return tc.items.map(function(it){return it.str;}).join(' ');});}));}Promise.all(pp).then(function(pages){var t=pages.join('\n');setProg(file.name,95,'완료');setTimeout(function(){setProg('',-1,'');resolve(t);},200);}).catch(function(){setProg('',-1,'');resolve('');});}).catch(function(){setProg('',-1,'');resolve('');});};r.onerror=function(){setProg('',-1,'');resolve('');};r.readAsArrayBuffer(file);});}
+
+function toB64(file){return new Promise(function(resolve){var r=new FileReader();r.onload=function(){resolve(r.result);};r.onerror=function(){resolve('');};r.readAsDataURL(file);});}
+
+// 파일을 API 전송용 content로 변환
+function fileToContent(f){
+  var ext=f.name.split('.').pop().toLowerCase();
+  // 이미지 → base64 vision
+  if(['jpg','jpeg','png','webp','gif'].indexOf(ext)>-1){
+    return toB64(f).then(function(b64){
+      var mediaType=ext==='jpg'?'image/jpeg':'image/'+ext;
+      return [{type:'image',source:{type:'base64',media_type:mediaType,data:b64.split(',')[1]}}];
+    });
+  }
+  // PDF → 텍스트 추출
+  if(ext==='pdf'){
+    return readPDF(f).then(function(text){
+      if(text&&text.trim().length>10) return [{type:'text',text:'[건강검진 PDF: '+f.name+']\n\n'+text}];
+      return [{type:'text',text:'['+f.name+'] PDF 텍스트 추출에 실패했습니다. 수치를 직접 입력해 주세요.'}];
+    });
+  }
+  // 텍스트
+  return readTxt(f).then(function(text){
+    return [{type:'text',text:'[파일: '+f.name+']\n\n'+text}];
+  });
+}
+
+// ── CHAT ──
+function qa(t){document.getElementById('mi').value=t;sendMsg();}
+
+function sendMsg(){
+  if(isLoading)return;
+  var inp=document.getElementById('mi'),text=inp.value.trim(),hasF=pendingFiles.length>0;
+  if(!text&&!hasF)return;
+  isLoading=true;document.getElementById('sbtn').disabled=true;
+  inp.value='';inp.style.height='auto';
+  addUB(text,pendingFiles.map(function(f){return f.file.name;}));
+  var files=pendingFiles.slice();pendingFiles=[];renderFQ();
+  showTyp();
+
+  // 파일 처리 후 API 호출
+  Promise.all(files.map(function(f){return fileToContent(f.file);})).then(function(fileParts){
+    var userContent=[];
+    fileParts.forEach(function(parts){parts.forEach(function(p){userContent.push(p);});});
+    if(text) userContent.push({type:'text',text:text});
+    else if(files.length>0) userContent.push({type:'text',text:'이 건강검진 결과를 상세히 분석하고 맞춤형 영양제를 추천해 주세요.'});
+
+    chatHistory.push({role:'user',content:userContent});
+
+    return fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system: getSysPrompt(),
+        messages: chatHistory
+      })
+    });
+  })
+  .then(function(res){return res.json();})
+  .then(function(data){
+    remTyp();
+    var reply=data.content?.[0]?.text||(data.error?'오류: '+data.error:'응답을 받지 못했습니다.');
+    addAB(reply);
+    chatHistory.push({role:'assistant',content:reply});
+    isLoading=false;document.getElementById('sbtn').disabled=false;
+  })
+  .catch(function(err){
+    remTyp();
+    addAB('연결 오류가 발생했습니다: '+err.message);
+    chatHistory.pop();
+    isLoading=false;document.getElementById('sbtn').disabled=false;
+  });
+}
+
+function addUB(text,names){var c=document.getElementById('msgs'),d=document.createElement('div');d.className='msg user';var bg=names.map(function(n){var ic=getFI(n);return'<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:3px 8px;font-size:11px;margin-bottom:4px"><i class="ti '+ic.ic+'"></i>'+n+'</div>';}).join('');d.innerHTML='<div class="mv usr"><i class="ti ti-user"></i></div><div class="bbl">'+(bg?'<div>'+bg+'</div>':'')+(text?'<div>'+text+'</div>':'')+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+
+function addAB(text){var c=document.getElementById('msgs'),d=document.createElement('div');d.className='msg ai';var h=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^#{1,3} (.+)$/gm,function(m,t){return'<br><strong style="font-size:14px;color:var(--g)">'+t+'</strong>';}).replace(/^- (.+)$/gm,'&nbsp;&nbsp;• $1').replace(/\n/g,'<br>');d.innerHTML='<div class="mv ai"><i class="ti ti-leaf"></i></div><div class="bbl">'+h+'</div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function showTyp(){var c=document.getElementById('msgs'),d=document.createElement('div');d.className='tw-wrap';d.id='typing';d.innerHTML='<div class="mv ai"><i class="ti ti-leaf"></i></div><div class="tw-bbl"><span></span><span></span><span></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function remTyp(){var e=document.getElementById('typing');if(e)e.remove();}
+function resetChat(){if(!confirm('상담 내용을 초기화할까요?'))return;chatHistory=[];showWelcome();}
+function exportChat(){
+  var lines=['#하루건식 AI 상담 내역','생성: '+new Date().toLocaleString('ko-KR'),'────────'];
+  chatHistory.forEach(function(m){
+    var role=m.role==='user'?'사용자':'#하루건식 AI';
+    var content=typeof m.content==='string'?m.content:m.content.filter(function(c){return c.type==='text';}).map(function(c){return c.text;}).join('\n');
+    lines.push('['+role+']\n'+content+'\n');
+  });
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}));
+  a.download='하루건식-상담내역.txt';a.click();
+}
+</script>
+</body>
+</html>
