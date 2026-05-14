@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MEDICOK #하루건식</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F2;--sf:#fff;--mu:#F0EEE8;
+  --tx:#1A1A18;--sub:#5F5E5A;--hint:#9A9892;
+  --bd:rgba(0,0,0,.1);--bdl:rgba(0,0,0,.18);
+  --g:#3B6D11;--gl:#EAF3DE;--gb:#C0DD97;
+  --am:#633806;--al:#FAEEDA;
+  --bu:#0C447C;--bl:#E6F1FB;
+  --r:#791F1F;--rl:#FCEBEB;
+  --med:#5B5BD6;--medl:#EDEDFC;
+  --r8:8px;--r12:12px;--r16:16px;
+}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx)}
+
+/* ── DESKTOP ── */
+.app{display:grid;grid-template-columns:280px 1fr;height:100vh;max-width:1280px;margin:0 auto;background:var(--sf);box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.sidebar{display:flex;flex-direction:column;background:var(--mu);border-right:1px solid var(--bd);overflow:hidden}
+.sb-logo{padding:18px 18px 14px;border-bottom:1px solid var(--bd)}
+.lo-row{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+.medicok-logo{display:flex;align-items:center;gap:8px}
+.medicok-sym{width:32px;height:32px;flex-shrink:0}
+.medicok-wordmark{display:flex;flex-direction:column;line-height:1}
+.medicok-name{font-size:15px;font-weight:700;color:var(--med);letter-spacing:-.3px}
+.medicok-sub-brand{font-size:11px;font-weight:600;color:var(--g);letter-spacing:.02em}
+.lo-desc{font-size:10px;color:var(--hint);margin-top:5px}
+.sb-pr{padding:14px 18px;border-bottom:1px solid var(--bd)}
+.pr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.slbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--hint);text-transform:uppercase}
+.edbtn{display:flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-size:11px;color:var(--hint);font-family:'Noto Sans KR',sans-serif;padding:2px 6px;border-radius:6px}
+.edbtn:hover{color:var(--g);background:var(--gl)}
+.pr-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r12);padding:11px 13px;cursor:pointer}
+.pr-card:hover{border-color:var(--gb)}
+.pr-name{font-size:13px;font-weight:500;margin-bottom:7px}
+.pr-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px}
+.tw{background:var(--al);color:var(--am)}.ti{background:var(--bl);color:var(--bu)}
+.tok{background:var(--gl);color:var(--g)}.tb{background:var(--rl);color:var(--r)}
+.tmed{background:var(--medl);color:var(--med)}
+.sb-tp{padding:14px 18px;flex:1;overflow-y:auto}
+.tbtn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;background:transparent;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--sub);cursor:pointer;text-align:left;margin-bottom:2px;transition:all .12s}
+.tbtn:hover{background:var(--sf);color:var(--tx)}
+.tbtn i{font-size:14px;color:var(--g);flex-shrink:0}
+.sb-sc{padding:13px 18px;border-top:1px solid var(--bd)}
+.sc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.sc-lbl{font-size:11px;color:var(--sub);font-weight:500}
+.sc-val{font-size:13px;font-weight:700;color:var(--g)}
+.sc-bar{height:5px;background:var(--bd);border-radius:99px;overflow:hidden}
+.sc-fill{height:100%;background:var(--g);border-radius:99px;transition:width .6s}
+.sc-hint{font-size:10px;color:var(--hint);margin-top:4px}
+.mob-top{display:none}
+
+/* ── CHAT ── */
+.chat{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.ch-hdr{padding:12px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--sf);flex-shrink:0}
+.hl{display:flex;align-items:center;gap:10px}
+.ai-av{width:34px;height:34px;border-radius:50%;background:var(--medl);border:1.5px solid var(--med);display:flex;align-items:center;justify-content:center;font-size:16px}
+.ai-nm{font-size:14px;font-weight:600}
+.ai-st{font-size:11px;color:var(--g);display:flex;align-items:center;gap:4px}
+.dot{width:6px;height:6px;background:#639922;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hbtns{display:flex;gap:5px;align-items:center}
+.hbtn{width:32px;height:32px;background:transparent;border:1px solid var(--bd);border-radius:var(--r8);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:15px;transition:all .12s}
+.hbtn:hover{background:var(--mu);color:var(--tx)}
+/* 상담사 연결 버튼 */
+.consultant-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;background:var(--med);color:#fff;border:none;border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .12s}
+.consultant-btn:hover{background:#4747b8}
+.consultant-btn i{font-size:13px}
+
+.msgs{flex:1;overflow-y:auto;padding:20px 20px 12px;display:flex;flex-direction:column;gap:4px}
+.msgs::-webkit-scrollbar{width:4px}
+.msgs::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.msg-wrap{display:flex;flex-direction:column;margin-bottom:12px}
+.msg-wrap.user{align-items:flex-end}
+.msg-wrap.ai{align-items:flex-start}
+.msg{display:flex;gap:9px;max-width:85%;animation:fu .2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.mv{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:2px}
+.mv.ai{background:var(--medl);color:var(--med);border:1px solid var(--med)}
+.mv.usr{background:var(--mu);color:var(--sub);border:1px solid var(--bd)}
+.bbl{padding:10px 14px;font-size:13.5px;line-height:1.7}
+.msg.ai .bbl{background:var(--mu);border:1px solid var(--bd);border-radius:4px 13px 13px 13px;color:var(--tx)}
+.msg.user .bbl{background:var(--g);color:#fff;border-radius:13px 4px 13px 13px}
+/* 타임스탬프 */
+.msg-time{font-size:10px;color:var(--hint);margin-top:3px;padding:0 4px}
+.msg-wrap.user .msg-time{text-align:right}
+.msg-wrap.ai .msg-time{text-align:left;padding-left:38px}
+
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.scard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r8);padding:9px 11px;cursor:pointer;transition:all .15s}
+.scard:hover{border-color:var(--gb);background:var(--gl)}
+.sn{font-size:12px;font-weight:600;margin-bottom:3px}
+.sw{font-size:11px;color:var(--sub);line-height:1.4}
+.sbdg{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:4px}
+.bs{background:var(--gl);color:var(--g)}.br{background:var(--bl);color:var(--bu)}.bm{background:var(--al);color:var(--am)}
+
+.tw-wrap{display:flex;gap:9px}
+.tw-bbl{display:flex;gap:5px;align-items:center;background:var(--mu);border:1px solid var(--bd);border-radius:4px 13px 13px 13px;padding:11px 15px}
+.tw-bbl span{width:7px;height:7px;background:var(--hint);border-radius:50%;animation:bo 1.1s infinite}
+.tw-bbl span:nth-child(2){animation-delay:.18s}
+.tw-bbl span:nth-child(3){animation-delay:.36s}
+@keyframes bo{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* ── INPUT ── */
+.ia{padding:12px 16px 14px;border-top:1px solid var(--bd);background:var(--sf);flex-shrink:0}
+.dz{border:1.5px dashed var(--bdl);border-radius:var(--r12);padding:12px;text-align:center;cursor:pointer;transition:all .2s;background:var(--mu);margin-bottom:8px;position:relative}
+.dz:hover,.dz.drag{border-color:var(--gb);background:var(--gl)}
+.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-ic{font-size:20px;color:var(--g);margin-bottom:3px}
+.dz-ti{font-size:12px;font-weight:500;margin-bottom:2px}
+.dz-su{font-size:10px;color:var(--hint)}
+.dz-fm{display:flex;justify-content:center;gap:5px;margin-top:6px;flex-wrap:wrap}
+.fmt{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;border:1px solid var(--bd);color:var(--sub);background:var(--sf)}
+.fq{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.fi{display:flex;align-items:center;gap:7px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:7px 11px}
+.fi-ic{font-size:17px;flex-shrink:0}
+.fi-pdf{color:#E24B4A}.fi-img{color:#185FA5}.fi-txt{color:var(--g)}.fi-hwp{color:#854F0B}.fi-oth{color:var(--hint)}
+.fi-info{flex:1;min-width:0}
+.fi-nm{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-sz{font-size:10px;color:var(--hint)}
+.fi-del{background:none;border:none;cursor:pointer;color:var(--hint);font-size:15px;padding:2px;border-radius:4px;display:flex;align-items:center}
+.fi-del:hover{color:var(--r);background:var(--rl)}
+.prog{display:none;margin-bottom:8px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:10px 14px}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prog-nm{font-size:12px;font-weight:500;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75%}
+.prog-pct{font-size:12px;font-weight:700;color:var(--g)}
+.prog-bar{height:6px;background:var(--bd);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:var(--g);border-radius:99px;transition:width .3s}
+.prog-st{font-size:10px;color:var(--hint);margin-top:4px}
+.ir{display:flex;gap:7px;align-items:flex-end}
+.mi{flex:1;padding:9px 13px;font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r12);color:var(--tx);resize:none;min-height:40px;max-height:100px;outline:none;line-height:1.5;transition:border-color .15s}
+.mi:focus{border-color:var(--gb)}
+.mi::placeholder{color:var(--hint)}
+.sbtn{width:40px;height:40px;background:var(--g);border:none;border-radius:var(--r8);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.sbtn:hover{background:#27500A}.sbtn:active{transform:scale(.94)}.sbtn:disabled{background:var(--bd);cursor:not-allowed}
+.disc{font-size:10px;color:var(--hint);text-align:center;margin-top:7px}
+
+/* ── 모달 공통 ── */
+.mbg{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.45);align-items:center;justify-content:center}
+.mbg.open{display:flex}
+.modal{background:var(--sf);border-radius:var(--r16);border:1px solid var(--bd);padding:24px;width:420px;max-width:92vw;max-height:88vh;overflow-y:auto}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.mtit{font-size:15px;font-weight:600}
+.mcls{background:none;border:none;cursor:pointer;color:var(--hint);font-size:19px;padding:2px;border-radius:5px}
+.mcls:hover{color:var(--tx);background:var(--mu)}
+.fg{margin-bottom:15px}
+.fl{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--hint);text-transform:uppercase;margin-bottom:6px}
+.fin{width:100%;padding:8px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none}
+.fin:focus{border-color:var(--gb)}
+.frow{display:flex;gap:8px}
+.fsel{flex:1;padding:8px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none;cursor:pointer}
+.cks{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.ci{display:none}
+.cl{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--mu);color:var(--sub);cursor:pointer;user-select:none;transition:all .12s}
+.ci:checked+.cl{border-color:transparent}
+.ci.cw:checked+.cl{background:var(--al);color:var(--am)}
+.ci.co:checked+.cl{background:var(--gl);color:var(--g)}
+.ci.cb:checked+.cl{background:var(--rl);color:var(--r)}
+.ci.cm:checked+.cl{background:var(--bl);color:var(--bu)}
+.crow{display:flex;gap:6px;margin-top:8px}
+.ctgs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.mbtns{display:flex;gap:8px;margin-top:22px}
+.bsave{flex:1;padding:9px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+.bsave:hover{background:#27500A}
+.bcancel{padding:9px 16px;background:transparent;color:var(--sub);border:1px solid var(--bd);border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;cursor:pointer}
+.addbtn{padding:8px 12px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-size:12px;cursor:pointer;white-space:nowrap}
+.interest-group{display:flex;flex-wrap:wrap;gap:7px}
+.ibtn{padding:7px 14px;border:1.5px solid var(--bd);border-radius:20px;background:var(--mu);color:var(--sub);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;user-select:none}
+.ibtn:hover{border-color:var(--med);color:var(--med);background:var(--medl)}
+.ibtn.active{border-color:var(--med);background:var(--med);color:#fff;font-weight:600}
+.ibtn.disabled{opacity:.35;cursor:not-allowed}
+
+/* ── 상담사 연결 모달 ── */
+.cons-modal{background:var(--sf);border-radius:var(--r16);border:1px solid var(--bd);padding:24px;width:460px;max-width:92vw;max-height:90vh;overflow-y:auto}
+.cons-header{text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bd)}
+.cons-icon{width:52px;height:52px;background:var(--medl);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px;color:var(--med)}
+.cons-title{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:4px}
+.cons-desc{font-size:12px;color:var(--sub);line-height:1.5}
+.cons-phone{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;padding:8px 16px;background:var(--medl);border-radius:20px;font-size:14px;font-weight:700;color:var(--med)}
+.notice-box{background:#FFF8E1;border:1px solid #FFD54F;border-radius:var(--r8);padding:12px 14px;margin-bottom:16px;font-size:12px;color:#6D4C00;line-height:1.6}
+.notice-box strong{display:block;margin-bottom:4px;font-size:13px}
+.form-section-title{font-size:12px;font-weight:700;color:var(--med);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--medl)}
+.radio-group{display:flex;gap:16px;margin-top:6px}
+.radio-label{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--tx)}
+.radio-label input{accent-color:var(--med);width:16px;height:16px}
+.checkbox-group{display:flex;gap:16px;margin-top:6px}
+.checkbox-label{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--tx)}
+.checkbox-label input{accent-color:var(--med);width:16px;height:16px}
+.cons-textarea{width:100%;padding:9px 11px;font-family:'Noto Sans KR',sans-serif;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none;resize:vertical;min-height:70px;line-height:1.5}
+.cons-textarea:focus{border-color:var(--med)}
+.cons-textarea::placeholder{color:var(--hint)}
+.char-count{font-size:10px;color:var(--hint);text-align:right;margin-top:3px}
+.btn-call{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;background:var(--med);color:#fff;border:none;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.btn-call:hover{background:#4747b8}
+.btn-submit{flex:1;padding:11px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.btn-submit:hover{background:#27500A}
+
+/* ── BOTTOM SHEET ── */
+.sh-bg{display:none;position:fixed;inset:0;z-index:990;background:rgba(0,0,0,.4)}
+.sh-bg.open{display:block}
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:991;background:var(--sf);border-radius:20px 20px 0 0;padding:16px 20px 40px;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s ease}
+.sheet.open{transform:translateY(0)}
+.sh-hdl{width:36px;height:4px;background:var(--bd);border-radius:99px;margin:0 auto 16px}
+.sh-tit{font-size:14px;font-weight:600;margin-bottom:12px}
+.sh-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:none;background:transparent;border-radius:var(--r8);font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--sub);cursor:pointer;text-align:left;transition:all .12s}
+.sh-btn:hover{background:var(--mu);color:var(--tx)}
+.sh-btn i{font-size:16px;color:var(--g);flex-shrink:0}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .app{display:flex;flex-direction:column;height:100dvh;height:100vh;max-width:100%;box-shadow:none}
+  .sidebar{display:none}
+  .mob-top{display:flex;flex-direction:column;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
+  .mob-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px}
+  .mob-logo{display:flex;align-items:center;gap:8px}
+  .mob-sym{width:26px;height:26px}
+  .mob-wm{display:flex;flex-direction:column;line-height:1}
+  .mob-mn{font-size:12px;font-weight:700;color:var(--med)}
+  .mob-ms{font-size:11px;font-weight:600;color:var(--g)}
+  .mob-acts{display:flex;gap:5px;align-items:center}
+  .mob-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:14px}
+  .mob-cbtn{display:flex;align-items:center;gap:4px;padding:5px 10px;background:var(--med);color:#fff;border:none;border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:600;cursor:pointer}
+  .mob-pr{padding:0 14px 10px}
+  .mob-prc{display:flex;align-items:center;justify-content:space-between;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:9px 12px;cursor:pointer}
+  .mob-prl{flex:1;min-width:0}
+  .mob-prn{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:5px}
+  .mob-prt{display:flex;flex-wrap:wrap;gap:4px}
+  .mob-prr{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:10px}
+  .mob-sn{font-size:15px;font-weight:700;color:var(--g)}
+  .mob-sl{font-size:9px;color:var(--hint);text-align:right}
+  .mob-q{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+  .mob-q::-webkit-scrollbar{display:none}
+  .mob-qb{display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;padding:5px 11px;background:var(--mu);border:1px solid var(--bd);border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:var(--sub);cursor:pointer}
+  .mob-qb:active{background:var(--gl);border-color:var(--gb);color:var(--g)}
+  .mob-qb i{font-size:13px;color:var(--g)}
+  .mob-mb{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;padding:5px 11px;background:var(--g);border:none;border-radius:20px;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:#fff;cursor:pointer}
+  .ch-hdr{display:none}
+  .msgs{padding:14px 12px 10px}
+  .msg{max-width:92%}
+  .bbl{font-size:13px;padding:9px 12px}
+  .ia{padding:10px 12px 12px}
+  .dz{padding:10px}.dz-ti{font-size:11px}
+  .mi{font-size:14px;padding:10px 12px}
+  .sbtn{width:42px;height:42px;font-size:17px}
+  .disc{font-size:9px}
+  .consultant-btn{font-size:10px;padding:5px 9px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 모바일 상단 -->
+  <div class="mob-top">
+    <div class="mob-hdr">
+      <div class="mob-logo">
+        <svg class="mob-sym" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 24 L4 8 L11 8 L16 18 L21 8 L28 8 L28 24" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M4 24 Q4 28 8 28 Q12 28 12 24" stroke="#5B5BD6" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M20 24 Q20 28 24 28 Q28 28 28 24" stroke="#5B5BD6" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        </svg>
+        <div class="mob-wm">
+          <span class="mob-mn">MEDICOK</span>
+          <span class="mob-ms">#하루건식</span>
+        </div>
+      </div>
+      <div class="mob-acts">
+        <button class="mob-cbtn" onclick="openConsultant()"><i class="ti ti-headset" style="font-size:12px"></i>상담사 연결</button>
+        <button class="mob-btn" onclick="openModal()"><i class="ti ti-edit"></i></button>
+        <button class="mob-btn" onclick="exportChat()"><i class="ti ti-download"></i></button>
+        <button class="mob-btn" onclick="resetChat()"><i class="ti ti-refresh"></i></button>
+      </div>
+    </div>
+    <div class="mob-pr">
+      <div class="mob-prc" onclick="openModal()">
+        <div class="mob-prl">
+          <div class="mob-prn" id="mobName">관심사를 선택해 주세요 →</div>
+          <div class="mob-prt" id="mobTags"><span style="font-size:10px;color:var(--hint)">편집을 눌러 관심사를 선택하세요</span></div>
+        </div>
+        <div class="mob-prr">
+          <div><div class="mob-sn" id="mobScore">—</div><div class="mob-sl">건강점수</div></div>
+          <i class="ti ti-chevron-right" style="font-size:13px;color:var(--hint)"></i>
+        </div>
+      </div>
+    </div>
+    <div class="mob-q">
+      <button class="mob-qb" onclick="qa('내 건강 프로필을 분석하고 맞춤 영양제를 추천해주세요')"><i class="ti ti-sparkles"></i>맞춤 추천</button>
+      <button class="mob-qb" onclick="qa('콜레스테롤 관리에 좋은 영양제를 알려주세요')"><i class="ti ti-heart-rate-monitor"></i>콜레스테롤</button>
+      <button class="mob-qb" onclick="qa('비타민D 부족 시 복용법과 부족 증상을 알려주세요')"><i class="ti ti-sun"></i>비타민D</button>
+      <button class="mob-qb" onclick="qa('혈압 관리에 도움이 되는 영양제는?')"><i class="ti ti-activity"></i>혈압</button>
+      <button class="mob-qb" onclick="qa('면역력 강화 영양제를 추천해주세요')"><i class="ti ti-shield-check"></i>면역</button>
+      <button class="mob-qb" onclick="qa('영양제 복용 시간과 방법을 알려주세요')"><i class="ti ti-clock"></i>복용법</button>
+      <button class="mob-mb" onclick="openSheet()"><i class="ti ti-dots" style="font-size:12px"></i> 더보기</button>
+    </div>
+  </div>
+
+  <!-- 데스크탑 사이드바 -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="medicok-logo">
+        <svg class="medicok-sym" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </svg>
+        <div class="medicok-wordmark">
+          <span class="medicok-name">MEDICOK</span>
+          <span class="medicok-sub-brand">#하루건식</span>
+        </div>
+      </div>
+      <div class="lo-desc">건강검진 기반 맞춤형 영양 상담</div>
+    </div>
+    <div class="sb-pr">
+      <div class="pr-top"><span class="slbl">나의 건강 관심사</span><button class="edbtn" id="editBtn"><i class="ti ti-edit" style="font-size:12px"></i>편집</button></div>
+      <div class="pr-card" id="prCard">
+        <div class="pr-name" id="prName">관심사를 선택해 주세요</div>
+        <div class="pr-tags" id="prTags"><span style="font-size:11px;color:var(--hint)">편집 버튼을 눌러 관심사를 선택하세요</span></div>
+      </div>
+    </div>
+    <div class="sb-tp">
+      <div class="slbl" style="margin-bottom:10px">빠른 상담</div>
+      <button class="tbtn" onclick="qa('내 건강 프로필을 분석하고 맞춤 영양제를 추천해주세요')"><i class="ti ti-report-medical"></i>맞춤 영양제 추천</button>
+      <button class="tbtn" onclick="qa('건강검진 결과를 종합 분석해 주세요')"><i class="ti ti-file-analytics"></i>검진 결과 분석</button>
+      <button class="tbtn" onclick="qa('콜레스테롤 관리에 좋은 영양제를 알려주세요')"><i class="ti ti-heart-rate-monitor"></i>콜레스테롤 관리</button>
+      <button class="tbtn" onclick="qa('비타민D 부족 시 복용법과 부족 증상을 알려주세요')"><i class="ti ti-sun"></i>비타민D 보충</button>
+      <button class="tbtn" onclick="qa('혈압 관리에 도움이 되는 영양제는?')"><i class="ti ti-activity"></i>혈압 관리</button>
+      <button class="tbtn" onclick="qa('면역력 강화 영양제를 추천해주세요')"><i class="ti ti-shield-check"></i>면역력 강화</button>
+      <button class="tbtn" onclick="qa('영양제 복용 시간과 방법을 알려주세요')"><i class="ti ti-clock"></i>복용 시간 가이드</button>
+      <button class="tbtn" onclick="qa('갱년기 여성에게 필요한 영양제는?')"><i class="ti ti-woman"></i>갱년기 영양</button>
+      <button class="tbtn" onclick="qa('뼈 건강과 골다공증 예방 영양제는?')"><i class="ti ti-bone"></i>뼈 건강</button>
+      <button class="tbtn" onclick="qa('영양제 상호작용 주의사항을 알려주세요')"><i class="ti ti-alert-triangle"></i>상호작용 주의</button>
+    </div>
+    <div class="sb-sc">
+      <div class="sc-row"><span class="sc-lbl">종합 건강 점수</span><span class="sc-val" id="scVal">— / 100</span></div>
+      <div class="sc-bar"><div class="sc-fill" id="scFill" style="width:0%"></div></div>
+      <div class="sc-hint">프로필 입력 시 자동 계산됩니다</div>
+    </div>
+  </aside>
+
+  <!-- 채팅 -->
+  <div class="chat">
+    <div class="ch-hdr">
+      <div class="hl">
+        <div class="ai-av">
+          <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+            <path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
+            <path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ai-nm">MEDICOK #하루건식 AI</div>
+          <div class="ai-st"><span class="dot"></span>GPT-4o 연결됨</div>
+        </div>
+      </div>
+      <div class="hbtns">
+        <button class="consultant-btn" onclick="openConsultant()">
+          <i class="ti ti-headset"></i>전문 상담사 연결
+        </button>
+        <button class="hbtn" onclick="exportChat()"><i class="ti ti-download"></i></button>
+        <button class="hbtn" onclick="resetChat()"><i class="ti ti-refresh"></i></button>
+      </div>
+    </div>
+
+    <div class="msgs" id="msgs"></div>
+
+    <div class="ia">
+      <div class="dz" id="dz"
+        ondragover="event.preventDefault();document.getElementById('dz').classList.add('drag')"
+        ondragleave="document.getElementById('dz').classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.txt,.hwp,.docx,.csv" multiple onchange="handleFileSelect(event)">
+        <div class="dz-ic"><i class="ti ti-cloud-upload"></i></div>
+        <div class="dz-ti">건강검진 결과 파일 업로드</div>
+        <div class="dz-su">클릭하거나 드래그 • GPT-4o가 직접 분석합니다</div>
+        <div class="dz-fm"><span class="fmt">PDF</span><span class="fmt">JPG/PNG</span><span class="fmt">TXT</span><span class="fmt">HWP</span></div>
+      </div>
+      <div class="fq" id="fq"></div>
+      <div class="prog" id="prog">
+        <div class="prog-top"><span class="prog-nm" id="progNm">분석 중...</span><span class="prog-pct" id="progPct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <div class="prog-st" id="progSt">준비 중...</div>
+      </div>
+      <div class="ir">
+        <textarea class="mi" id="mi" placeholder="건강 상태나 검진 수치를 자유롭게 입력하세요..." rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+        <button class="sbtn" id="sbtn" onclick="sendMsg()"><i class="ti ti-send"></i></button>
+      </div>
+      <div class="disc">본 서비스는 의학적 진단을 대체하지 않습니다. 건강 이상 시 반드시 전문의와 상담하세요. | MEDICOK 고객센터 1666-6030</div>
+    </div>
+  </div>
+</div>
+
+<!-- 하단 시트 -->
+<div class="sh-bg" id="shBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sh-hdl"></div>
+  <div class="sh-tit">빠른 상담 주제</div>
+  <button class="sh-btn" onclick="shQa('건강검진 결과를 종합 분석해 주세요')"><i class="ti ti-file-analytics"></i>검진 결과 분석</button>
+  <button class="sh-btn" onclick="shQa('갱년기 여성에게 필요한 영양제는?')"><i class="ti ti-woman"></i>갱년기 영양</button>
+  <button class="sh-btn" onclick="shQa('뼈 건강과 골다공증 예방 영양제는?')"><i class="ti ti-bone"></i>뼈 건강</button>
+  <button class="sh-btn" onclick="shQa('영양제 상호작용 주의사항을 알려주세요')"><i class="ti ti-alert-triangle"></i>상호작용 주의</button>
+  <button class="sh-btn" onclick="shQa('마그네슘 효능, 부족 증상, 복용법을 알려주세요')"><i class="ti ti-pill"></i>마그네슘</button>
+  <button class="sh-btn" onclick="shQa('오메가3 효능, 부족 증상, 복용법을 알려주세요')"><i class="ti ti-fish"></i>오메가3</button>
+  <button class="sh-btn" onclick="shQa('코엔자임Q10 효능, 부족 증상, 복용법을 알려주세요')"><i class="ti ti-bolt"></i>코엔자임Q10</button>
+  <button class="sh-btn" onclick="shQa('빈혈 개선을 위한 철분 복용법은?')"><i class="ti ti-droplet"></i>빈혈·철분</button>
+  <button class="sh-btn" onclick="shQa('혈당 관리에 도움이 되는 영양제는?')"><i class="ti ti-droplet-half-2"></i>혈당 관리</button>
+  <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)">
+    <button class="sh-btn" style="color:var(--med);font-weight:600" onclick="closeSheet();openConsultant()">
+      <i class="ti ti-headset" style="color:var(--med)"></i>전문 상담사와 직접 상담하기
+    </button>
+  </div>
+</div>
+
+<!-- 프로필 모달 -->
+<div class="mbg" id="modal">
+  <div class="modal">
+    <div class="mhd"><span class="mtit">내 건강 관심사 편집</span><button class="mcls" onclick="closeModal()"><i class="ti ti-x"></i></button></div>
+    <div class="fg"><div class="fl">이름</div><input class="fin" id="inN" placeholder="예: 홍길동" maxlength="20"></div>
+    <div class="fg">
+      <div class="fl">나이 / 성별</div>
+      <div class="frow">
+        <input class="fin" id="inA" placeholder="나이" type="number" min="1" max="120" style="width:80px;flex:none">
+        <select class="fsel" id="inG"><option value="">성별 선택</option><option value="남성">남성</option><option value="여성">여성</option></select>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl" style="margin-bottom:4px">개선하고 싶은 부분 선택 <span id="selCount" style="color:var(--med);font-weight:700">0</span>/5</div>
+      <div style="font-size:11px;color:var(--hint);margin-bottom:10px">최대 5개까지 선택할 수 있어요</div>
+      <div style="font-size:10px;font-weight:700;color:var(--sub);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">건강검진 항목 관련</div>
+      <div class="interest-group" style="margin-bottom:12px">
+        <button type="button" class="ibtn" data-id="i01" onclick="toggleInterest('i01')">간 건강</button>
+        <button type="button" class="ibtn" data-id="i02" onclick="toggleInterest('i02')">활력/피로</button>
+        <button type="button" class="ibtn" data-id="i03" onclick="toggleInterest('i03')">체지방 관리</button>
+        <button type="button" class="ibtn" data-id="i04" onclick="toggleInterest('i04')">콜레스테롤</button>
+        <button type="button" class="ibtn" data-id="i05" onclick="toggleInterest('i05')">혈당 관리</button>
+        <button type="button" class="ibtn" data-id="i06" onclick="toggleInterest('i06')">혈압 관리</button>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--sub);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">주요 장기 관련</div>
+      <div class="interest-group" style="margin-bottom:12px">
+        <button type="button" class="ibtn" data-id="i07" onclick="toggleInterest('i07')">뇌 건강</button>
+        <button type="button" class="ibtn" data-id="i08" onclick="toggleInterest('i08')">눈 건강</button>
+        <button type="button" class="ibtn" data-id="i09" onclick="toggleInterest('i09')">뼈 건강</button>
+        <button type="button" class="ibtn" data-id="i10" onclick="toggleInterest('i10')">위 건강</button>
+        <button type="button" class="ibtn" data-id="i11" onclick="toggleInterest('i11')">장 건강</button>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--sub);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">일상생활 관련</div>
+      <div class="interest-group">
+        <button type="button" class="ibtn" data-id="i12" onclick="toggleInterest('i12')">관절/근육</button>
+        <button type="button" class="ibtn" data-id="i13" onclick="toggleInterest('i13')">면역력</button>
+        <button type="button" class="ibtn" data-id="i14" onclick="toggleInterest('i14')">모발/손톱</button>
+        <button type="button" class="ibtn" data-id="i15" onclick="toggleInterest('i15')">수면</button>
+        <button type="button" class="ibtn" data-id="i16" onclick="toggleInterest('i16')">스트레스</button>
+        <button type="button" class="ibtn" data-id="i17" onclick="toggleInterest('i17')">여성 건강</button>
+        <button type="button" class="ibtn" data-id="i18" onclick="toggleInterest('i18')">피부</button>
+        <button type="button" class="ibtn" data-id="i19" onclick="toggleInterest('i19')">남성 건강</button>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl">기타 직접 입력</div>
+      <div class="crow"><input class="fin" id="inC" placeholder="예: 만성피로" maxlength="15" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addCT()}"><button class="addbtn" onclick="addCT()">추가</button></div>
+      <div class="ctgs" id="ctgs"></div>
+    </div>
+    <div class="mbtns"><button class="bcancel" onclick="closeModal()">취소</button><button class="bsave" onclick="saveP()">저장하기</button></div>
+  </div>
+</div>
+
+<!-- 전문 상담사 연결 모달 -->
+<div class="mbg" id="consModal">
+  <div class="cons-modal">
+    <div class="cons-header">
+      <div class="cons-icon"><i class="ti ti-headset"></i></div>
+      <div class="cons-title">전문 상담사 연결</div>
+      <div class="cons-desc">MEDICOK 전문 상담사가 직접 상담해 드립니다.<br>아래 상담정보를 입력하시면 더 정확한 상담이 가능합니다.</div>
+      <div class="cons-phone"><i class="ti ti-phone" style="font-size:16px"></i>고객센터 1666-6030</div>
+    </div>
+
+    <div class="notice-box">
+      <strong>⚠️ 상담 전 고지사항</strong>
+      본 상담 서비스는 건강기능식품에 관한 일반적인 정보 제공을 목적으로 하며, 의학적 진단 및 처방을 대체하지 않습니다. 질병의 진단·치료·예방을 위한 의료행위는 반드시 전문 의료기관을 이용하시기 바랍니다. 입력하신 정보는 상담 목적으로만 활용됩니다.
+    </div>
+
+    <div class="form-section-title">상담 정보 입력</div>
+
+    <div class="fg">
+      <div class="fl">임신 / 수유 여부</div>
+      <div class="radio-group">
+        <label class="radio-label"><input type="radio" name="pregnancy" value="대상아님" checked> 대상아님</label>
+        <label class="radio-label"><input type="radio" name="pregnancy" value="임신중"> 임신중</label>
+        <label class="radio-label"><input type="radio" name="pregnancy" value="수유중"> 수유중</label>
+      </div>
+    </div>
+
+    <div class="fg">
+      <div class="fl">음주 / 흡연 여부</div>
+      <div class="checkbox-group">
+        <label class="checkbox-label"><input type="checkbox" id="isDrinking"> 음주중</label>
+        <label class="checkbox-label"><input type="checkbox" id="isSmoking"> 흡연중</label>
+      </div>
+    </div>
+
+    <div class="fg">
+      <div class="fl">건강기능식품 섭취현황 <span style="color:var(--hint);font-weight:400">(50자 제한)</span></div>
+      <textarea class="cons-textarea" id="consSupp" placeholder="현재 복용 중인 건강기능식품을 입력해 주세요" maxlength="50" oninput="updateCC('consSupp','suppCC',50)"></textarea>
+      <div class="char-count"><span id="suppCC">0</span>/50</div>
+    </div>
+
+    <div class="fg">
+      <div class="fl">보유질환 현황 <span style="color:var(--hint);font-weight:400">(50자 제한)</span></div>
+      <textarea class="cons-textarea" id="consDisease" placeholder="진단받은 질환이 있다면 입력해 주세요" maxlength="50" oninput="updateCC('consDisease','diseaseCC',50)"></textarea>
+      <div class="char-count"><span id="diseaseCC">0</span>/50</div>
+    </div>
+
+    <div class="fg">
+      <div class="fl">복용중인 의약품 <span style="color:var(--hint);font-weight:400">(50자 제한)</span></div>
+      <textarea class="cons-textarea" id="consMed" placeholder="처방약 또는 일반약을 복용 중이라면 입력해 주세요" maxlength="50" oninput="updateCC('consMed','medCC',50)"></textarea>
+      <div class="char-count"><span id="medCC">0</span>/50</div>
+    </div>
+
+    <div class="fg">
+      <div class="fl">알레르기 / 특이체질 <span style="color:var(--hint);font-weight:400">(50자 제한)</span></div>
+      <textarea class="cons-textarea" id="consAllergy" placeholder="알레르기 반응이나 특이체질이 있다면 입력해 주세요" maxlength="50" oninput="updateCC('consAllergy','allergyCC',50)"></textarea>
+      <div class="char-count"><span id="allergyCC">0</span>/50</div>
+    </div>
+
+    <div class="fg">
+      <div class="fl">식습관 / 수면패턴 / 운동습관 <span style="color:var(--hint);font-weight:400">(50자 제한)</span></div>
+      <textarea class="cons-textarea" id="consLifestyle" placeholder="평소 식습관, 수면시간, 운동 빈도 등을 입력해 주세요" maxlength="50" oninput="updateCC('consLifestyle','lifestyleCC',50)"></textarea>
+      <div class="char-count"><span id="lifestyleCC">0</span>/50</div>
+    </div>
+
+    <div class="mbtns">
+      <button class="bcancel" onclick="closeConsultant()">닫기</button>
+      <button class="btn-call" onclick="callCenter()"><i class="ti ti-phone"></i>전화 연결 1666-6030</button>
+      <button class="btn-submit" onclick="submitConsultant()">상담 요청 전송</button>
+    </div>
+  </div>
+</div>
+
+<script>
+if(typeof pdfjsLib!=='undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
+}
+
+var chatHistory=[], pendingFiles=[], isLoading=false;
+var UP={name:'',age:'',gender:'',ids:[],custom:[]};
+var TM={
+  i01:{label:'간 건강',cls:'tw',grp:'검진'},
+  i02:{label:'활력/피로',cls:'tw',grp:'검진'},
+  i03:{label:'체지방 관리',cls:'tw',grp:'검진'},
+  i04:{label:'콜레스테롤',cls:'tw',grp:'검진'},
+  i05:{label:'혈당 관리',cls:'tw',grp:'검진'},
+  i06:{label:'혈압 관리',cls:'tw',grp:'검진'},
+  i07:{label:'뇌 건강',cls:'ti',grp:'장기'},
+  i08:{label:'눈 건강',cls:'ti',grp:'장기'},
+  i09:{label:'뼈 건강',cls:'ti',grp:'장기'},
+  i10:{label:'위 건강',cls:'ti',grp:'장기'},
+  i11:{label:'장 건강',cls:'ti',grp:'장기'},
+  i12:{label:'관절/근육',cls:'tok',grp:'일상'},
+  i13:{label:'면역력',cls:'tok',grp:'일상'},
+  i14:{label:'모발/손톱',cls:'tok',grp:'일상'},
+  i15:{label:'수면',cls:'tok',grp:'일상'},
+  i16:{label:'스트레스',cls:'tok',grp:'일상'},
+  i17:{label:'여성 건강',cls:'tmed',grp:'일상'},
+  i18:{label:'피부',cls:'tmed',grp:'일상'},
+  i19:{label:'남성 건강',cls:'tmed',grp:'일상'}
+};
+
+// 지난 접속 시간 저장/불러오기
+var lastVisit = localStorage.getItem('hgLastVisit');
+localStorage.setItem('hgLastVisit', new Date().toISOString());
+
+function getTimeStr(date){
+  var now = new Date(date);
+  var y=now.getFullYear(), mo=String(now.getMonth()+1).padStart(2,'0'), d=String(now.getDate()).padStart(2,'0');
+  var h=String(now.getHours()).padStart(2,'0'), m=String(now.getMinutes()).padStart(2,'0');
+  return y+'.'+mo+'.'+d+' '+h+':'+m;
+}
+function getNow(){ return getTimeStr(new Date()); }
+
+window.onload=function(){
+  document.getElementById('editBtn').onclick=openModal;
+  document.getElementById('prCard').onclick=openModal;
+  document.getElementById('modal').onclick=function(e){if(e.target===this)closeModal();};
+  document.getElementById('consModal').onclick=function(e){if(e.target===this)closeConsultant();};
+  showWelcome();
+};
+
+// ── 하단 시트 ──
+function openSheet(){document.getElementById('sheet').classList.add('open');document.getElementById('shBg').classList.add('open');}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');document.getElementById('shBg').classList.remove('open');}
+function shQa(t){closeSheet();setTimeout(function(){qa(t);},200);}
+
+// ── 상담사 연결 ──
+function openConsultant(){document.getElementById('consModal').classList.add('open');}
+function closeConsultant(){document.getElementById('consModal').classList.remove('open');}
+function callCenter(){window.location.href='tel:16666030';}
+function updateCC(id, ccId, max){
+  var v=document.getElementById(id).value.length;
+  document.getElementById(ccId).textContent=v;
+}
+function submitConsultant(){
+  var pregnancy = document.querySelector('input[name="pregnancy"]:checked').value;
+  var drinking = document.getElementById('isDrinking').checked ? '음주중' : '';
+  var smoking = document.getElementById('isSmoking').checked ? '흡연중' : '';
+  var supp = document.getElementById('consSupp').value;
+  var disease = document.getElementById('consDisease').value;
+  var med = document.getElementById('consMed').value;
+  var allergy = document.getElementById('consAllergy').value;
+  var lifestyle = document.getElementById('consLifestyle').value;
+
+  closeConsultant();
+
+  // 상담 정보를 AI에게 전달하고 요약 생성
+  var summary = '[전문 상담사 연결 요청]\n\n';
+  summary += '임신/수유: ' + pregnancy + '\n';
+  if(drinking||smoking) summary += '음주/흡연: ' + [drinking,smoking].filter(Boolean).join(', ') + '\n';
+  if(supp) summary += '건강기능식품 섭취: ' + supp + '\n';
+  if(disease) summary += '보유질환: ' + disease + '\n';
+  if(med) summary += '복용 의약품: ' + med + '\n';
+  if(allergy) summary += '알레르기/특이체질: ' + allergy + '\n';
+  if(lifestyle) summary += '식습관/수면/운동: ' + lifestyle + '\n';
+
+  addSystemMsg('📋 상담 정보가 접수되었습니다.\n\n전문 상담사 연결까지 잠시 기다려 주세요.\n\n직접 전화 상담: ☎️ 1666-6030\n운영시간: 평일 09:00 ~ 18:00 (주말·공휴일 휴무)');
+}
+
+function addSystemMsg(text){
+  var c=document.getElementById('msgs');
+  var wrap=document.createElement('div');
+  wrap.className='msg-wrap ai';
+  var msgDiv=document.createElement('div');
+  msgDiv.className='msg ai';
+  var html=escHtml(text).replace(/\n/g,'<br>');
+  msgDiv.innerHTML='<div class="mv ai"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/><path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/></svg></div><div class="bbl" style="background:var(--medl);border-color:var(--med)">'+html+'</div>';
+  var timeDiv=document.createElement('div');
+  timeDiv.className='msg-time';
+  timeDiv.textContent=getNow();
+  wrap.appendChild(msgDiv);
+  wrap.appendChild(timeDiv);
+  c.appendChild(wrap);
+  c.scrollTop=c.scrollHeight;
+}
+
+// ── 시스템 프롬프트 ──
+function getProductDB(){
+  return `
+=== MEDICOK #하루건식 소분 제품 27종 전체 정보 ===
+제조원(공통): 코스맥스엔비티(주) | 판매원(공통): 메디콕(주) | 고객센터: 1577-2448
+보관방법(공통): 직사광선을 피하여 서늘한 곳에 보관 | 유통기한: 별도 표기일까지
+GMP·ISO·FSSC 인증 제조시설 생산
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[01] 감마리놀렌산
+- 제형/용량: 소프트캡슐 / 1일 1캡슐(1,050mg)
+- 기능: 월경 전 불편한 상태 개선, 면역과민반응(피부) 개선
+- 원재료: 감마리놀렌산함유유지(보리지, 뉴질랜드산) 1,050mg → 감마리놀렌산 210mg
+- 부족 증상: 월경 전 유방통·부종·감정기복, 피부 건조·트러블, 면역 과민 반응
+- 섭취법: 1일 1회 1캡슐 충분한 물과 함께
+- 주의사항: ① 불필요한 식품첨가물(이산화규소·HMC·합성향료) 무첨가 ② 알레르기 체질은 원재료 확인 ③ 임산부·수유부 전문가 상담 ④ 대두 사용 시설 동일 제조
+- 추천: 월경 전 불편감, 피부 트러블, 면역과민 여성
+
+[02] 100억 프로바이오틱스
+- 제형/용량: 캡슐 / 1일 1캡슐(450mg)
+- 기능: 유산균 증식 및 유해균 억제, 배변활동 원활, 장 건강
+- 원재료: 혼합유산균 100억 CFU (DANISCO 균주 7종: Lactobacillus acidophilus, L.casei, L.plantarum, L.rhamnosus, L.helveticus, Bifidobacterium longum, Streptococcus thermophilus)
+- 부족 증상: 변비·설사 반복, 장 가스·더부룩함, 면역력 저하, 장내 유익균 감소
+- 섭취법: 1일 1회 1캡슐 (공복 또는 식후), 냉장 보관 권장
+- 주의사항: ① 항생제 복용 중 유산균 효과 감소 (2시간 간격 복용) ② 임산부·수유부 전문가 상담 ③ 유제품 알레르기 주의
+- 추천: 장 건강, 배변 불규칙, 면역력 강화
+
+[03] 리버투씨슬&비
+- 제형/용량: 캡슐 / 1일 1캡슐(600mg)
+- 기능: 간 건강(실리마린), 에너지 대사·생성(비타민B군)
+- 원재료: 밀크씨슬추출물 260mg(실리마린 130mg, 미국 USP Pharmacotech社 프리미엄 원료), 비타민B1·B2·B6·판토텐산 (DSM 원료)
+- 부족 증상: 간 수치 이상(피로·식욕부진·소화불량), 에너지 대사 저하, 만성 피로, 업무·가사 후 쉽게 지침
+- 섭취법: 1일 1회 1캡슐 식후
+- 주의사항: ① 밀크씨슬(국화과 식물) 알레르기 주의 ② 간 관련 약물 복용 시 전문의 상담 ③ 임산부·수유부 전문가 상담
+- 추천: 음주 잦은 분, 간 수치 걱정, 만성피로, 에너지 부족
+
+[04] 릴랙스 테아닌&홍경천
+- 제형/용량: 캡슐 / 1일 1캡슐(800mg)
+- 기능: 스트레스로 인한 긴장완화(식약처 2중 인정), 피로개선
+- 원재료: 홍경천추출물(로사빈 4.2mg), L-테아닌 200mg
+- 부족 증상: 스트레스성 긴장·불안, 수면 장애, 집중력 저하, 피로 지속, 코르티솔 과다
+- 섭취법: 1일 1회 1캡슐
+- 주의사항: ① 항불안제·수면제·항우울제 복용 시 의사 상담 ② 임산부·수유부 전문가 상담 ③ 어린이·청소년 주의
+- 추천: 스트레스·긴장, 수면 방해, 피로 지속
+
+[05] 맨파워쏘팔코사놀
+- 제형/용량: 캡슐 / 1일 1캡슐(500mg)
+- 기능: 전립선 건강, 지구력 증진, 정상적인 면역기능
+- 원재료: 쏘팔메토열매추출물, 옥타코사놀함유사탕수수왁스추출물(옥타코사놀 20mg), 아연, 셀렌
+- 부족 증상: 전립선 비대 증상(잦은 소변·잔뇨감·야간뇨), 체력·지구력 저하, 면역 감소
+- 섭취법: 1일 1회 1캡슐 식후
+- 주의사항: ① 여성 및 임산부 섭취 금지 (남성 전용) ② 전립선 관련 의약품 복용 시 전문의 상담 ③ 쏘팔메토 알레르기 주의
+- 추천: 전립선 건강 걱정 남성, 40대 이상 남성 체력 저하
+
+[06] 비오틴부스터
+- 제형/용량: 정 / 1일 1정(400mg)
+- 기능: 지방·탄수화물·단백질 에너지대사, 에너지 생성
+- 원재료: 바이오틴 2,000μg (Quali-Biotin® 고함량), 판토텐산 2mg, 묵주추출분말, 녹용골정형분말, 생선콜라겐, L-시스틴, 양파즙분말, 마늘농축분말
+- 부족 증상: 탈모·모발 약화·가늘어짐, 피부 트러블·건조, 손발톱 갈라짐·약화, 에너지 대사 저하
+- 섭취법: 1일 1회 1정 식후
+- 주의사항: ① 탈모 관련 치료제 복용 중 전문의 상담 ② 생선·조개류 알레르기 주의(생선콜라겐) ③ 임산부·수유부 전문가 상담
+- 추천: 탈모 걱정, 피부·모발·손발톱 케어, 에너지 대사 부족
+
+[07] 본투칼슘플러스
+- 제형/용량: 정 / 1일 1정(1,000mg)
+- 기능: 골다공증 발생 위험 감소(칼슘+비타민D), 뼈·치아 형성 및 유지, 신경·근육 기능 유지
+- 원재료: 칼슘 210mg(Aquamin® 해조칼슘, 아이슬란드산, 98%순도), 비타민K2(MK-7) 70μg, 비타민D3(활성형) 10μg, 망간 3mg
+- 부족 증상: 뼈 약화·골절 위험, 골다공증, 근육경련, 치아 약화, 성장기 발육 저하
+- 섭취법: 1일 1회 1정 식후 (비타민D3 지용성, 식사와 함께)
+- 주의사항: ① 항응고제(와파린) 복용 시 비타민K 상호작용 → 의사 상담 ② 신장결석 과거력 시 과다 섭취 주의 ③ 임산부·수유부 전문가 상담
+- 추천: 골다공증 걱정, 뼈·치아 건강, 칼슘 부족, 폐경 후 여성
+
+[08] 브레인 포스파티딜세린
+- 제형/용량: 소프트캡슐 / 1일 1캡슐(340mg)
+- 기능: 노화로 인한 인지력(기억력) 개선
+- 원재료: 포스파티딜세린 300mg (대두 70% 순도 프리미엄 원료), 비타민A·E·아연·비타민B군 등 9중 비타민미네랄
+- 부족 증상: 기억력 저하(이름·약속 잘 잊어버림), 집중력 감소, 인지 기능 저하, 우울감
+- 섭취법: 1일 1회 1캡슐 식후
+- 주의사항: ① 대두(콩) 알레르기 주의 ② 혈액응고 관련 약물 복용 시 주의 ③ 임산부·수유부 전문가 상담
+- 추천: 기억력 걱정, 인지력 저하, 부모님·어르신 선물, 수험생
+
+[09] 장용성 알티지 오메가3
+- 제형/용량: 장용성 소프트캡슐 / 1일 1캡슐
+- 기능: 혈중 중성지방 감소, 혈행 개선, 건조한 눈 개선
+- 원재료: EPA+DHA함유유지(AlaskOmega® rTG형, 알래스카산) EPA 500mg·DHA 200mg, 비타민E
+- 부족 증상: 혈중 중성지방 상승, 혈행 불량·손발 저림, 눈 건조·충혈, 피부 건조, 심혈관 위험 증가
+- 섭취법: 1일 1회 1캡슐 식후 (장용성 캡슐로 비린내 없음, 냉장 보관 권장)
+- 주의사항: ① 항응고제(아스피린·와파린) 복용 시 전문의 상담 ② 생선 알레르기 주의 ③ 수술 전 2주 복용 중단 권장 ④ 임산부·수유부 전문의 상담
+- 추천: 고중성지방, 혈행 불량, 건조한 눈, 심혈관 건강
+
+[10] 에너지투비타민
+- 제형/용량: 정 / 1일 1정(1,090mg)
+- 기능: 에너지 생성, 피로 개선, 세포 보호(항산화)
+- 원재료: 비타민B1(333%), B2(357%), B6(1,000%), C(133%), D(133%), E, 나이아신(170%), 비오틴(8,333%), 판토텐산 (1일 영양성분 기준치 대비)
+- 부족 증상: 만성피로, 무기력, 입술·구내염, 피부 트러블, 에너지 부족, 집중력 저하
+- 섭취법: 1일 1회 1정 식후
+- 주의사항: ① 이뇨제 등 특정 약물 복용 시 주의 ② 고용량 비타민B 소변 황색 일시 가능(정상) ③ 임산부·수유부 전문가 상담
+- 추천: 만성피로, 에너지 부족, 비타민B군 결핍, 활력 저하
+
+[11] 에스트로for퀸
+- 제형/용량: 정 / 1일 2정(800mg)
+- 기능: 갱년기 여성 건강(뼈), 갱년기로 인한 신체변화 불편감 개선
+- 원재료: 회화나무열매추출물 350mg, 대두이소플라본추출물 29mg(이소플라본 함유)
+- 부족 증상: 안면홍조, 수면 장애, 감정 기복, 뼈 약화, 질 건조증, 에스트로겐 감소
+- 섭취법: 1일 2회 각 1정 식후
+- 주의사항: ① 에스트로겐 관련 약물·호르몬 치료 중 전문의 상담 ② 대두(콩) 알레르기 주의 ③ 갑상선 질환 시 의사 상담 ④ 임산부·수유부 섭취 금지 ⑤ 유방암·자궁암 과거력 시 의사 상담
+- 추천: 갱년기 여성, 안면홍조, 폐경 전후 건강 관리
+
+[12] 아이투루아
+- 제형/용량: 소프트캡슐 / 1일 1캡슐(350mg)
+- 기능: 눈 피로 개선, 노화로 인한 황반 건강, 어두운 곳 시각 적응
+- 원재료: 마리골드꽃추출물(루테인·지아잔틴, 인도산 MaQxan™), 헤마토코쿠스추출물(아스타잔틴, AstaBeet® 저온 초임계 추출)
+- 부족 증상: 눈 피로·충혈, 침침함, 야간시력 저하, 황반 건강 저하, 블루라이트 손상, 눈 건조
+- 섭취법: 1일 1회 1캡슐 (냉장 또는 서늘한 곳 보관 권장)
+- 주의사항: ① 카로티노이드 알레르기 주의 ② 눈 관련 약물 복용 시 전문의 상담 ③ 임산부·수유부 전문가 상담
+- 추천: 스마트폰·모니터 장시간, 눈 피로, 노화 눈 건강
+
+[13] 올투비타엔미네랄
+- 제형/용량: 정 / 1일 4정
+- 기능: 22종 영양소 33종 기능성 (뼈·치아, 혈액·혈관, 빈혈, 항산화, 면역, 에너지대사, 피부 등 총망라)
+- 원재료: 비타민A·C·D·E·K, B1·B2·B6·B12·나이아신·엽산·비오틴·판토텐산, 칼슘·철·아연·마그네슘·셀렌·구리·망간·요오드·크롬 등 22종 + 프리바이오틱스(12:10 배합)
+- 부족 증상: 전반적 영양 불균형, 복합 비타민미네랄 결핍 증상 다발
+- 섭취법: 1일 1회 4정 식후 (4종 분리 설계)
+- 주의사항: ① 철분 함유 → 어린이 손 닿지 않는 곳 보관 ② 의약품 복용 중 전문가 상담 ③ 임산부·수유부 전문가 상담 (비타민A 고용량 주의)
+- 추천: 식사 불균형, 전체 영양 보충, 멀티비타민
+
+[14] 우먼투비타민
+- 제형/용량: 정 / 1일 1정(800mg)
+- 기능: 여성 특화 16종 멀티비타민 (뼈·치아, 항산화, 면역, 철분 보충, 피부·모발·손발톱)
+- 원재료: 비타민A·C·D3·E·K, B1·B2·B6·B12·나이아신·엽산·비오틴·판토텐산, 칼슘·철·아연 등 16종 (여성 1일 권장 섭취량 100% 기준 설계)
+- 부족 증상: 여성 전반적 영양 불균형, 생리 후 철분 부족(빈혈), 피부·모발 약화
+- 섭취법: 1일 1회 1정 식후
+- 주의사항: ① 철분 함유 → 어린이 주의 ② 임산부 고용량 비타민A 주의 (전문가 상담) ③ 의약품 복용 중 전문가 상담
+- 추천: 여성 전반 영양, 생리 후 철분, 피부·모발 케어
+
+[15] 위케어 꾸지뽕
+- 제형/용량: 캡슐 / 1일 1캡슐(300mg)
+- 기능: 위 점막 기능 도움
+- 원재료: 꾸지뽕열매추출물 100mg, 나이아신 23mg
+- 임상: 소화불량 총점(OGRS) 개선, 소화불량 삶의 질(HPQ-Q4.5) 개선 확인
+- 부족 증상: 속 더부룩함, 소화불량, 위 불편감, 명치 통증, 불규칙 식사로 인한 위 자극
+- 섭취법: 1일 1회 1캡슐 식후
+- 주의사항: ① 위 관련 의약품 복용 시 전문의 상담 ② 임산부·수유부 전문가 상담 ③ 소아 섭취 주의
+- 추천: 속 더부룩함, 소화불량, 불규칙 식사
+
+[16] 철분 부스터
+- 제형/용량: 정 / 1일 1정(300mg)
+- 기능: 혈액 생성, 에너지 생성, 산소 운반
+- 원재료: 철 24mg (1일 권장량 200%), 이노시톨, 과일야채혼합분말, 녹차혼합분말
+- 부족 증상: 빈혈(어지럼증·두근거림·창백·숨참), 피로, 집중력 저하, 손발 차가움, 두통
+- 섭취법: 1일 1회 1정 (공복 또는 식간, 위장 약하면 식후, 비타민C와 함께 흡수율 3배↑)
+- 주의사항: ① 어린이 손 닿지 않는 곳 보관 (철분 과다 위험) ② 항생제·제산제와 2시간 이상 간격 ③ 변비 유발 가능 (수분 섭취↑) ④ 임산부·수유부 전문가 상담
+- 추천: 빈혈, 생리 후 철분 보충, 임신·수유 준비, 청소년 성장기
+
+[17] 카테킨&바나바
+- 제형/용량: 정 / 1일 1정(480mg)
+- 기능: 혈당 상승 억제, 항산화, 체지방 감소, 콜레스테롤 감소
+- 원재료: 녹차추출물(카테킨) 300mg, 바나바잎추출물 0.45mg (코로솔산 함유)
+- 부족 증상: 식후 혈당 스파이크, 체지방 증가, 콜레스테롤 상승, 산화 스트레스
+- 섭취법: 1일 1회 1정 식전 15~30분
+- 주의사항: ① 당뇨약 복용 중 저혈당 위험 → 반드시 의사 상담 ② 카페인 민감 체질 주의 (녹차추출물) ③ 임산부·수유부 전문가 상담
+- 추천: 다이어트, 식후 혈당 걱정, 체지방·콜레스테롤 관리
+
+[18] 코엔자임Q10 부스터
+- 제형/용량: 정 / 1일 1정(300mg)
+- 기능: 높은 혈압 감소, 항산화
+- 원재료: 코엔자임Q10 100mg (98% 고순도, 식약처 1일 섭취량 100mg 권장)
+- 임상: 12주 섭취 후 수축기 혈압 유의적 감소 확인
+- 부족 증상: 혈압 상승, 피로·무기력, 심장 기능 저하, 항산화 능력 감소 (40대 이후 체내 합성 급감)
+- 섭취법: 1일 1회 1정 식후 (지용성, 기름진 식사와 함께 흡수율↑)
+- 주의사항: ① 혈압약 복용 시 추가 혈압 강하 가능 → 의사 상담 ② 항응고제(와파린) 복용 시 주의 ③ 임산부·수유부 전문가 상담
+- 추천: 혈압 걱정, 항산화, 스타틴 약물 복용 중인 분 (CoQ10 고갈 보충)
+
+[19] 퓨어 비타민D3
+- 제형/용량: 정 / 1일 1정
+- 기능: 골다공증 발생 위험 감소, 면역기능, 뼈 형성 유지
+- 원재료: 비타민D3 4,000IU (DSM, Quali-D 고흡수 프리미엄 원료, 1일 권장량 1,000%)
+- 부족 증상: 뼈 통증·골절, 면역 저하·잦은 감기, 우울감, 근육 약화, 피로, 구루병
+- 섭취법: 1일 1회 1정 식사와 함께 (지용성)
+- 주의사항: ① 고칼슘혈증 주의 (고용량 장기복용 시) ② 심장질환·신장질환 시 의사 상담 ③ 칼슘 제제와 함께 복용 시 혈중 칼슘 모니터링 권장 ④ 임산부·수유부 전문가 상담
+- 추천: 비타민D 결핍·부족, 실내 생활 많은 분, 고함량 비타민D 필요
+
+[20] 프로폴리스&징크
+- 제형/용량: 소프트캡슐 / 1일 1캡슐(700mg)
+- 기능: 항산화, 정상적인 면역기능 유지, 세포 보호
+- 원재료: 총플라보노이드 20mg (호주산 프로폴리스, Royal Jelly Australia Ltd. Bee product 전문 기업), 아연 3mg
+- 부족 증상: 면역 저하, 잦은 감기·감염, 항산화 능력 저하, 상처 회복 지연, 아연 부족 증상
+- 섭취법: 1일 1회 1캡슐
+- 주의사항: ① 꿀·벌·화분 알레르기 주의 (프로폴리스 알레르기 반응 가능) ② 아연 과다 복용 시 구리 흡수 방해 ③ 임산부·수유부 전문가 상담
+- 추천: 면역력 강화, 감기 자주 걸리는 분, 항산화
+
+[21] 혈당&프로바이오틱스
+- 제형/용량: 캡슐 / 1일 1캡슐(450mg)
+- 기능: 식후 혈당 상승 억제 + 장 건강 (혈당·장 복합 멀티기능)
+- 원재료: 바나바잎추출물(코로솔산 함유), 7가지 복합 프로바이오틱스 100억 CFU (DANISCO 균주)
+- 부족 증상: 식후 혈당 급등, 장 건강 이상, 혈당·장 문제 동시 발생
+- 섭취법: 1일 1회 1캡슐 식전 (냉장 또는 서늘한 곳 보관)
+- 주의사항: ① 당뇨약 복용 중 저혈당 위험 → 반드시 의사 상담 ② 항생제 복용 시 유산균 효과 감소 ③ 임산부·수유부 전문가 상담
+- 추천: 혈당 걱정 + 장 건강 동시 케어
+
+[22] 활성엽산
+- 제형/용량: 정 / 1일 1정(300mg)
+- 기능: 세포 및 혈액 생성, 태아 신경관 정상 발달, 혈중 호모시스테인 정상 유지
+- 원재료: 엽산 400μg DEF (Quatrefolic® 활성형 5-MTHF, 고시형 원료 100%)
+- 부족 증상: 거대적아구성 빈혈, 태아 신경관 결손 위험, 호모시스테인 상승(심혈관 위험), 세포 분열 저하
+- 섭취법: 1일 1회 1정 식후
+- 주의사항: ① 엽산 길항제(메토트렉세이트·항경련제) 복용 시 의사 상담 ② 장기 고용량 복용 시 비타민B12 수준 모니터링 ③ 임산부·수유부 전문가 상담 (임산부 필수 권장)
+- 추천: 임신 준비·임산부·수유부, 엽산 부족, 혈액 건강
+
+[23] 히알루론산
+- 제형/용량: 정 / 1일 1정(300mg)
+- 기능: 피부 보습에 도움
+- 원재료: 히알루론산 120mg (유산균 배양 발효 공법, 체내 흡수율 향상)
+- 부족 증상: 피부 건조·당김·트러블, 잔주름 증가, 피부 탄력 저하, 관절 건조감
+- 섭취법: 1일 1회 1정
+- 주의사항: ① 피부 관련 약물 복용 시 전문가 상담 ② 수술 전 고용량 복용 주의 ③ 임산부·수유부 전문가 상담
+- 추천: 건조한 피부, 피부 보습·탄력, 피부 노화 방지
+
+[24] 홍삼
+- 제형/용량: 캡슐 / 1일 1캡슐(600mg)
+- 기능: 면역력 증진, 피로개선, 기억력 개선, 항산화, 혈액흐름
+- 원재료: 홍삼 (진세노사이드 Rg1 1mg·Rb1 1mg·Rg3 0.3mg, 총진세노사이드 4mg, 고려산 홍삼 73진물)
+- 부족 증상: 면역 저하, 만성피로, 기억력·집중력 감퇴, 혈액순환 불량, 체력 저하
+- 섭취법: 1일 1회 1캡슐 (아침 공복 추천)
+- 주의사항: ① 항응고제·혈압약·당뇨약 복용 시 의사 상담 ② 수술 전 2주 복용 중단 ③ 어린이 섭취 주의 ④ 임산부·수유부 전문가 상담 ⑤ 과민 체질 두근거림·불면 시 복용 중단
+- 추천: 만성피로, 면역력, 기억력 저하, 체력 저하
+
+[25] 콜레우스포스콜리
+- 제형/용량: 정 / 1일 1정(750mg)
+- 기능: 체지방 감소
+- 원재료: 포스콜린 50mg (콜레우스포스콜리 뿌리추출물), 비타민C, 나트륨함량조절제, 다이제스타제 등 부원료
+- 임상: 체중·체지방 감소, 체지방률 감소 임상 확인
+- 부족 증상: 체지방 과다, 복부비만, 기초대사율 저하
+- 섭취법: 1일 1회 1정
+- 주의사항: ① 혈압약·항응고제 복용 시 주의 (포스콜린 혈압 강하 효과) ② 임산부·수유부 섭취 금지 ③ 당뇨약 복용 시 주의 ④ 어린이·청소년 섭취 주의
+- 추천: 체지방 감소, 건강한 다이어트, 체중 관리
+
+[26] 리포좀 비타민C
+- 제형/용량: 정 / 1일 2정(1,200mg)
+- 기능: 결합조직 형성 및 기능, 철 흡수 증진, 항산화(세포 보호)
+- 원재료: 비타민C 500mg (Liposovit-C™ 리포좀 제형, Bart社 독자 기술, 고흡수율)
+- 부족 증상: 잦은 감기·감염, 피로, 피부 탄력·윤기 저하, 잇몸 출혈, 상처 회복 지연, 철분 흡수 저하
+- 섭취법: 1일 2정 분할 복용 권장 (식후, 위장 민감 시 반드시 식후)
+- 주의사항: ① 신장 관련 질환 시 과다 섭취 주의 ② 항응고제 복용 시 주의 ③ 고용량 복용 시 소화불량·설사 가능 ④ 임산부·수유부 전문가 상담
+- 추천: 고흡수 비타민C, 피로회복, 잦은 감기, 피부 미용
+
+[27] 메디콕 보스맥스
+- 제형/용량: 정 / 1일 1정(900mg)
+- 기능: 관절 건강 도움 (2024년 식약처 개별인정 획득, 개별인정번호 2024-15호)
+- 원재료: 보스웰리아추출물 500mg(AKBA·KBSA 84mg/g, 독자 제조공정 지표성분 최소화), 비타민D3, 비타민K2(MK-7), 비타민B1, 판토텐산, 비오틴, 망간
+- 임상 결과: TNF-α(염증성 사이토카인) 감소, CRP(혈중농도) 감소, WOMAC·VAS 통증 감소, LFI 점수 개선 확인
+- 부족 증상: 관절 통증·염증, 관절 뻣뻣함, 운동 후 관절 불편, 관절 연골 약화, 무릎·손목 통증
+- 섭취법: 1일 1회 1정 식후
+- 주의사항: ① 임산부·수유부 섭취 전 전문가 상담 ② 항응고제·알레르기약·항고혈압제 복용 시 주의 ③ 어린이·청소년 섭취 주의 ④ 특정성분 의약품 복용 중 전문의 상담
+- 고객센터: 1577-2448
+- 추천: 관절 통증, 계단 오르내리기 불편, 오래 앉아 일하는 분, 노년층 관절 건강
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[공통 안내]
+- 제조원: 코스맥스엔비티(주) | 판매원: 메디콕(주)
+- 메디콕 고객센터: 1577-2448 | 하루건식 상담: 1666-6030
+- 모든 제품 GMP·ISO·FSSC 인증 제조시설 생산
+- 유통기한: 제품 별도 표기일까지
+- 보관: 직사광선 피해 서늘한 곳, 개봉 후 밀봉 보관
+`;
+}
+
+
+function getSysPrompt(){
+  var parts=[UP.name,UP.age?UP.age+'세':'',UP.gender].filter(Boolean);
+  var tags=getAllTags().map(function(t){return t.label;});
+  return 'MEDICOK #하루건식 AI 건강기능식품 전문 상담사입니다.\n\n'
+    +'[사용자 건강 프로필]\n'
+    +'- 이름/나이/성별: '+(parts.join(' ')||'미입력')+'\n'
+    +'- 건강 상태: '+(tags.join(', ')||'미입력')+'\n\n'
+    +'[핵심 역할]\n'
+    +'1. 사용자의 건강 관심사, 건강검진 결과, 증상을 분석합니다\n'
+    +'2. 선택한 관심사와 증상에 맞는 MEDICOK #하루건식 제품을 DB에서 우선 추천합니다\n'
+    +'3. 제품 추천 시 반드시 제품명, 기능, 추천 이유, 섭취법을 함께 안내합니다\n'
+    +'4. 복수 추천 시 관심사 우선순위 순으로 1순위·2순위 구분합니다\n'
+    +'5. 영양소 부족 시 나타나는 신체 증상도 함께 설명합니다\n\n'
+    +'[중요 지침]\n'
+    +'- 고객이 선택한 관심사에 정확히 매칭되는 제품을 DB에서 찾아 추천하세요\n'
+    +'- 관심사별 추천 가이드:\n'
+    +'  간 건강→리버투씨슬&비 / 활력·피로→에너지투비타민,홍삼 / 체지방→콜레우스포스콜리,카테킨&바나바\n'
+    +'  콜레스테롤→장용성알티지오메가3,코엔자임Q10부스터 / 혈당→카테킨&바나바,혈당&프로바이오틱스\n'
+    +'  혈압→코엔자임Q10부스터 / 뇌건강→브레인포스파티딜세린,홍삼 / 눈건강→아이투루아\n'
+    +'  뼈건강→본투칼슘플러스,퓨어비타민D3 / 위건강→위케어꾸지뽕 / 장건강→100억프로바이오틱스\n'
+    +'  관절·근육→메디콕보스맥스 / 면역→프로폴리스&징크,퓨어비타민D3,리포좀비타민C\n'
+    +'  모발·손톱→비오틴부스터 / 수면→릴랙스테아닌&홍경천 / 스트레스→릴랙스테아닌&홍경천\n'
+    +'  여성건강→에스트로for퀸,감마리놀렌산,우먼투비타민,활성엽산 / 피부→히알루론산,리포좀비타민C\n'
+    +'  남성건강→맨파워쏘팔코사놀\n'
+    +'- 제품 추천 시 "MEDICOK #하루건식 [제품명]"으로 표기하세요\n'
+    +'- 건강검진 수치 이상 항목에는 반드시 해당 제품을 연결하세요\n'
+    +'- 전문의 상담이 필요한 심각한 경우는 반드시 안내하세요\n'
+    +'- 문의처: MEDICOK 고객센터 1666-6030\n\n'
+    +'[#하루건식 섭취 안내 원칙 - 반드시 준수]\n'
+    +'MEDICOK #하루건식은 고객 편의를 위해 모든 제품을 식후 섭취로 일괄 안내합니다.\n'
+    +'섭취 시간 안내 시 아래 원칙을 반드시 따르세요:\n\n'
+    +'① 기본 원칙: 모든 제품은 충분한 물과 함께 식후 섭취\n'
+    +'② 권장 시간: 저녁 섭취가 꼭 필요한 제품이 아니면 아침 또는 점심 식후 섭취 권장\n'
+    +'③ 저녁 권장 제품 (예외): 마그네슘(수면 개선), 릴랙스 테아닌&홍경천(긴장완화·수면) → 저녁 식후 또는 취침 전\n'
+    +'④ 분할 복용 안내 금지: 리포좀 비타민C, 올투비타엔미네랄 등 1일 2정 이상 제품도 "아침 식후 한 번에" 안내\n'
+    +'⑤ 공복 복용 안내 금지: 편의상 모든 제품 식후로 안내 (공복 복용 문의 시에만 개별 안내 가능)\n'
+    +'⑥ 냉장 보관 제품(프로바이오틱스·오메가3 등)도 섭취는 아침 또는 점심 식후 권장\n\n'
+    +'[답변 형식]\n'
+    +'- 마크다운(##, **굵게**, - 목록) 사용\n'
+    +'- 제품 추천 시: 제품명 → 이유 → 섭취법 순으로 안내\n'
+    +'- 섭취법 예시: "아침 식후 1정" / "점심 식후 1정" / "저녁 식후 1정(수면 관련 제품)"\n'
+    +'- 친근하고 전문적인 한국어 사용\n\n'
+    +getProductDB();
+}
+
+// ── 웰컴 ──
+function showWelcome(){
+  var c=document.getElementById('msgs');c.innerHTML='';
+  var wrap=document.createElement('div');wrap.className='msg-wrap ai';
+  var d=document.createElement('div');d.className='msg ai';
+  var lastVisitMsg=lastVisit?'<br><span style="font-size:11px;color:var(--hint)">지난 접속: '+getTimeStr(lastVisit)+'</span>':'';
+  d.innerHTML='<div class="mv ai"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/><path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/></svg></div>'
+    +'<div><div class="bbl">안녕하세요! <strong>MEDICOK #하루건식</strong> AI 상담사입니다 🌿<br><br>'
+    +'<strong>GPT-4o</strong>가 건강검진 결과를 직접 분석하고<br>맞춤 건강기능식품을 추천해 드립니다.'+lastVisitMsg+'</div>'
+    +'<div class="sgrid">'
+    +'<div class="scard" onclick="qa(\'오메가3 효능, 부족 증상, 복용법을 자세히 알려주세요\')"><div class="sn">🐟 오메가3</div><div class="sw">콜레스테롤·심혈관·항염</div><span class="sbdg bs">강력 권장</span></div>'
+    +'<div class="scard" onclick="qa(\'비타민D 효능, 부족 증상, 복용법을 자세히 알려주세요\')"><div class="sn">☀️ 비타민D3</div><div class="sw">면역·뼈 건강·기력</div><span class="sbdg bs">필수 보충</span></div>'
+    +'<div class="scard" onclick="qa(\'마그네슘 효능, 부족 증상, 복용법을 자세히 알려주세요\')"><div class="sn">💊 마그네슘</div><div class="sw">수면·혈압·근육 이완</div><span class="sbdg br">권장</span></div>'
+    +'<div class="scard" onclick="qa(\'코엔자임Q10 효능, 부족 증상, 복용법을 자세히 알려주세요\')"><div class="sn">⚡ 코엔자임Q10</div><div class="sw">항산화·에너지·심장</div><span class="sbdg bm">고려</span></div>'
+    +'</div></div>';
+  var tDiv=document.createElement('div');tDiv.className='msg-time';tDiv.textContent=getNow();
+  wrap.appendChild(d);wrap.appendChild(tDiv);
+  c.appendChild(wrap);
+}
+
+// ── 프로필 ──
+function openModal(){
+  document.getElementById('inN').value=UP.name;
+  document.getElementById('inA').value=UP.age;
+  document.getElementById('inG').value=UP.gender;
+  // 관심사 버튼 초기화
+  document.querySelectorAll('.ibtn').forEach(function(btn){
+    var id=btn.getAttribute('data-id');
+    if(UP.ids.indexOf(id)>-1){btn.classList.add('active');}
+    else{btn.classList.remove('active');}
+  });
+  updateSelCount();
+  renderCT();
+  document.getElementById('modal').classList.add('open');
+}
+
+function toggleInterest(id){
+  var btn=document.querySelector('.ibtn[data-id="'+id+'"]');
+  if(!btn)return;
+  var isActive=btn.classList.contains('active');
+  if(!isActive && UP.ids.length>=5){
+    // 5개 초과 선택 방지
+    btn.classList.add('disabled');
+    setTimeout(function(){btn.classList.remove('disabled');},500);
+    return;
+  }
+  if(isActive){
+    UP.ids=UP.ids.filter(function(x){return x!==id;});
+    btn.classList.remove('active');
+  } else {
+    UP.ids.push(id);
+    btn.classList.add('active');
+  }
+  updateSelCount();
+  // 5개 초과시 비선택 버튼 dimming
+  document.querySelectorAll('.ibtn').forEach(function(b){
+    if(!b.classList.contains('active')){
+      b.classList.toggle('disabled', UP.ids.length>=5);
+    }
+  });
+}
+
+function updateSelCount(){
+  var el=document.getElementById('selCount');
+  if(el) el.textContent=UP.ids.length;
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function addCT(){var inp=document.getElementById('inC'),v=inp.value.trim();if(!v)return;if(UP.custom.indexOf(v)<0)UP.custom.push(v);inp.value='';renderCT();}
+function renderCT(){var c=document.getElementById('ctgs');c.innerHTML='';UP.custom.forEach(function(t){var s=document.createElement('span');s.className='tag ti';s.style.cursor='pointer';s.innerHTML=t+' <i class="ti ti-x" style="font-size:10px"></i>';s.onclick=(function(x){return function(){UP.custom=UP.custom.filter(function(a){return a!==x;});renderCT();};}(t));c.appendChild(s);});}
+function saveP(){
+  UP.name=document.getElementById('inN').value.trim();
+  UP.age=document.getElementById('inA').value.trim();
+  UP.gender=document.getElementById('inG').value;
+  // UP.ids는 toggleInterest에서 이미 실시간 업데이트됨
+  closeModal();renderSB();
+}
+function renderSB(){
+  var parts=[UP.name,UP.age?UP.age+'세':'',UP.gender].filter(Boolean);
+  var nm=parts.join(' · ')||'프로필을 입력해 주세요';
+  document.getElementById('prName').textContent=nm;
+  document.getElementById('mobName').textContent=nm;
+  var all=getAllTags();
+  var te=document.getElementById('prTags');te.innerHTML='';
+  if(!all.length)te.innerHTML='<span style="font-size:11px;color:var(--hint)">건강 상태를 추가해 보세요</span>';
+  else all.forEach(function(t){var s=document.createElement('span');s.className='tag '+t.cls;s.textContent=t.label;te.appendChild(s);});
+  var mte=document.getElementById('mobTags');mte.innerHTML='';
+  if(!all.length)mte.innerHTML='<span style="font-size:10px;color:var(--hint)">건강 상태를 추가해 보세요</span>';
+  else{all.slice(0,4).forEach(function(t){var s=document.createElement('span');s.className='tag '+t.cls;s.textContent=t.label;mte.appendChild(s);});if(all.length>4){var m=document.createElement('span');m.className='tag ti';m.textContent='+' +(all.length-4);mte.appendChild(m);}}
+  var bad=UP.ids.filter(function(id){return TM[id]&&TM[id].cls==='tb';}).length;
+  var warn=UP.ids.filter(function(id){return TM[id]&&TM[id].cls==='tw';}).length;
+  var sc=Math.max(40,100-bad*15-warn*8);
+  document.getElementById('scVal').textContent=sc+' / 100';
+  document.getElementById('scFill').style.width=sc+'%';
+  document.getElementById('mobScore').textContent=sc;
+}
+function getAllTags(){var r=[];UP.ids.forEach(function(id){if(TM[id])r.push(TM[id]);});UP.custom.forEach(function(t){r.push({label:t,cls:'ti'});});return r;}
+
+// ── 파일 ──
+function getFI(n){var e=n.split('.').pop().toLowerCase();if(e==='pdf')return{ic:'ti-file-type-pdf',cls:'fi-pdf'};if(['jpg','jpeg','png','webp','gif'].indexOf(e)>-1)return{ic:'ti-photo',cls:'fi-img'};if(e==='txt')return{ic:'ti-file-text',cls:'fi-txt'};if(['hwp','hwpx'].indexOf(e)>-1)return{ic:'ti-file-description',cls:'fi-hwp'};return{ic:'ti-file',cls:'fi-oth'};}
+function fmtB(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+function handleFileSelect(e){Array.from(e.target.files).forEach(function(f){pendingFiles.push({file:f,id:Date.now()+Math.random()});});e.target.value='';renderFQ();}
+function handleDrop(e){e.preventDefault();document.getElementById('dz').classList.remove('drag');Array.from(e.dataTransfer.files).forEach(function(f){pendingFiles.push({file:f,id:Date.now()+Math.random()});});renderFQ();}
+function removeFile(id){pendingFiles=pendingFiles.filter(function(f){return f.id!==id;});renderFQ();}
+function renderFQ(){var q=document.getElementById('fq');q.innerHTML='';pendingFiles.forEach(function(f){var ic=getFI(f.file.name),d=document.createElement('div');d.className='fi';d.innerHTML='<i class="ti '+ic.ic+' fi-ic '+ic.cls+'"></i><div class="fi-info"><div class="fi-nm">'+f.file.name+'</div><div class="fi-sz">'+fmtB(f.file.size)+'</div></div><button class="fi-del" onclick="removeFile('+f.id+')"><i class="ti ti-x"></i></button>';q.appendChild(d);});}
+function setProg(nm,pct,st){var w=document.getElementById('prog');if(pct<0){w.style.display='none';return;}w.style.display='block';document.getElementById('progNm').textContent=nm;document.getElementById('progPct').textContent=pct+'%';document.getElementById('progFill').style.width=pct+'%';document.getElementById('progSt').textContent=st;}
+
+function readTxt(file){return new Promise(function(resolve){setProg(file.name,30,'파일 읽는 중...');var r=new FileReader();r.onload=function(){setProg(file.name,90,'완료');setTimeout(function(){setProg('',-1,'');resolve(r.result||'');},200);};r.onerror=function(){setProg('',-1,'');resolve('');};r.readAsText(file,'UTF-8');});}
+function readPDF(file){return new Promise(function(resolve){if(typeof pdfjsLib==='undefined'){resolve('');return;}setProg(file.name,10,'PDF 로딩...');var r=new FileReader();r.onload=function(e){setProg(file.name,30,'파싱 중...');pdfjsLib.getDocument({data:new Uint8Array(e.target.result)}).promise.then(function(pdf){var total=Math.min(pdf.numPages,15),done=0,pp=[],i;for(i=1;i<=total;i++){pp.push(pdf.getPage(i).then(function(pg){return pg.getTextContent().then(function(tc){done++;setProg(file.name,Math.round(40+(done/total)*50),done+'/'+total+' 페이지');return tc.items.map(function(it){return it.str;}).join(' ');});}));}Promise.all(pp).then(function(pages){setProg(file.name,95,'완료');setTimeout(function(){setProg('',-1,'');resolve(pages.join('\n'));},200);}).catch(function(){setProg('',-1,'');resolve('');});}).catch(function(){setProg('',-1,'');resolve('');});};r.onerror=function(){setProg('',-1,'');resolve('');};r.readAsArrayBuffer(file);});}
+function toB64(file){return new Promise(function(resolve){var r=new FileReader();r.onload=function(){resolve(r.result);};r.onerror=function(){resolve('');};r.readAsDataURL(file);});}
+
+function fileToContent(f){
+  var ext=f.name.split('.').pop().toLowerCase();
+  if(['jpg','jpeg','png','webp','gif'].indexOf(ext)>-1){
+    return toB64(f).then(function(b64){
+      var mt=ext==='jpg'?'image/jpeg':'image/'+ext;
+      return [{type:'image',source:{type:'base64',media_type:mt,data:b64.split(',')[1]}}];
+    });
+  }
+  if(ext==='pdf'){
+    return readPDF(f).then(function(text){
+      return [{type:'text',text:'[건강검진 PDF: '+f.name+']\n\n'+(text.trim().length>10?text:'PDF 텍스트 추출 실패. 수치를 직접 입력해 주세요.')}];
+    });
+  }
+  return readTxt(f).then(function(text){return [{type:'text',text:'[파일: '+f.name+']\n\n'+text}];});
+}
+
+// ── 채팅 ──
+function escHtml(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+
+function qa(t){document.getElementById('mi').value=t;sendMsg();}
+
+function sendMsg(){
+  if(isLoading)return;
+  var inp=document.getElementById('mi'),text=inp.value.trim(),hasF=pendingFiles.length>0;
+  if(!text&&!hasF)return;
+  isLoading=true;document.getElementById('sbtn').disabled=true;
+  inp.value='';inp.style.height='auto';
+  addUB(text,pendingFiles.map(function(f){return f.file.name;}));
+  var files=pendingFiles.slice();pendingFiles=[];renderFQ();
+  showTyp();
+
+  Promise.all(files.map(function(f){return fileToContent(f.file);})).then(function(fileParts){
+    var userContent=[];
+    fileParts.forEach(function(parts){parts.forEach(function(p){userContent.push(p);});});
+    if(text)userContent.push({type:'text',text:text});
+    else if(files.length>0)userContent.push({type:'text',text:'이 건강검진 결과를 상세히 분석하고 맞춤형 건강기능식품을 추천해 주세요.'});
+    chatHistory.push({role:'user',content:userContent});
+    return fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:getSysPrompt(),messages:chatHistory})});
+  })
+  .then(function(res){return res.json();})
+  .then(function(data){
+    remTyp();
+    var reply=data.content?.[0]?.text||(data.error?'오류: '+data.error:'응답을 받지 못했습니다.');
+    addAB(reply);
+    chatHistory.push({role:'assistant',content:reply});
+    isLoading=false;document.getElementById('sbtn').disabled=false;
+  })
+  .catch(function(err){
+    remTyp();
+    addAB('연결 오류: '+err.message);
+    chatHistory.pop();
+    isLoading=false;document.getElementById('sbtn').disabled=false;
+  });
+}
+
+function addUB(text,names){
+  var c=document.getElementById('msgs');
+  var wrap=document.createElement('div');wrap.className='msg-wrap user';
+  var d=document.createElement('div');d.className='msg user';
+  var bg=names.map(function(n){var ic=getFI(n);return'<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;padding:3px 8px;font-size:11px;margin-bottom:4px"><i class="ti '+ic.ic+'"></i>'+escHtml(n)+'</div>';}).join('');
+  d.innerHTML='<div class="mv usr"><i class="ti ti-user"></i></div><div class="bbl">'+(bg?'<div>'+bg+'</div>':'')+(text?'<div>'+escHtml(text)+'</div>':'')+'</div>';
+  var tDiv=document.createElement('div');tDiv.className='msg-time';tDiv.textContent=getNow();
+  wrap.appendChild(d);wrap.appendChild(tDiv);
+  c.appendChild(wrap);c.scrollTop=c.scrollHeight;
+}
+
+function addAB(text){
+  var c=document.getElementById('msgs');
+  var wrap=document.createElement('div');wrap.className='msg-wrap ai';
+  var d=document.createElement('div');d.className='msg ai';
+  var lines=text.split('\n');
+  var html=lines.map(function(line){
+    if(/^#{1,3} /.test(line))return'<strong style="font-size:14px;color:var(--g);display:block;margin-top:6px;margin-bottom:2px">'+escHtml(line.replace(/^#{1,3} /,''))+'</strong>';
+    if(/^- /.test(line))return'&nbsp;&nbsp;• '+escHtml(line.replace(/^- /,'')).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    return escHtml(line).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  }).join('<br>');
+  d.innerHTML='<div class="mv ai"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/><path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/></svg></div><div class="bbl">'+html+'</div>';
+  var tDiv=document.createElement('div');tDiv.className='msg-time';tDiv.textContent=getNow();
+  wrap.appendChild(d);wrap.appendChild(tDiv);
+  c.appendChild(wrap);c.scrollTop=c.scrollHeight;
+}
+
+function showTyp(){var c=document.getElementById('msgs'),d=document.createElement('div');d.className='tw-wrap';d.id='typing';d.innerHTML='<div class="mv ai"><svg width="16" height="16" viewBox="0 0 40 40" fill="none"><path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tw-bbl"><span></span><span></span><span></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function remTyp(){var e=document.getElementById('typing');if(e)e.remove();}
+
+function resetChat(){if(!confirm('상담 내용을 초기화할까요?'))return;chatHistory=[];showWelcome();}
+function exportChat(){
+  var lines=['MEDICOK #하루건식 AI 상담 내역','생성: '+getNow(),'────────'];
+  chatHistory.forEach(function(m){
+    var role=m.role==='user'?'사용자':'MEDICOK AI';
+    var content=typeof m.content==='string'?m.content:m.content.filter(function(c){return c.type==='text';}).map(function(c){return c.text;}).join('\n');
+    lines.push('['+role+']\n'+content+'\n');
+  });
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}));
+  a.download='MEDICOK-하루건식-상담내역.txt';a.click();
+}
+</script>
+</body>
+</html>
