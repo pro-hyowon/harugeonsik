@@ -83,8 +83,9 @@ async function submit(b, res) {
     gender: clean(b.gender, LIMIT.gender),
     interests: (Array.isArray(b.interests) ? b.interests : []).slice(0, 15).map(t => clean(t, LIMIT.interest)).filter(Boolean),
     pregnancy: clean(b.pregnancy, LIMIT.pregnancy),
-    drink: b.drink === true,
-    smoke: b.smoke === true,
+    // 음주·흡연: true(함) / false(안 함) / null(답 안 함)
+    drink: typeof b.drink === 'boolean' ? b.drink : null,
+    smoke: typeof b.smoke === 'boolean' ? b.smoke : null,
     supplements: clean(b.supplements, LIMIT.field),
     diseases: clean(b.diseases, LIMIT.field),
     medications: clean(b.medications, LIMIT.field),

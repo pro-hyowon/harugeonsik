@@ -202,6 +202,8 @@ function renderList() {
   v.forEach(function (r) { list.appendChild(card(r)); });
 }
 
+// 음주·흡연: true(함) / false(안 함) / 비어 있으면 답 안 함
+function yn(v, a, b) { return v === true ? a : v === false ? b : '답 안 함'; }
 function row(dl, k, v) { dl.appendChild(el('dt', '', k)); var d = el('dd', '', v || '-'); dl.appendChild(d); return d; }
 
 function card(r) {
@@ -222,7 +224,7 @@ function card(r) {
   var tg = row(dl, '관심사', ''); tg.textContent = '';
   if ((r.interests || []).length) { var tw = el('div', 'tags'); r.interests.forEach(function (t) { tw.appendChild(el('span', 'tag', t)); }); tg.appendChild(tw); } else tg.textContent = '-';
   row(dl, '임신·수유', r.pregnancy);
-  row(dl, '음주 · 흡연', (r.drink ? '음주함' : '음주 안 함') + ' · ' + (r.smoke ? '흡연함' : '흡연 안 함'));
+  row(dl, '음주 · 흡연', yn(r.drink, '음주함', '음주 안 함') + ' · ' + yn(r.smoke, '흡연함', '비흡연'));
   row(dl, '섭취 중 건기식', r.supplements);
   row(dl, '보유 질환', r.diseases);
   row(dl, '복용 의약품', r.medications);
@@ -282,7 +284,7 @@ $('bCsv').onclick = function () {
   var lines = [head.map(csvCell).join(',')];
   v.forEach(function (r) {
     lines.push([r.id, fmtTime(r.created_at), r.status, r.manager, r.memo, r.name, r.phone, r.call_time, r.message || '', r.age, r.gender, (r.interests || []).join(', '),
-      r.pregnancy, r.drink ? '예' : '아니오', r.smoke ? '예' : '아니오', r.supplements, r.diseases, r.medications, r.allergies, r.lifestyle,
+      r.pregnancy, yn(r.drink, '음주함', '음주 안 함'), yn(r.smoke, '흡연함', '비흡연'), r.supplements, r.diseases, r.medications, r.allergies, r.lifestyle,
       (r.chat || []).map(function (m) { return (m.role === 'user' ? '고객: ' : 'AI: ') + m.text; }).join('\n')].map(csvCell).join(','));
   });
   var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });

@@ -476,7 +476,6 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
     </div>
     <div class="hbtns">
       <button class="cons-btn" onclick="openCons()"><i class="ti ti-headset"></i>전문 상담사 연결</button>
-      <button class="hbtn" onclick="exportChat()"><i class="ti ti-download"></i></button>
       <button class="hbtn" onclick="resetChat()"><i class="ti ti-refresh"></i></button>
     </div>
   </div>
@@ -535,7 +534,6 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
   <button class="sh-btn" onclick="shQa('혈당 관리에 도움이 되는 제품은?')"><i class="ti ti-droplet-half-2"></i>혈당 관리</button>
   <button class="sh-btn" onclick="shQa('간 건강에 좋은 제품은?')"><i class="ti ti-heart"></i>간 건강</button>
   <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)">
-    <button class="sh-btn" onclick="closeSheet();exportChat()"><i class="ti ti-download"></i>대화 내용 저장</button>
     <button class="sh-btn" style="color:var(--med);font-weight:600" onclick="closeSheet();setTimeout(openCons,200)">
       <i class="ti ti-headset" style="color:var(--med)"></i>전문 상담사와 직접 상담하기
     </button>
@@ -619,7 +617,8 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
     <div class="fg"><div class="fl">희망 상담 시간</div><div class="frow"><select class="fsel" id="csDate" onchange="fillConsTimes()" aria-label="희망 날짜"></select><select class="fsel" id="csTime" aria-label="희망 시간"></select></div><div class="cc" style="text-align:left">평일 09:00~18:00 · 30분 단위 · 주말·공휴일 휴무</div></div>
     <div class="sec-tit">상담 정보 입력</div>
     <div class="fg"><div class="fl">임신 / 수유 여부</div><div class="rg"><label class="rl"><input type="radio" name="preg" value="대상아님" checked> 대상아님</label><label class="rl"><input type="radio" name="preg" value="임신중"> 임신중</label><label class="rl"><input type="radio" name="preg" value="수유중"> 수유중</label></div></div>
-    <div class="fg"><div class="fl">음주 / 흡연 여부</div><div class="ckg"><label class="ckl"><input type="checkbox" id="csDrink"> 음주중</label><label class="ckl"><input type="checkbox" id="csSmoke"> 흡연중</label></div></div>
+    <div class="fg" id="fgDrink"><div class="fl">음주 여부<em class="req">필수</em></div><div class="rg"><label class="rl"><input type="radio" name="drink" value="true"> 음주함</label><label class="rl"><input type="radio" name="drink" value="false"> 음주 안 함</label></div></div>
+    <div class="fg" id="fgSmoke"><div class="fl">흡연 여부<em class="req">필수</em></div><div class="rg"><label class="rl"><input type="radio" name="smoke" value="true"> 흡연함</label><label class="rl"><input type="radio" name="smoke" value="false"> 비흡연</label></div></div>
     <div class="fg"><div class="fl">건강기능식품 섭취현황 (50자)</div><textarea class="cta" id="csSupp" placeholder="현재 복용 중인 건강기능식품" maxlength="50" oninput="updateCC('csSupp','ccSupp')"></textarea><div class="cc"><span id="ccSupp">0</span>/50</div></div>
     <div class="fg"><div class="fl">보유질환 현황 (50자)</div><textarea class="cta" id="csDis" placeholder="진단받은 질환" maxlength="50" oninput="updateCC('csDis','ccDis')"></textarea><div class="cc"><span id="ccDis">0</span>/50</div></div>
     <div class="fg"><div class="fl">복용중인 의약품 (50자)</div><textarea class="cta" id="csMed" placeholder="처방약 또는 일반약" maxlength="50" oninput="updateCC('csMed','ccMed')"></textarea><div class="cc"><span id="ccMed">0</span>/50</div></div>
@@ -980,7 +979,7 @@ function consSlots(isToday) {
 function fillConsDates() {
   var sel = document.getElementById('csDate'), keep = sel.value, now = kstNow();
   sel.innerHTML = '';
-  var o = document.createElement('option'); o.value = ''; o.textContent = '날짜·시간 상관없음'; sel.appendChild(o);
+  var o = document.createElement('option'); o.value = ''; o.textContent = '날짜 상관없음'; sel.appendChild(o);
   var d = new Date(now.getFullYear(), now.getMonth(), now.getDate()), added = 0, guard = 0;
   while (added < 7 && guard++ < 14) {
     var wd = d.getDay(), isToday = guard === 1;
@@ -1061,6 +1060,7 @@ function consErr(msg, focusId) {
   if (focusId) {
     var f = document.getElementById(focusId);
     if (f.classList.contains('fin')) f.classList.add('bad');
+    if (f.classList.contains('fg')) f = f.querySelector('input') || f;
     f.focus();
     if (f.scrollIntoView) f.scrollIntoView({ block: 'center', behavior: 'smooth' });
   } else if (msg && b.scrollIntoView) {
@@ -1093,6 +1093,9 @@ function submitCons() {
   if (!name) return consErr('이름을 입력해 주세요.', 'csName');
   if (!/^01[016789]\d{7,8}$/.test(phone)) return consErr('연락받으실 휴대폰 번호를 정확히 입력해 주세요.', 'csPhone');
   if (document.getElementById('csDate').value && !document.getElementById('csTime').value) return consErr('희망 시간을 골라 주세요.', 'csTime');
+  var drinkEl = document.querySelector('input[name="drink"]:checked'), smokeEl = document.querySelector('input[name="smoke"]:checked');
+  if (!drinkEl) return consErr('음주 여부를 골라 주세요.', 'fgDrink');
+  if (!smokeEl) return consErr('흡연 여부를 골라 주세요.', 'fgSmoke');
   if (!document.getElementById('csAgree1').checked) return consErr('개인정보 수집·이용에 동의해 주세요.', 'csAgree1');
   if (!document.getElementById('csAgree2').checked) return consErr('민감정보(건강정보) 수집·이용에 동의해 주세요.', 'csAgree2');
   consErr('');
@@ -1107,8 +1110,8 @@ function submitCons() {
     gender: prof.gender || '',
     interests: getTagLabels(),
     pregnancy: pregEl ? pregEl.value : '',
-    drink: document.getElementById('csDrink').checked,
-    smoke: document.getElementById('csSmoke').checked,
+    drink: drinkEl.value === 'true',
+    smoke: smokeEl.value === 'true',
     supplements: document.getElementById('csSupp').value.trim(),
     diseases: document.getElementById('csDis').value.trim(),
     medications: document.getElementById('csMed').value.trim(),
@@ -1155,7 +1158,7 @@ function submitCons() {
       '· 나이·성별: ' + (ageG || '입력 안 함'),
       '· 관심사: ' + (data.interests.length ? data.interests.join(', ') : '선택 안 함'),
       '· 희망 상담 시간: ' + data.callTime,
-      '· 상담 정보: 임신·수유 ' + data.pregnancy + ', 음주 ' + (data.drink ? '예' : '아니오') + ', 흡연 ' + (data.smoke ? '예' : '아니오') + (filled ? ', 작성 항목 ' + filled + '개' : ''),
+      '· 상담 정보: 임신·수유 ' + data.pregnancy + ', ' + (data.drink ? '음주함' : '음주 안 함') + ', ' + (data.smoke ? '흡연함' : '비흡연') + (filled ? ', 작성 항목 ' + filled + '개' : ''),
       '· 상담사에게 남긴 말: ' + (data.message ? '전달함' : '없음'),
       '· AI 상담 대화: ' + (withChat && data.chat.length ? '함께 전달' : '전달 안 함'),
       '',
@@ -1164,7 +1167,8 @@ function submitCons() {
     addSysMsg(lines.join('\n'));
     // 다음 신청을 위해 상담 입력값·동의 초기화 (이름·관심사는 유지)
     CONS_TEXT.forEach(function(p) { document.getElementById(p[0]).value = ''; updateCC(p[0], p[1]); });
-    ['csDrink', 'csSmoke', 'csAgree1', 'csAgree2', 'csChat'].forEach(function(id) { document.getElementById(id).checked = false; });
+    ['csAgree1', 'csAgree2', 'csChat'].forEach(function(id) { document.getElementById(id).checked = false; });
+    document.querySelectorAll('input[name="drink"], input[name="smoke"]').forEach(function(r) { r.checked = false; });
     document.querySelector('input[name="preg"][value="대상아님"]').checked = true;
     document.getElementById('csDate').value = ''; fillConsTimes();
     document.getElementById('csPhone').value = '';
