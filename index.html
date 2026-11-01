@@ -381,6 +381,9 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
   .mob-lang{padding:0 18px 0 7px;font-size:12px;background-position:right 6px center}
   .mob-cbtn{padding:0 8px}
 }
+
+/* ── 대화 1시간 보관 안내 ── */
+.sess-note{align-self:center;margin:2px 0 12px;padding:5px 12px;background:var(--mu);border:1px solid var(--bd);border-radius:99px;font-size:11.5px;color:var(--hint);text-align:center;line-height:1.4;word-break:keep-all}
 </style>
 </head>
 <body>
@@ -613,7 +616,7 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
     </div>
     <div class="fg"><div class="fl">이름<em class="req">필수</em></div><input class="fin" id="csName" maxlength="20" placeholder="예: 홍길동" autocomplete="name"></div>
     <div class="fg"><div class="fl">휴대폰 번호<em class="req">필수</em></div><input class="fin" id="csPhone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000" autocomplete="tel" oninput="fmtPhone(this)"></div>
-    <div class="fg"><div class="fl">통화 가능한 시간</div><div class="rg"><label class="rl"><input type="radio" name="ctime" value="언제든 가능" checked> 언제든</label><label class="rl"><input type="radio" name="ctime" value="오전(09~12시)"> 오전</label><label class="rl"><input type="radio" name="ctime" value="오후(13~18시)"> 오후</label></div></div>
+    <div class="fg"><div class="fl">희망 상담 시간</div><div class="frow"><select class="fsel" id="csDate" onchange="fillConsTimes()" aria-label="희망 날짜"></select><select class="fsel" id="csTime" aria-label="희망 시간"></select></div><div class="cc" style="text-align:left">평일 09:00~18:00 · 30분 단위 · 주말·공휴일 휴무</div></div>
     <div class="sec-tit">상담 정보 입력</div>
     <div class="fg"><div class="fl">임신 / 수유 여부</div><div class="rg"><label class="rl"><input type="radio" name="preg" value="대상아님" checked> 대상아님</label><label class="rl"><input type="radio" name="preg" value="임신중"> 임신중</label><label class="rl"><input type="radio" name="preg" value="수유중"> 수유중</label></div></div>
     <div class="fg"><div class="fl">음주 / 흡연 여부</div><div class="ckg"><label class="ckl"><input type="checkbox" id="csDrink"> 음주중</label><label class="ckl"><input type="checkbox" id="csSmoke"> 흡연중</label></div></div>
@@ -622,11 +625,12 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
     <div class="fg"><div class="fl">복용중인 의약품 (50자)</div><textarea class="cta" id="csMed" placeholder="처방약 또는 일반약" maxlength="50" oninput="updateCC('csMed','ccMed')"></textarea><div class="cc"><span id="ccMed">0</span>/50</div></div>
     <div class="fg"><div class="fl">알레르기 / 특이체질 (50자)</div><textarea class="cta" id="csAlg" placeholder="알레르기 반응이나 특이체질" maxlength="50" oninput="updateCC('csAlg','ccAlg')"></textarea><div class="cc"><span id="ccAlg">0</span>/50</div></div>
     <div class="fg"><div class="fl">식습관 / 수면 / 운동습관 (50자)</div><textarea class="cta" id="csLife" placeholder="식습관, 수면시간, 운동 빈도" maxlength="50" oninput="updateCC('csLife','ccLife')"></textarea><div class="cc"><span id="ccLife">0</span>/50</div></div>
+    <div class="fg"><div class="fl">상담사에게 남길 말 (선택, 200자)</div><textarea class="cta" id="csMsg" placeholder="궁금한 점이나 상담사에게 전하고 싶은 말을 적어 주세요" maxlength="200" oninput="updateCC('csMsg','ccMsg')"></textarea><div class="cc"><span id="ccMsg">0</span>/200</div></div>
     <div class="sec-tit" style="margin-top:6px">개인정보 동의</div>
     <label class="agr"><input type="checkbox" id="csAgree1"><span><b>[필수]</b> 개인정보 수집·이용에 동의합니다</span></label>
-    <div class="agr-d">수집 항목: 이름, 휴대폰 번호, 나이, 성별, 통화 가능한 시간 · 이용 목적: 전문 상담사 상담 연결 · 보유 기간: 상담 완료 후 1년 (요청하시면 바로 삭제)</div>
+    <div class="agr-d">수집 항목: 이름, 휴대폰 번호, 나이, 성별, 희망 상담 시간 · 이용 목적: 전문 상담사 상담 연결 · 보유 기간: 상담 완료 후 1년 (요청하시면 바로 삭제)</div>
     <label class="agr"><input type="checkbox" id="csAgree2"><span><b>[필수]</b> 민감정보(건강정보) 수집·이용에 동의합니다</span></label>
-    <div class="agr-d">수집 항목: 건강 관심사, 임신·수유, 음주·흡연, 섭취 중인 건강기능식품, 보유 질환, 복용 중인 의약품, 알레르기·특이체질, 생활습관 · 이용 목적: 맞춤 상담 · 보유 기간: 위와 같음</div>
+    <div class="agr-d">수집 항목: 건강 관심사, 임신·수유, 음주·흡연, 섭취 중인 건강기능식품, 보유 질환, 복용 중인 의약품, 알레르기·특이체질, 생활습관, 상담사에게 남긴 말 · 이용 목적: 맞춤 상담 · 보유 기간: 위와 같음</div>
     <label class="agr"><input type="checkbox" id="csChat"><span><b>[선택]</b> 최근 AI 상담 대화 내용도 상담사에게 함께 전달합니다</span></label>
     <div class="agr-d">동의하지 않으실 수 있어요. 필수 항목에 동의하지 않으면 온라인 상담 신청은 어렵지만, 전화(1666-6030)로는 상담받으실 수 있어요.</div>
     <input type="text" id="csHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
@@ -960,10 +964,64 @@ function getTagLabels() { return getAllTags().map(function(t) { return t.label; 
 
 // ── 상담사 모달 ──
 var consReturn = false, consSending = false;
-var CONS_TEXT = [['csSupp','ccSupp'],['csDis','ccDis'],['csMed','ccMed'],['csAlg','ccAlg'],['csLife','ccLife']];
+var CONS_TEXT = [['csSupp','ccSupp'],['csDis','ccDis'],['csMed','ccMed'],['csAlg','ccAlg'],['csLife','ccLife'],['csMsg','ccMsg']];
+
+// 희망 상담 시간: 한국 시간 기준 평일 09:00~17:30 (30분 단위), 오늘은 지금부터 30분 뒤 이후만
+var CONS_DAY = ['일', '월', '화', '수', '목', '금', '토'];
+function kstNow() { var d = new Date(); return new Date(d.getTime() + (d.getTimezoneOffset() + 540) * 60000); }
+function consSlots(isToday) {
+  var out = [], now = kstNow(), min = isToday ? now.getHours() * 60 + now.getMinutes() + 30 : 0;
+  for (var m = 9 * 60; m <= 17 * 60 + 30; m += 30) {
+    if (m < min) continue;
+    out.push(String(Math.floor(m / 60)).padStart(2, '0') + ':' + (m % 60 ? '30' : '00'));
+  }
+  return out;
+}
+function fillConsDates() {
+  var sel = document.getElementById('csDate'), keep = sel.value, now = kstNow();
+  sel.innerHTML = '';
+  var o = document.createElement('option'); o.value = ''; o.textContent = '날짜·시간 상관없음'; sel.appendChild(o);
+  var d = new Date(now.getFullYear(), now.getMonth(), now.getDate()), added = 0, guard = 0;
+  while (added < 7 && guard++ < 14) {
+    var wd = d.getDay(), isToday = guard === 1;
+    if (wd !== 0 && wd !== 6 && consSlots(isToday).length) {
+      var lb = (d.getMonth() + 1) + '/' + d.getDate() + '(' + CONS_DAY[wd] + ')';
+      var op = document.createElement('option');
+      op.value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      op.setAttribute('data-label', lb);
+      op.setAttribute('data-today', isToday ? '1' : '');
+      op.textContent = lb + (isToday ? ' 오늘' : (guard === 2 ? ' 내일' : ''));
+      sel.appendChild(op); added++;
+    }
+    d.setDate(d.getDate() + 1);
+  }
+  if (keep && sel.querySelector('option[value="' + keep + '"]')) sel.value = keep;
+  fillConsTimes();
+}
+function fillConsTimes() {
+  var ds = document.getElementById('csDate'), ts = document.getElementById('csTime'), keep = ts.value;
+  ts.innerHTML = '';
+  var opt = ds.options[ds.selectedIndex];
+  if (!ds.value) {
+    var o = document.createElement('option'); o.value = ''; o.textContent = '시간 상관없음'; ts.appendChild(o);
+    ts.disabled = true; return;
+  }
+  ts.disabled = false;
+  var f = document.createElement('option'); f.value = ''; f.textContent = '시간 선택'; ts.appendChild(f);
+  consSlots(opt.getAttribute('data-today') === '1').forEach(function(t) {
+    var o = document.createElement('option'); o.value = t; o.textContent = t; ts.appendChild(o);
+  });
+  if (keep && ts.querySelector('option[value="' + keep + '"]')) ts.value = keep;
+}
+function consCallTime() {
+  var ds = document.getElementById('csDate'), ts = document.getElementById('csTime');
+  if (!ds.value) return '상관없음';
+  return ds.options[ds.selectedIndex].getAttribute('data-label') + ' ' + ts.value;
+}
 
 function openCons() {
   fillConsProfile();
+  fillConsDates();
   consErr('');
   document.getElementById('consModal').classList.add('open');
 }
@@ -1034,17 +1092,17 @@ function submitCons() {
   document.getElementById('csName').classList.remove('bad');
   if (!name) return consErr('이름을 입력해 주세요.', 'csName');
   if (!/^01[016789]\d{7,8}$/.test(phone)) return consErr('연락받으실 휴대폰 번호를 정확히 입력해 주세요.', 'csPhone');
+  if (document.getElementById('csDate').value && !document.getElementById('csTime').value) return consErr('희망 시간을 골라 주세요.', 'csTime');
   if (!document.getElementById('csAgree1').checked) return consErr('개인정보 수집·이용에 동의해 주세요.', 'csAgree1');
   if (!document.getElementById('csAgree2').checked) return consErr('민감정보(건강정보) 수집·이용에 동의해 주세요.', 'csAgree2');
   consErr('');
 
   var pregEl = document.querySelector('input[name="preg"]:checked');
-  var timeEl = document.querySelector('input[name="ctime"]:checked');
   var withChat = document.getElementById('csChat').checked;
   var data = {
     name: name,
     phone: phone,
-    callTime: timeEl ? timeEl.value : '',
+    callTime: consCallTime(),
     age: prof.age || '',
     gender: prof.gender || '',
     interests: getTagLabels(),
@@ -1056,6 +1114,7 @@ function submitCons() {
     medications: document.getElementById('csMed').value.trim(),
     allergies: document.getElementById('csAlg').value.trim(),
     lifestyle: document.getElementById('csLife').value.trim(),
+    message: document.getElementById('csMsg').value.trim(),
     chat: withChat ? consChatSummary() : [],
     agree: { privacy: true, sensitive: true, chat: withChat },
     lang: currentLang,
@@ -1088,15 +1147,16 @@ function submitCons() {
     var lines = [
       '📋 상담 신청이 접수되었어요.' + (r.j.id ? ' (접수번호 ' + r.j.id + ')' : ''),
       '',
-      '전문 상담사가 남겨 주신 번호로 연락드릴게요.',
+      (data.callTime === '상관없음' ? '전문 상담사가 남겨 주신 번호로 연락드릴게요.' : '전문 상담사가 희망하신 ' + data.callTime + '에 맞춰 연락드릴게요.'),
       '',
       '상담사에게 전달된 정보',
       '· 이름: ' + name,
       '· 연락처: ' + masked,
       '· 나이·성별: ' + (ageG || '입력 안 함'),
       '· 관심사: ' + (data.interests.length ? data.interests.join(', ') : '선택 안 함'),
-      '· 통화 가능한 시간: ' + data.callTime,
+      '· 희망 상담 시간: ' + data.callTime,
       '· 상담 정보: 임신·수유 ' + data.pregnancy + ', 음주 ' + (data.drink ? '예' : '아니오') + ', 흡연 ' + (data.smoke ? '예' : '아니오') + (filled ? ', 작성 항목 ' + filled + '개' : ''),
+      '· 상담사에게 남긴 말: ' + (data.message ? '전달함' : '없음'),
       '· AI 상담 대화: ' + (withChat && data.chat.length ? '함께 전달' : '전달 안 함'),
       '',
       '급하시면 ☎ 1666-6030 (평일 09:00~18:00, 주말·공휴일 휴무)'
@@ -1106,7 +1166,7 @@ function submitCons() {
     CONS_TEXT.forEach(function(p) { document.getElementById(p[0]).value = ''; updateCC(p[0], p[1]); });
     ['csDrink', 'csSmoke', 'csAgree1', 'csAgree2', 'csChat'].forEach(function(id) { document.getElementById(id).checked = false; });
     document.querySelector('input[name="preg"][value="대상아님"]').checked = true;
-    document.querySelector('input[name="ctime"][value="언제든 가능"]').checked = true;
+    document.getElementById('csDate').value = ''; fillConsTimes();
     document.getElementById('csPhone').value = '';
   }).catch(fail);
 }
@@ -1869,6 +1929,121 @@ function toggleVoice() {
   if (window.matchMedia && window.matchMedia('(max-width:480px)').matches) {
     document.getElementById('mi').placeholder = '궁금한 점을 입력하세요';
   }
+})();
+</script>
+
+<script>
+// ── 대화 1시간 보관 ──
+// 대화 내용·건강관심사·언어를 이 기기(브라우저)에만 저장해 두었다가,
+// 마지막 대화(활동) 후 1시간 안에 다시 들어오면 이어서 보여 주고, 1시간이 지나면 모두 지움.
+var SESS_KEY = 'mk_session_v1', SESS_TTL = 60 * 60 * 1000;
+var chatLog = [], sessRestoring = false, sessLastActive = Date.now(), sessSaveTimer = null, sessTypeAt = 0;
+
+function sessRead() { try { return JSON.parse(localStorage.getItem(SESS_KEY) || 'null'); } catch (e) { return null; } }
+function sessClear() { try { localStorage.removeItem(SESS_KEY); } catch (e) {} }
+function sessHasData() { return chatLog.length > 0 || !!prof.name || !!prof.age || !!prof.gender || prof.ids.length > 0 || prof.custom.length > 0; }
+
+// 이미지는 용량이 커서 빼고, 공간이 모자라면 검진 파일 본문도 줄여서 저장
+function sessHistory(keepFiles) {
+  return chatHistory.map(function(m) {
+    if (typeof m.content === 'string') return { role: m.role, content: m.content };
+    return { role: m.role, content: (m.content || []).map(function(c) {
+      if (c.type === 'image') return { type: 'text', text: '(이미지 첨부 - 다시 들어온 뒤에는 이미지를 다시 볼 수 없어요)' };
+      if (!keepFiles && c.type === 'text' && c.text && c.text.indexOf('[파일: ') === 0) {
+        var nl = c.text.indexOf('\n');
+        return { type: 'text', text: (nl > 0 ? c.text.slice(0, nl) : '[파일]') + ' (파일 본문은 보관 공간이 모자라 빠졌어요)' };
+      }
+      return c;
+    }) };
+  });
+}
+function sessSave() {
+  clearTimeout(sessSaveTimer); sessSaveTimer = null;
+  if (!sessHasData()) { sessClear(); return; }
+  var base = { at: sessLastActive, log: chatLog, prof: prof, lang: currentLang };
+  try { base.hist = sessHistory(true); localStorage.setItem(SESS_KEY, JSON.stringify(base)); return; } catch (e) {}
+  try { base.hist = sessHistory(false); localStorage.setItem(SESS_KEY, JSON.stringify(base)); return; } catch (e) {}
+  sessClear();
+}
+function sessLater() { if (!sessRestoring && !sessSaveTimer) sessSaveTimer = setTimeout(sessSave, 0); }
+function sessTouch() { if (sessRestoring) return; sessLastActive = Date.now(); sessLater(); }
+
+// 말풍선이 생길 때마다 기록 (다시 그릴 때는 기록하지 않음)
+(function() {
+  var oA = addAIBubble, oU = addUserBubble, oS = addSysMsg, oR = resetChat, oP = saveProfile, oL = setLang;
+  addAIBubble = function(t) { oA(t); if (!sessRestoring) { chatLog.push({ t: 'a', x: t, at: nowStr() }); sessTouch(); } };
+  addUserBubble = function(t, n) { oU(t, n); if (!sessRestoring) { chatLog.push({ t: 'u', x: t, n: n || [], at: nowStr() }); sessTouch(); } };
+  addSysMsg = function(t) { oS(t); if (!sessRestoring) { chatLog.push({ t: 's', x: t, at: nowStr() }); sessTouch(); } };
+  resetChat = function() { var before = chatHistory; oR(); if (chatHistory !== before) { chatLog = []; sessTouch(); } };
+  saveProfile = function() { oP(); sessTouch(); };
+  setLang = function(l) { oL(l); sessLater(); };
+})();
+
+function sessSetLastTime(at) {
+  var w = document.getElementById('msgs').lastElementChild;
+  var t = w && w.querySelector('.mtime');
+  if (t && at) t.textContent = at;
+}
+function sessNote(text) {
+  var n = document.createElement('div');
+  n.className = 'sess-note';
+  n.textContent = text;
+  document.getElementById('msgs').appendChild(n);
+}
+
+function sessRestore() {
+  var s = sessRead();
+  if (!s) return;
+  if (!s.at || Date.now() - s.at > SESS_TTL) { sessClear(); return; }
+  sessRestoring = true;
+  try {
+    if (s.prof) {
+      prof = { name: s.prof.name || '', age: s.prof.age || '', gender: s.prof.gender || '', ids: s.prof.ids || [], custom: s.prof.custom || [] };
+      renderSidebar();
+    }
+    if (s.lang) setLang(s.lang);
+    chatHistory = Array.isArray(s.hist) ? s.hist : [];
+    chatLog = Array.isArray(s.log) ? s.log : [];
+    if (chatLog.length) sessNote('이전 대화를 이어서 보여 드려요 · 대화는 이 기기에만 보관되고, 1시간 동안 대화가 없으면 지워져요');
+    chatLog.forEach(function(e) {
+      if (e.t === 'u') addUserBubble(e.x, e.n || []);
+      else if (e.t === 'a') addAIBubble(e.x);
+      else if (e.t === 's') addSysMsg(e.x);
+      sessSetLastTime(e.at);
+    });
+    sessLastActive = s.at;
+  } catch (err) {
+    sessClear(); chatHistory = []; chatLog = [];
+  }
+  sessRestoring = false;
+  if (typeof scrollBottom === 'function') scrollBottom();
+}
+
+// 1시간 동안 대화가 없으면 이 기기에서 지우고 처음 화면으로
+function sessExpire() {
+  if (isLoading || !sessHasData() || Date.now() - sessLastActive <= SESS_TTL) return;
+  chatHistory = []; chatLog = []; pendingFiles = [];
+  if (typeof renderFQ === 'function') renderFQ();
+  prof = { name: '', age: '', gender: '', ids: [], custom: [] };
+  renderSidebar();
+  ['csName', 'csPhone', 'mi'].forEach(function(id) { var e = document.getElementById(id); if (e) e.value = ''; });
+  sessClear();
+  showWelcome();
+  sessNote('1시간 동안 대화가 없어 이전 대화와 입력하신 정보를 지웠어요');
+}
+
+(function() {
+  var oLoad = window.onload;
+  window.onload = function(e) { if (oLoad) oLoad.call(window, e); sessRestore(); };
+  // 입력 중에도 활동으로 봄 (30초에 한 번만 저장)
+  document.getElementById('mi').addEventListener('input', function() {
+    var now = Date.now();
+    if (now - sessTypeAt > 30000) { sessTypeAt = now; if (sessHasData()) sessTouch(); else sessLastActive = now; }
+  });
+  document.addEventListener('visibilitychange', function() { if (document.visibilityState === 'hidden') sessSave(); else sessExpire(); });
+  window.addEventListener('pagehide', sessSave);
+  window.addEventListener('focus', sessExpire);
+  setInterval(sessExpire, 60000);
 })();
 </script>
 </body>

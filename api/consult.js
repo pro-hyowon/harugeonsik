@@ -7,12 +7,18 @@ const https = require('https');
 const SUPABASE_URL = process.env.CONSULT_SUPABASE_URL || 'https://mbvaxchigywwgfjicyue.supabase.co';
 const SUPABASE_KEY = process.env.CONSULT_SUPABASE_KEY || 'sb_publishable_y4OrWdPTOQOs3c3R4ieUTw_iklEqNkV';
 
-const LIMIT = { name: 20, callTime: 20, age: 3, gender: 4, interest: 30, pregnancy: 10, field: 50, chatText: 400 };
+const LIMIT = { name: 20, callTime: 30, message: 200, age: 3, gender: 4, interest: 30, pregnancy: 10, field: 50, chatText: 400 };
 const STATUS = ['접수', '연락중', '상담완료', '취소'];
 
 function clean(v, max) {
   if (v === undefined || v === null) return '';
   return String(v).replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+}
+
+// 상담사에게 남길 말: 줄바꿈은 살리고 나머지 제어문자만 정리
+function cleanMulti(v, max) {
+  if (v === undefined || v === null) return '';
+  return String(v).replace(/\r\n?/g, '\n').replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, ' ').replace(/\n{3,}/g, '\n\n').trim().slice(0, max);
 }
 
 function makeId() {
@@ -84,6 +90,7 @@ async function submit(b, res) {
     medications: clean(b.medications, LIMIT.field),
     allergies: clean(b.allergies, LIMIT.field),
     lifestyle: clean(b.lifestyle, LIMIT.field),
+    message: cleanMulti(b.message, LIMIT.message),
     chat: (withChat && Array.isArray(b.chat) ? b.chat : []).slice(-8).map(m => ({
       role: m && m.role === 'user' ? 'user' : 'ai',
       text: clean(m && m.text, LIMIT.chatText)

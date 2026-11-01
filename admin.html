@@ -59,6 +59,9 @@ button{cursor:pointer}
 .tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--mu);border:1px solid var(--bd)}
 details{margin-top:10px;font-size:13px}
 summary{cursor:pointer;color:var(--medd);font-weight:700}
+.msgbox{margin:0 0 12px;padding:10px 12px;background:#FFF7E8;border:1px solid #F3D9A8;border-radius:12px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.msgbox b{display:block;font-size:12px;color:#6B4206;margin-bottom:2px}
+.when{font-size:13px;font-weight:700;color:var(--tx);background:var(--mu);border:1px solid var(--bd);border-radius:99px;padding:3px 10px}
 .chat{margin-top:8px;padding:10px 12px;background:var(--mu);border-radius:12px;line-height:1.6;white-space:pre-wrap}
 .edit{display:grid;grid-template-columns:130px 140px 1fr auto;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);align-items:start}
 .edit select,.edit input,.edit textarea{min-height:38px;padding:8px 10px;background:var(--mu);border:1px solid var(--bd);border-radius:10px;outline:none;width:100%}
@@ -171,7 +174,7 @@ function visible() {
   return rows.filter(function (r) {
     if (filter !== '전체' && r.status !== filter) return false;
     if (!q) return true;
-    return (r.name + r.phone.replace(/-/g, '') + r.id + (r.interests || []).join('') + r.manager + r.memo).toLowerCase().indexOf(q) > -1;
+    return (r.name + r.phone.replace(/-/g, '') + r.id + (r.interests || []).join('') + r.manager + r.memo + (r.message || '') + (r.call_time || '')).toLowerCase().indexOf(q) > -1;
   });
 }
 
@@ -207,12 +210,14 @@ function card(r) {
   hd.appendChild(el('span', 'badge', r.status));
   hd.appendChild(el('span', 'cname', r.name));
   var tel = el('a', 'ctel', r.phone); tel.href = 'tel:' + r.phone.replace(/\D/g, ''); hd.appendChild(tel);
+  hd.appendChild(el('span', 'when', '희망 ' + (r.call_time || '상관없음')));
   hd.appendChild(el('span', 'cmeta', r.id + '\n' + fmtTime(r.created_at)));
   hd.lastChild.style.whiteSpace = 'pre-line';
   c.appendChild(hd);
+  if (r.message) { var mb = el('div', 'msgbox'); mb.appendChild(el('b', '', '상담사에게 남긴 말')); mb.appendChild(document.createTextNode(r.message)); c.appendChild(mb); }
 
   var dl = el('dl', 'grid');
-  row(dl, '통화 가능', r.call_time);
+  row(dl, '통화 희망', r.call_time || '상관없음');
   row(dl, '나이·성별', [r.age ? r.age + '세' : '', r.gender].filter(Boolean).join(' · '));
   var tg = row(dl, '관심사', ''); tg.textContent = '';
   if ((r.interests || []).length) { var tw = el('div', 'tags'); r.interests.forEach(function (t) { tw.appendChild(el('span', 'tag', t)); }); tg.appendChild(tw); } else tg.textContent = '-';
@@ -273,10 +278,10 @@ function csvCell(v) {
 }
 $('bCsv').onclick = function () {
   var v = visible();
-  var head = ['접수번호', '접수시각', '처리상태', '담당자', '메모', '이름', '휴대폰', '통화 가능 시간', '나이', '성별', '관심사', '임신/수유', '음주', '흡연', '섭취 중 건강기능식품', '보유 질환', '복용 의약품', '알레르기/특이체질', '생활습관', 'AI 상담 대화'];
+  var head = ['접수번호', '접수시각', '처리상태', '담당자', '메모', '이름', '휴대폰', '통화 희망 시간', '상담사에게 남긴 말', '나이', '성별', '관심사', '임신/수유', '음주', '흡연', '섭취 중 건강기능식품', '보유 질환', '복용 의약품', '알레르기/특이체질', '생활습관', 'AI 상담 대화'];
   var lines = [head.map(csvCell).join(',')];
   v.forEach(function (r) {
-    lines.push([r.id, fmtTime(r.created_at), r.status, r.manager, r.memo, r.name, r.phone, r.call_time, r.age, r.gender, (r.interests || []).join(', '),
+    lines.push([r.id, fmtTime(r.created_at), r.status, r.manager, r.memo, r.name, r.phone, r.call_time, r.message || '', r.age, r.gender, (r.interests || []).join(', '),
       r.pregnancy, r.drink ? '예' : '아니오', r.smoke ? '예' : '아니오', r.supplements, r.diseases, r.medications, r.allergies, r.lifestyle,
       (r.chat || []).map(function (m) { return (m.role === 'user' ? '고객: ' : 'AI: ') + m.text; }).join('\n')].map(csvCell).join(','));
   });
