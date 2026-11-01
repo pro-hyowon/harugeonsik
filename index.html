@@ -3,254 +3,346 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>MEDICOK #하루건식</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<title>MEDICOK AI 상담</title>
+<link rel="preload" href="/fonts/GmarketSansMedium.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
 <style>
+@font-face{font-family:'GmarketSans';font-weight:300;font-style:normal;font-display:swap;src:url('/fonts/GmarketSansLight.woff2') format('woff2'),url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff') format('woff')}
+@font-face{font-family:'GmarketSans';font-weight:500;font-style:normal;font-display:swap;src:url('/fonts/GmarketSansMedium.woff2') format('woff2'),url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff')}
+@font-face{font-family:'GmarketSans';font-weight:700;font-style:normal;font-display:swap;src:url('/fonts/GmarketSansBold.woff2') format('woff2'),url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff')}
+
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#F7F6F2;--sf:#fff;--mu:#F0EEE8;
-  --tx:#1A1A18;--sub:#5F5E5A;--hint:#9A9892;
-  --bd:rgba(0,0,0,.1);--bdl:rgba(0,0,0,.18);
-  --g:#3B6D11;--gl:#EAF3DE;--gb:#C0DD97;
-  --am:#633806;--al:#FAEEDA;
-  --bu:#0C447C;--bl:#E6F1FB;
-  --r:#791F1F;--rl:#FCEBEB;
-  --med:#5B5BD6;--medl:#EDEDFC;
-  --r8:8px;--r12:12px;--r16:16px;
+  --bg:#F3F2FD;--sf:#fff;--mu:#F7F6FF;
+  --tx:#1C1B36;--sub:#4E4D6B;--hint:#6C6B88;
+  --bd:#E6E4F7;--bdl:#CBC7F4;
+  --med:#5F59FF;--medd:#4A44E0;--medl:#EEEDFF;--medm:#DCD9FF;
+  --g:#4A44E0;--gl:#EEEDFF;--gb:#BDB9FF;
+  --am:#8A4A0B;--al:#FFF1E0;
+  --bu:#1D4F91;--bl:#E7F0FD;
+  --r:#A3262A;--rl:#FDECEC;
+  --ro:#9B2C64;--rol:#FCEAF3;
+  --r8:10px;--r12:14px;--r16:20px;
+  --sh1:0 1px 2px rgba(40,34,140,.05),0 4px 14px rgba(40,34,140,.06);
+  --sh2:0 16px 48px rgba(40,34,140,.14);
 }
-html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx)}
-.app{display:grid;grid-template-columns:280px 1fr;height:100vh;max-width:1280px;margin:0 auto;background:var(--sf);box-shadow:0 4px 24px rgba(0,0,0,.08)}
-.sidebar{display:flex;flex-direction:column;background:var(--mu);border-right:1px solid var(--bd);overflow:hidden}
-.sb-logo{padding:18px 18px 14px;border-bottom:1px solid var(--bd)}
+html,body{height:100%;font-family:'GmarketSans',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+button{font-family:inherit}
+a{color:var(--medd)}a:hover{color:var(--med)}
+button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(95,89,255,.4);outline-offset:2px}
+.app{display:grid;grid-template-columns:300px minmax(0,1fr);height:calc(100vh - 40px);width:calc(100% - 40px);max-width:1280px;margin:20px auto;background:var(--sf);border:1px solid var(--bd);border-radius:28px;box-shadow:var(--sh2);overflow:hidden}
+.sidebar{display:flex;flex-direction:column;background:#F8F7FF;border-right:1px solid var(--bd);overflow:hidden;min-height:0}
+.sb-logo{padding:28px 24px 20px}
 .med-logo{display:flex;align-items:center;gap:9px}
 .med-wm{display:flex;flex-direction:column;line-height:1.2}
 .med-name{font-size:16px;font-weight:700;color:var(--med)}
-.med-brand{font-size:11px;font-weight:600;color:var(--g)}
-.sb-desc{font-size:10px;color:var(--hint);margin-top:6px}
-.sb-pr{padding:14px 18px;border-bottom:1px solid var(--bd)}
-.pr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.slbl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--hint);text-transform:uppercase}
-.edbtn{display:flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-size:11px;color:var(--hint);font-family:inherit;padding:2px 6px;border-radius:6px}
-.edbtn:hover{color:var(--g);background:var(--gl)}
-.pr-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r12);padding:11px 13px;cursor:pointer}
-.pr-card:hover{border-color:var(--gb)}
-.pr-name{font-size:13px;font-weight:500;margin-bottom:7px}
-.pr-tags{display:flex;flex-wrap:wrap;gap:5px}
-.tag{font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px}
-.tw{background:var(--al);color:var(--am)}.ti{background:var(--bl);color:var(--bu)}
-.tok{background:var(--gl);color:var(--g)}.tb{background:var(--rl);color:var(--r)}
-.tmed{background:var(--medl);color:var(--med)}
-.sb-tp{padding:14px 18px;flex:1;overflow-y:auto}
-.tbtn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;background:transparent;border-radius:var(--r8);font-family:inherit;font-size:12px;color:var(--sub);cursor:pointer;text-align:left;margin-bottom:2px;transition:all .12s}
-.tbtn:hover{background:var(--sf);color:var(--tx)}
-.tbtn i{font-size:14px;color:var(--g);flex-shrink:0}
-.sb-sc{padding:13px 18px;border-top:1px solid var(--bd)}
-.sc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.sc-lbl{font-size:11px;color:var(--sub);font-weight:500}
-.sc-val{font-size:13px;font-weight:700;color:var(--g)}
-.sc-bar{height:5px;background:var(--bd);border-radius:99px;overflow:hidden}
-.sc-fill{height:100%;background:var(--g);border-radius:99px;transition:width .6s}
-.sc-hint{font-size:10px;color:var(--hint);margin-top:4px}
+.mk-logo{display:block;color:var(--med)}
+.mk-ic{display:block;color:var(--med)}
+.sb-desc{font-size:13px;color:var(--hint);margin-top:10px;font-weight:500}
+.sb-pr{padding:4px 16px 18px}
+.pr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;padding-left:8px}
+.slbl{font-size:13px;font-weight:700;color:var(--sub)}
+.edbtn{display:flex;align-items:center;gap:4px;min-height:44px;padding:0 10px;background:none;border:none;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--medd);transition:background .15s}
+.edbtn:hover{background:var(--medl)}
+.pr-card{background:var(--sf);border:1px solid var(--bd);border-radius:18px;padding:16px;cursor:pointer;box-shadow:var(--sh1);transition:border-color .15s,transform .15s}
+.pr-card:hover{border-color:var(--medm);transform:translateY(-1px)}
+.pr-name{font-size:15px;font-weight:700;margin-bottom:10px;word-break:keep-all}
+.pr-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:99px;line-height:1.4}
+.tag.tw{background:var(--al);color:var(--am)}.tag.ti{background:var(--bl);color:var(--bu)}
+.tag.tok{background:var(--medl);color:var(--medd)}.tag.tb{background:var(--rl);color:var(--r)}
+.tag.tmed{background:var(--rol);color:var(--ro)}
+.sb-tp{padding:4px 16px 12px;flex:1;overflow-y:auto;min-height:0}
+.sb-tp>.slbl{padding-left:8px}
+.sb-tp::-webkit-scrollbar{width:4px}.sb-tp::-webkit-scrollbar-thumb{background:var(--bdl);border-radius:2px}
+.tbtn{display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 10px;border:none;background:transparent;border-radius:14px;font-size:14px;font-weight:500;color:var(--sub);cursor:pointer;text-align:left;margin-bottom:2px;transition:background .15s,color .15s,box-shadow .15s}
+.tbtn i{width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--med);background:var(--sf);border:1px solid var(--bd);border-radius:10px;transition:background .15s}
+.tbtn:hover{background:var(--sf);color:var(--tx);box-shadow:var(--sh1)}
+.tbtn:hover i{background:var(--medl);border-color:var(--medl)}
+.sb-sc{margin:8px 16px 16px;padding:16px;background:var(--sf);border:1px solid var(--bd);border-radius:18px}
+.sc-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.sc-lbl{font-size:13px;color:var(--sub);font-weight:600}
+.sc-val{font-size:16px;font-weight:800;color:var(--medd);font-variant-numeric:tabular-nums}
+.sc-bar{height:8px;background:var(--medl);border-radius:99px;overflow:hidden}
+.sc-fill{height:100%;background:linear-gradient(90deg,#9A96FF,var(--med));border-radius:99px;transition:width .6s}
+.sc-hint{font-size:12px;color:var(--hint);margin-top:8px}
 .mob-top{display:none}
 /* CHAT */
-.chat{display:flex;flex-direction:column;height:100%;overflow:hidden}
-.ch-hdr{padding:12px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:var(--sf);flex-shrink:0}
-.hl{display:flex;align-items:center;gap:10px}
-.ai-av{width:34px;height:34px;border-radius:50%;background:var(--medl);border:1.5px solid var(--med);display:flex;align-items:center;justify-content:center}
-.ai-nm{font-size:14px;font-weight:600}
-.ai-st{font-size:11px;color:var(--g);display:flex;align-items:center;gap:4px}
-.dot{width:6px;height:6px;background:#639922;border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.hbtns{display:flex;gap:5px;align-items:center}
-.hbtn{width:32px;height:32px;background:transparent;border:1px solid var(--bd);border-radius:var(--r8);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:15px;transition:all .12s}
-.hbtn:hover{background:var(--mu)}
-.cons-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;background:var(--med);color:#fff;border:none;border-radius:20px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer}
-.cons-btn:hover{background:#4747b8}
-.msgs{flex:1;overflow-y:auto;padding:20px 20px 12px;display:flex;flex-direction:column;gap:4px}
+.chat{display:flex;flex-direction:column;height:100%;overflow:hidden;min-height:0;min-width:0}
+.ch-hdr{padding:14px 20px 14px 24px;min-height:76px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--sf);flex-shrink:0}
+.hl{display:flex;align-items:center;gap:12px;min-width:0}
+.ai-av{width:44px;height:44px;flex-shrink:0;border-radius:15px;background:var(--medl);display:flex;align-items:center;justify-content:center}
+.ai-nm{font-size:16px;font-weight:700}
+.ai-st{font-size:12px;color:var(--medd);font-weight:600;display:flex;align-items:center;gap:7px;margin-top:2px}
+.dot{width:7px;height:7px;background:var(--med);border-radius:50%;box-shadow:0 0 0 3px rgba(95,89,255,.18);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.hbtns{display:flex;gap:8px;align-items:center}
+.hbtn{width:44px;height:44px;background:var(--sf);border:1px solid var(--bd);border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:19px;transition:all .15s}
+.hbtn:hover{background:var(--medl);border-color:var(--medl);color:var(--medd)}
+.cons-btn{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 18px;background:var(--med);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(95,89,255,.28);transition:background .15s}
+.cons-btn i{font-size:17px}
+.cons-btn:hover{background:var(--medd)}
+.msgs{flex:1;overflow-y:auto;padding:28px 28px 16px;display:flex;flex-direction:column;gap:4px;background:#FAFAFF;min-height:0}
 .msgs::-webkit-scrollbar{width:4px}
-.msgs::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
-.mwrap{display:flex;flex-direction:column;margin-bottom:12px}
+.msgs::-webkit-scrollbar-thumb{background:var(--bdl);border-radius:2px}
+.mwrap{display:flex;flex-direction:column;margin-bottom:14px}
 .mwrap.user{align-items:flex-end}
 .mwrap.ai{align-items:flex-start}
-.msg{display:flex;gap:9px;max-width:85%;animation:fu .2s ease}
-@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg{display:flex;gap:10px;max-width:min(85%,700px);animation:fu .25s ease}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .msg.user{flex-direction:row-reverse}
-.mv{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:2px}
-.mv.ai{background:var(--medl);color:var(--med);border:1px solid var(--med)}
-.mv.usr{background:var(--mu);color:var(--sub);border:1px solid var(--bd)}
-.bbl{padding:10px 14px;font-size:13.5px;line-height:1.7}
-.msg.ai .bbl{background:var(--mu);border:1px solid var(--bd);border-radius:4px 13px 13px 13px;color:var(--tx)}
-.msg.user .bbl{background:var(--g);color:#fff;border-radius:13px 4px 13px 13px}
-.mtime{font-size:10px;color:var(--hint);margin-top:3px;padding:0 4px}
-.mwrap.user .mtime{text-align:right}
-.mwrap.ai .mtime{text-align:left;padding-left:38px}
-.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
-.scard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r8);padding:9px 11px;cursor:pointer;transition:all .15s}
-.scard:hover{border-color:var(--gb);background:var(--gl)}
-.sn{font-size:12px;font-weight:600;margin-bottom:3px}
-.sw{font-size:11px;color:var(--sub);line-height:1.4}
-.sbdg{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:4px}
-.bs{background:var(--gl);color:var(--g)}.br{background:var(--bl);color:var(--bu)}.bm{background:var(--al);color:var(--am)}
-.tw-wrap{display:flex;gap:9px}
-.tw-bbl{display:flex;gap:5px;align-items:center;background:var(--mu);border:1px solid var(--bd);border-radius:4px 13px 13px 13px;padding:11px 15px}
-.tw-bbl span{width:7px;height:7px;background:var(--hint);border-radius:50%;animation:bo 1.1s infinite}
+.mv{width:32px;height:32px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px}
+.mv.ai{background:var(--medl);color:var(--med)}
+.mv.usr{background:var(--sf);color:var(--sub);border:1px solid var(--bd)}
+.bbl{padding:12px 16px;font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere;min-width:0}
+.msg.ai .bbl{background:var(--sf);border:1px solid var(--bd);border-radius:6px 20px 20px 20px;color:var(--tx);box-shadow:var(--sh1)}
+.msg.user .bbl{background:var(--med);color:#fff;border-radius:20px 6px 20px 20px;box-shadow:0 4px 14px rgba(95,89,255,.22)}
+.bbl strong{font-weight:700}
+.mtime{font-size:11px;color:var(--hint);margin-top:6px;padding:0 4px;font-variant-numeric:tabular-nums}
+.mwrap.user .mtime{text-align:right;padding-right:46px}
+.mwrap.ai .mtime{text-align:left;padding-left:46px}
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.scard{background:var(--mu);border:1px solid var(--bd);border-radius:14px;padding:12px 13px;cursor:pointer;transition:all .15s}
+.scard:hover{border-color:var(--medm);background:var(--medl);transform:translateY(-1px)}
+.sn{font-size:14px;font-weight:700;margin-bottom:4px}
+.sw{font-size:12.5px;color:var(--sub);line-height:1.45}
+.sbdg{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin-top:8px}
+.bs{background:var(--medl);color:var(--medd)}.br{background:var(--bl);color:var(--bu)}.bm{background:var(--al);color:var(--am)}
+.tw-wrap{display:flex;gap:10px;margin-bottom:14px}
+.tw-bbl{display:flex;gap:5px;align-items:center;background:var(--sf);border:1px solid var(--bd);border-radius:6px 20px 20px 20px;padding:14px 18px;box-shadow:var(--sh1)}
+.tw-bbl span{width:7px;height:7px;background:#A29EFF;border-radius:50%;animation:bo 1.1s infinite}
 .tw-bbl span:nth-child(2){animation-delay:.18s}
 .tw-bbl span:nth-child(3){animation-delay:.36s}
-@keyframes bo{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+@keyframes bo{0%,60%,100%{transform:translateY(0);opacity:.6}30%{transform:translateY(-5px);opacity:1}}
 /* INPUT */
-.ia{padding:12px 16px 14px;border-top:1px solid var(--bd);background:var(--sf);flex-shrink:0}
-.dz{border:1.5px dashed var(--bdl);border-radius:var(--r12);padding:12px;text-align:center;cursor:pointer;transition:all .2s;background:var(--mu);margin-bottom:8px;position:relative}
-.dz:hover,.dz.drag{border-color:var(--gb);background:var(--gl)}
-.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dz-ic{font-size:20px;color:var(--g);margin-bottom:3px}
-.dz-ti{font-size:12px;font-weight:500;margin-bottom:2px}
-.dz-su{font-size:10px;color:var(--hint)}
-.dz-fm{display:flex;justify-content:center;gap:5px;margin-top:6px;flex-wrap:wrap}
-.fmt{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;border:1px solid var(--bd);color:var(--sub);background:var(--sf)}
-.fq{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
-.fi{display:flex;align-items:center;gap:7px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:7px 11px}
-.fi-ic{font-size:17px;flex-shrink:0}
-.fi-pdf{color:#E24B4A}.fi-img{color:#185FA5}.fi-txt{color:var(--g)}.fi-oth{color:var(--hint)}
+.ia{padding:14px 24px 16px;border-top:1px solid var(--bd);background:var(--sf);flex-shrink:0}
+.dz{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"ic ti fm" "ic su fm";column-gap:12px;align-items:center;text-align:left;border:1.5px dashed var(--bdl);border-radius:18px;padding:12px 16px 12px 12px;cursor:pointer;transition:all .2s;background:var(--mu);margin-bottom:10px;position:relative}
+.dz:hover,.dz.drag{border-color:var(--med);background:var(--medl)}
+.dz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:1}
+.dz-ic{grid-area:ic;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--sf);border:1px solid var(--bd);border-radius:14px;font-size:22px;color:var(--med)}
+.dz-ti{grid-area:ti;font-size:14px;font-weight:700;align-self:end}
+.dz-su{grid-area:su;font-size:12px;color:var(--hint);align-self:start;margin-top:1px}
+.dz-fm{grid-area:fm;display:flex;gap:4px;flex-wrap:wrap}
+.fmt{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;border:1px solid var(--bd);color:var(--sub);background:var(--sf)}
+.fq{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.fq:empty{display:none}
+.fi{display:flex;align-items:center;gap:10px;background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:4px 4px 4px 12px}
+.fi-ic{font-size:20px;flex-shrink:0}
+.fi-pdf{color:#D6423F}.fi-img{color:#2A64B8}.fi-txt{color:var(--med)}.fi-oth{color:var(--hint)}
 .fi-info{flex:1;min-width:0}
-.fi-nm{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fi-sz{font-size:10px;color:var(--hint)}
-.fi-del{background:none;border:none;cursor:pointer;color:var(--hint);font-size:15px;padding:2px;display:flex;align-items:center}
-.fi-del:hover{color:var(--r)}
-.prog{display:none;margin-bottom:8px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:10px 14px}
-.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.prog-nm{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75%}
-.prog-pct{font-size:12px;font-weight:700;color:var(--g)}
-.prog-bar{height:6px;background:var(--bd);border-radius:99px;overflow:hidden}
-.prog-fill{height:100%;background:var(--g);border-radius:99px;transition:width .3s}
-.prog-st{font-size:10px;color:var(--hint);margin-top:4px}
-.ir{display:flex;gap:7px;align-items:flex-end}
-.mi{flex:1;padding:9px 13px;font-family:inherit;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r12);color:var(--tx);resize:none;min-height:40px;max-height:100px;outline:none;line-height:1.5;transition:border-color .15s}
-.mi:focus{border-color:var(--gb)}
+.fi-nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-sz{font-size:11px;color:var(--hint)}
+.fi-del{width:44px;height:44px;flex-shrink:0;background:none;border:none;border-radius:12px;cursor:pointer;color:var(--hint);font-size:18px;display:flex;align-items:center;justify-content:center}
+.fi-del:hover{color:var(--r);background:var(--rl)}
+.prog{display:none;margin-bottom:10px;background:var(--medl);border:1px solid var(--medm);border-radius:14px;padding:12px 14px}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.prog-nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75%}
+.prog-pct{font-size:13px;font-weight:800;color:var(--medd);font-variant-numeric:tabular-nums}
+.prog-bar{height:8px;background:var(--sf);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#9A96FF,var(--med));border-radius:99px;transition:width .3s}
+.prog-st{font-size:11px;color:var(--sub);margin-top:6px}
+.lang-bar{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.lang-lbl{font-size:12px;color:var(--sub);font-weight:600;white-space:nowrap;margin-right:2px}
+.lang-btn{min-height:44px;padding:0 14px;border:1px solid var(--bd);border-radius:14px;background:var(--sf);color:var(--sub);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
+.lang-btn:hover{border-color:var(--gb);color:var(--medd)}
+.lang-btn.active{border-color:var(--med);background:var(--medl);color:var(--medd);font-weight:700}
+.ir{display:flex;gap:8px;align-items:flex-end}
+.mi{flex:1;min-width:0;padding:12px 16px;font-family:inherit;font-size:15px;background:var(--mu);border:1px solid var(--bd);border-radius:16px;color:var(--tx);resize:none;min-height:48px;max-height:100px;outline:none;line-height:1.5;transition:border-color .15s,background .15s,box-shadow .15s}
+.mi:focus{border-color:var(--med);background:var(--sf);box-shadow:0 0 0 4px rgba(95,89,255,.12)}
+.mi:focus-visible{outline:none}
 .mi::placeholder{color:var(--hint)}
-.sbtn{width:40px;height:40px;background:var(--g);border:none;border-radius:var(--r8);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
-.sbtn:hover{background:#27500A}.sbtn:active{transform:scale(.94)}.sbtn:disabled{background:var(--bd);cursor:not-allowed}
-.disc{font-size:10px;color:var(--hint);text-align:center;margin-top:7px}
-.lang-bar{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
-.lang-lbl{font-size:10px;color:var(--hint);font-weight:600;white-space:nowrap}
-.lang-btn{padding:4px 10px;border:1.5px solid var(--bd);border-radius:20px;background:var(--mu);color:var(--sub);font-family:inherit;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s}
-.lang-btn:hover{border-color:var(--med);color:var(--med)}
-.lang-btn.active{border-color:var(--med);background:var(--med);color:#fff;font-weight:700}
+.sbtn{width:48px;height:48px;background:var(--med);border:none;border-radius:16px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(95,89,255,.3);transition:all .15s}
+.sbtn:hover{background:var(--medd)}.sbtn:active{transform:scale(.94)}.sbtn:disabled{background:#C9C7E6;box-shadow:none;cursor:not-allowed}
+.disc{font-size:11.5px;color:var(--hint);text-align:center;margin-top:10px;line-height:1.5;word-break:keep-all;text-wrap:pretty}
 /* MODAL */
-.mbg{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.45);align-items:center;justify-content:center}
+.mbg{display:none;position:fixed;inset:0;z-index:999;background:rgba(28,27,54,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
 .mbg.open{display:flex}
-.modal{background:var(--sf);border-radius:var(--r16);border:1px solid var(--bd);padding:24px;width:420px;max-width:92vw;max-height:88vh;overflow-y:auto}
-.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.mtit{font-size:15px;font-weight:600}
-.mcls{background:none;border:none;cursor:pointer;color:var(--hint);font-size:19px;padding:2px;border-radius:5px}
+.mbg.open .modal,.mbg.open .cmodal{animation:pop .24s cubic-bezier(.2,.8,.3,1)}
+@keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.modal,.cmodal{background:var(--sf);border-radius:24px;padding:24px 24px 20px;width:460px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--sh2)}
+.cmodal{width:480px}
+.mhd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.mtit{font-size:18px;font-weight:700}
+.mcls{width:44px;height:44px;margin-right:-8px;background:none;border:none;cursor:pointer;color:var(--hint);font-size:20px;border-radius:14px;display:flex;align-items:center;justify-content:center}
 .mcls:hover{color:var(--tx);background:var(--mu)}
-.fg{margin-bottom:15px}
-.fl{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--hint);text-transform:uppercase;margin-bottom:6px}
-.fin{width:100%;padding:8px 11px;font-family:inherit;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none}
-.fin:focus{border-color:var(--gb)}
+.fg{margin-bottom:18px}
+.fl{font-size:13px;font-weight:700;color:var(--sub);margin-bottom:8px}
+.fin,.fsel{width:100%;min-height:48px;padding:0 14px;font-family:inherit;font-size:15px;background:var(--mu);border:1px solid var(--bd);border-radius:14px;color:var(--tx);outline:none;transition:border-color .15s,background .15s}
+.fin:focus,.fsel:focus{border-color:var(--med);background:var(--sf)}
+.fin::placeholder{color:var(--hint)}
 .frow{display:flex;gap:8px}
-.fsel{flex:1;padding:8px 11px;font-family:inherit;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none;cursor:pointer}
-.grp-lbl{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-.igrp{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-.ibtn{padding:7px 14px;border:1.5px solid var(--bd);border-radius:20px;background:var(--mu);color:var(--sub);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;user-select:none}
-.ibtn:hover{border-color:var(--med);color:var(--med)}
-.ibtn.on{border-color:var(--med);background:var(--med);color:#fff;font-weight:600}
-.ibtn.dim{opacity:.35;pointer-events:none}
-.sel-cnt{font-size:11px;color:var(--med);font-weight:700}
-.crow{display:flex;gap:6px;margin-top:8px}
-.ctgs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
-.addbtn{padding:8px 12px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-size:12px;font-family:inherit;cursor:pointer;white-space:nowrap}
-.mbtns{display:flex;gap:8px;margin-top:22px}
-.bsave{flex:1;padding:9px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer}
-.bsave:hover{background:#27500A}
-.bcancel{padding:9px 16px;background:transparent;color:var(--sub);border:1px solid var(--bd);border-radius:var(--r8);font-family:inherit;font-size:13px;cursor:pointer}
+.fsel{flex:1;cursor:pointer}
+.grp-lbl{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--medd);margin-bottom:8px}
+.grp-lbl::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--med)}
+.igrp{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.ibtn{white-space:nowrap;flex-shrink:0;min-height:44px;padding:0 16px;border:1px solid var(--bd);border-radius:99px;background:var(--sf);color:var(--sub);font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;user-select:none}
+.ibtn:hover{border-color:var(--gb);color:var(--medd);background:var(--mu)}
+.ibtn.on{border-color:var(--med);background:var(--med);color:#fff;font-weight:700;box-shadow:0 3px 10px rgba(95,89,255,.25)}
+.ibtn.dim{opacity:.38;pointer-events:none}
+.sel-cnt{font-size:13px;color:var(--med);font-weight:800}
+.crow{display:flex;gap:8px}
+.ctgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ctgs:empty{display:none}
+.addbtn{min-height:48px;padding:0 18px;background:var(--medl);color:var(--medd);border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.addbtn:hover{background:var(--med);color:#fff}
+.mbtns{display:flex;gap:8px;position:sticky;bottom:-20px;margin:24px -24px -20px;padding:14px 24px 20px;background:var(--sf);border-top:1px solid var(--bd)}
+.bsave,.bsubmit{flex:1;white-space:nowrap;min-height:52px;padding:0 16px;background:var(--med);color:#fff;border:none;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+.bsave:hover,.bsubmit:hover{background:var(--medd)}
+.bcancel{white-space:nowrap;flex-shrink:0;min-height:52px;padding:0 20px;background:var(--sf);color:var(--sub);border:1px solid var(--bd);border-radius:16px;font-size:15px;font-weight:600;cursor:pointer}
+.bcancel:hover{background:var(--mu)}
 /* CONSULTANT MODAL */
-.cmodal{background:var(--sf);border-radius:var(--r16);border:1px solid var(--bd);padding:24px;width:460px;max-width:92vw;max-height:90vh;overflow-y:auto}
-.chd{text-align:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bd)}
-.cav{width:52px;height:52px;background:var(--medl);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px;color:var(--med)}
-.ctit{font-size:16px;font-weight:700;margin-bottom:4px}
-.cdesc{font-size:12px;color:var(--sub);line-height:1.5}
-.cphone{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;padding:8px 16px;background:var(--medl);border-radius:20px;font-size:14px;font-weight:700;color:var(--med)}
-.notice{background:#FFF8E1;border:1px solid #FFD54F;border-radius:var(--r8);padding:12px 14px;margin-bottom:16px;font-size:12px;color:#6D4C00;line-height:1.6}
-.notice strong{display:block;margin-bottom:4px;font-size:13px}
-.sec-tit{font-size:12px;font-weight:700;color:var(--med);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--medl)}
-.rg{display:flex;gap:16px;margin-top:6px}
-.rl{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px}
-.rl input{accent-color:var(--med);width:16px;height:16px}
-.ckg{display:flex;gap:16px;margin-top:6px}
-.ckl{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px}
-.ckl input{accent-color:var(--med);width:16px;height:16px}
-.cta{width:100%;padding:9px 11px;font-family:inherit;font-size:13px;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);color:var(--tx);outline:none;resize:vertical;min-height:70px;line-height:1.5}
-.cta:focus{border-color:var(--med)}
+.chd{text-align:center;margin-bottom:18px;padding-bottom:20px;border-bottom:1px solid var(--bd)}
+.cav{width:56px;height:56px;background:var(--medl);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;color:var(--med)}
+.ctit{font-size:19px;font-weight:800;margin-bottom:6px}
+.cdesc{font-size:13.5px;color:var(--sub);line-height:1.6;word-break:keep-all}
+.cphone{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;margin-top:14px;padding:0 18px;background:var(--medl);border-radius:99px;font-size:15px;font-weight:800;color:var(--medd);font-variant-numeric:tabular-nums}
+.notice{background:#FFF7E8;border:1px solid #F3D9A8;border-radius:14px;padding:14px 16px;margin-bottom:20px;font-size:13px;color:#6B4206;line-height:1.6;word-break:keep-all}
+.notice strong{display:block;margin-bottom:4px;font-size:14px}
+.sec-tit{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:var(--tx);margin-bottom:14px}
+.sec-tit::before{content:"";width:4px;height:15px;border-radius:2px;background:var(--med)}
+.rg,.ckg{display:flex;gap:8px;flex-wrap:wrap}
+.rl,.ckl{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--bd);border-radius:14px;background:var(--sf);cursor:pointer;font-size:14px;color:var(--tx);transition:all .15s}
+.rl:has(input:checked),.ckl:has(input:checked){border-color:var(--med);background:var(--medl);color:var(--medd);font-weight:600}
+.rl input,.ckl input{accent-color:var(--med);width:18px;height:18px}
+.cta{width:100%;padding:12px 14px;font-family:inherit;font-size:14.5px;background:var(--mu);border:1px solid var(--bd);border-radius:14px;color:var(--tx);outline:none;resize:vertical;min-height:76px;line-height:1.5;transition:border-color .15s,background .15s}
+.cta:focus{border-color:var(--med);background:var(--sf)}
 .cta::placeholder{color:var(--hint)}
-.cc{font-size:10px;color:var(--hint);text-align:right;margin-top:3px}
-.bcall{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;background:var(--med);color:#fff;border:none;border-radius:var(--r8);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
-.bcall:hover{background:#4747b8}
-.bsubmit{flex:1;padding:11px;background:var(--g);color:#fff;border:none;border-radius:var(--r8);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
-.bsubmit:hover{background:#27500A}
+.cc{font-size:11.5px;color:var(--hint);text-align:right;margin-top:4px;font-variant-numeric:tabular-nums}
+.bcall{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:52px;padding:0 14px;background:var(--medl);color:var(--medd);border:none;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s}
+.bcall:hover{background:var(--medm)}
 /* SHEET */
-.sh-bg{display:none;position:fixed;inset:0;z-index:990;background:rgba(0,0,0,.4)}
+.sh-bg{display:none;position:fixed;inset:0;z-index:990;background:rgba(28,27,54,.42)}
 .sh-bg.open{display:block}
-.sheet{position:fixed;bottom:0;left:0;right:0;z-index:991;background:var(--sf);border-radius:20px 20px 0 0;padding:16px 20px 40px;max-height:70vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s ease}
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:991;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:8px;align-content:start;background:var(--sf);border-radius:24px 24px 0 0;padding:10px 16px calc(24px + env(safe-area-inset-bottom));max-height:78vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.3,1);box-shadow:var(--sh2)}
 .sheet.open{transform:translateY(0)}
-.sh-hdl{width:36px;height:4px;background:var(--bd);border-radius:99px;margin:0 auto 16px}
-.sh-tit{font-size:14px;font-weight:600;margin-bottom:12px}
-.sh-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:none;background:transparent;border-radius:var(--r8);font-family:inherit;font-size:13px;color:var(--sub);cursor:pointer;text-align:left}
-.sh-btn:hover{background:var(--mu);color:var(--tx)}
-.sh-btn i{font-size:16px;color:var(--g);flex-shrink:0}
+.sheet>.sh-hdl,.sheet>.sh-tit,.sheet>div{grid-column:1/-1}
+.sh-hdl{width:40px;height:5px;background:var(--bdl);border-radius:99px;margin:0 auto 14px}
+.sh-tit{font-size:17px;font-weight:700;padding:0 4px;margin-bottom:12px}
+.sh-btn{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:0 10px;margin-bottom:8px;border:1px solid var(--bd);background:var(--mu);border-radius:16px;font-size:14px;font-weight:600;color:var(--tx);cursor:pointer;text-align:left;word-break:keep-all}
+.sh-btn i{width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--med);background:var(--sf);border-radius:11px}
+.sh-btn:active{background:var(--medl);border-color:var(--medm)}
+.sheet>div{margin-top:8px!important;padding-top:12px!important;border-top:1px solid var(--bd)!important}
+.sheet>div .sh-btn{background:var(--medl);border-color:var(--medl);margin-bottom:0}
 /* MOBILE */
 @media(max-width:768px){
-  .app{display:flex;flex-direction:column;height:100dvh;height:100vh;max-width:100%;box-shadow:none}
+  .app{display:flex;flex-direction:column;height:100vh;height:100dvh;width:100%;max-width:100%;margin:0;border:none;border-radius:0;box-shadow:none}
   .sidebar{display:none}
-  .mob-top{display:flex;flex-direction:column;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
-  .mob-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px 8px}
-  .mob-logo{display:flex;align-items:center;gap:8px}
+  .mob-top{display:flex;flex-direction:column;background:var(--sf);border-bottom:1px solid var(--bd);border-radius:0 0 22px 22px;box-shadow:0 6px 18px rgba(40,34,140,.06);flex-shrink:0;position:relative;z-index:2}
+  .mob-hdr{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 6px 4px 14px;min-height:56px}
+  .mob-logo{display:flex;align-items:center;min-width:0}
+  .mob-logo .mk-logo{height:14px;width:102.7px}
   .mob-wm{display:flex;flex-direction:column;line-height:1.2}
   .mob-mn{font-size:13px;font-weight:700;color:var(--med)}
-  .mob-ms{font-size:11px;font-weight:600;color:var(--g)}
-  .mob-acts{display:flex;gap:5px;align-items:center}
-  .mob-cbtn{display:flex;align-items:center;gap:4px;padding:5px 10px;background:var(--med);color:#fff;border:none;border-radius:20px;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer}
-  .mob-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:14px}
-  .mob-pr{padding:0 14px 10px}
-  .mob-prc{display:flex;align-items:center;justify-content:space-between;background:var(--mu);border:1px solid var(--bd);border-radius:var(--r8);padding:9px 12px;cursor:pointer}
+  .mob-acts{display:flex;gap:0;align-items:center}
+  .mob-cbtn{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;min-height:40px;margin:2px 4px 2px 0;padding:0 11px;background:var(--med);color:#fff;border:none;border-radius:13px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(95,89,255,.25)}
+  .mob-cbtn i{font-size:15px!important}
+  .mob-btn{width:44px;height:44px;background:transparent;border:none;border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:20px}
+  .mob-btn:active{background:var(--medl);color:var(--medd)}
+  .mob-pr{padding:2px 14px 10px}
+  .mob-prc{display:flex;align-items:center;justify-content:space-between;background:var(--mu);border:1px solid var(--bd);border-radius:18px;padding:10px 10px 10px 14px;min-height:60px;cursor:pointer}
+  .mob-prc:active{border-color:var(--medm)}
   .mob-prl{flex:1;min-width:0}
-  .mob-prn{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:5px}
+  .mob-prn{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mob-prt{display:flex;flex-wrap:wrap;gap:4px}
-  .mob-prr{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:10px}
-  .mob-sn{font-size:15px;font-weight:700;color:var(--g)}
-  .mob-sl{font-size:9px;color:var(--hint);text-align:right}
-  .mob-q{display:flex;gap:6px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+  .mob-prt .tag{font-size:11px;padding:3px 8px}
+  .mob-prr{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:10px}
+  .mob-prr>div{min-width:58px;padding:6px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:12px;text-align:center}
+  .mob-sn{font-size:18px;font-weight:800;color:var(--med);line-height:1.15;font-variant-numeric:tabular-nums}
+  .mob-sl{font-size:10.5px;color:var(--hint);font-weight:600;text-align:center}
+  .mob-q{display:flex;gap:6px;overflow-x:auto;padding:0 14px 12px;scrollbar-width:none;scroll-padding:0 14px}
   .mob-q::-webkit-scrollbar{display:none}
-  .mob-qb{display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;padding:5px 11px;background:var(--mu);border:1px solid var(--bd);border-radius:20px;font-family:inherit;font-size:11px;font-weight:500;color:var(--sub);cursor:pointer}
-  .mob-qb:active{background:var(--gl);border-color:var(--gb);color:var(--g)}
-  .mob-qb i{font-size:13px;color:var(--g)}
-  .mob-mb{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;padding:5px 11px;background:var(--g);border:none;border-radius:20px;font-family:inherit;font-size:11px;font-weight:500;color:#fff;cursor:pointer}
+  .mob-qb{display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;min-height:44px;padding:0 14px 0 12px;background:var(--sf);border:1px solid var(--bd);border-radius:99px;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer}
+  .mob-qb:active{background:var(--medl);border-color:var(--medm);color:var(--medd)}
+  .mob-qb i{font-size:16px;color:var(--med)}
+  .mob-mb{display:flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;min-height:44px;padding:0 14px;background:var(--med);border:none;border-radius:99px;font-size:13px;font-weight:700;color:#fff;cursor:pointer}
   .ch-hdr{display:none}
-  .msgs{padding:14px 12px 10px}
-  .msg{max-width:92%}
-  .bbl{font-size:13px;padding:9px 12px}
-  .ia{padding:10px 12px 12px}
-  .dz{padding:10px}.dz-ti{font-size:11px}
-  .mi{font-size:14px;padding:10px 12px}
-  .sbtn{width:42px;height:42px;font-size:17px}
-  .disc{font-size:9px}
+  .msgs{padding:16px 12px 10px}
+  .msg{max-width:92%;gap:8px}
+  .mv{width:28px;height:28px;border-radius:10px;font-size:14px}
+  .bbl{font-size:14.5px;padding:11px 14px}
+  .mwrap.ai .mtime{padding-left:40px}
+  .mwrap.user .mtime{padding-right:40px}
+  .tw-wrap{gap:8px}
+  .ia{padding:10px 12px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 18px rgba(40,34,140,.05)}
+  .dz{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ic ti" "ic su" "ic fm";padding:10px 12px 10px 10px;row-gap:1px;margin-bottom:8px}
+  .dz-ic{width:40px;height:40px;font-size:20px;border-radius:12px}
+  .dz-ti{font-size:13.5px}
+  .dz-su{font-size:11.5px}
+  .dz-fm{margin-top:4px}
+  .fmt{font-size:10.5px;padding:2px 7px}
+  .lang-bar{flex-wrap:nowrap;gap:4px;margin-bottom:8px}
+  .lang-btn{flex:1 1 auto;min-width:0;padding:0 6px}
+  .mi{font-size:15px;padding:12px 14px}
+  .disc{font-size:11px;margin-top:8px}
   .sgrid{gap:6px}
+  .scard{padding:10px 11px}
+  .sn{font-size:13.5px}.sw{font-size:12px}
+  .mbg{align-items:flex-end;padding:0}
+  .mbg.open .modal,.mbg.open .cmodal{animation:up .3s cubic-bezier(.2,.8,.3,1)}
+  @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+  .modal,.cmodal{width:100%;max-height:92vh;border-radius:24px 24px 0 0;padding:20px 18px 20px}
+  .mbtns{margin:24px -18px -20px;padding:12px 18px calc(16px + env(safe-area-inset-bottom))}
+  .cmodal .mbtns{flex-wrap:wrap}
+  .cmodal .bcall{order:-1;flex-basis:100%}
+  .ibtn{padding:0 14px}
 }
+@media(max-width:380px){
+  .mob-hdr{padding-left:12px}
+  .mob-cbtn{padding:0 9px}
+  .msgs{padding:14px 10px 8px}
+}
+
+/* ── 음성 입력 ── */
+.vbtn{width:48px;height:48px;background:var(--medl);border:1px solid var(--medm);border-radius:16px;color:var(--med);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s,border-color .15s}
+.vbtn:hover{background:var(--medm)}
+.vbtn:active{transform:scale(.94)}
+.vbtn.on{background:#E5484D;border-color:#E5484D;color:#fff;animation:vpulse 1.3s infinite}
+.vbtn:disabled{opacity:.45;cursor:not-allowed}
+@keyframes vpulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.45)}70%{box-shadow:0 0 0 10px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+.vstat{display:none;align-items:center;gap:8px;margin-bottom:8px;padding:9px 12px;background:var(--medl);border:1px solid var(--medm);border-radius:12px;font-size:13px;line-height:1.4;color:var(--medd)}
+.vstat.show{display:flex}
+.vstat .vdot{width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#E5484D;animation:pulse 1s infinite}
+.vstat.warn{background:#FFF4F4;border-color:#F6C9CA;color:#A3282C}
+.vstat.warn .vdot{background:#A3282C;animation:none}
+
+/* ── 상담 신청자 정보 · 동의 ── */
+.csite{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-size:13px;font-weight:700;color:var(--medd);text-decoration:none}
+.csite:hover{text-decoration:underline}
+.req{font-style:normal;font-size:11px;font-weight:700;color:#C2410C;margin-left:4px}
+.cprof{border:1px solid var(--medm);background:var(--medl);border-radius:16px;padding:12px 14px;margin-bottom:16px}
+.cprof-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.cprof-lbl{font-size:12.5px;font-weight:700;color:var(--medd)}
+.cprof-edit{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 12px;background:var(--sf);border:1px solid var(--medm);border-radius:10px;color:var(--medd);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.cprof-edit:hover{background:var(--medm)}
+.cprof-row{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.5;padding:4px 0}
+.cprof-row>span{flex-shrink:0;width:64px;color:var(--sub)}
+.cprof-row>b{font-weight:700;color:var(--tx)}
+.cprof-tags{display:flex;flex-wrap:wrap;gap:5px}
+.cprof-empty{font-size:13px;color:var(--hint)}
+.agr{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:10px 12px;border:1px solid var(--bd);border-radius:14px;cursor:pointer;font-size:14px;line-height:1.45;color:var(--tx);margin-top:8px}
+.agr:has(input:checked){border-color:var(--med);background:var(--medl)}
+.agr input{accent-color:var(--med);width:18px;height:18px;flex-shrink:0;margin-top:1px}
+.agr-d{font-size:12px;line-height:1.55;color:var(--sub);padding:6px 4px 0 2px;word-break:keep-all}
+.cerr{display:none;margin-top:14px;padding:11px 14px;background:#FFF4F4;border:1px solid #F6C9CA;border-radius:12px;font-size:13.5px;line-height:1.5;color:#A3282C;word-break:keep-all}
+.cerr.show{display:block}
+.fin.bad{border-color:#E5484D;background:#FFF8F8}
+.bsubmit:disabled{opacity:.6;cursor:wait}
+.bbl a.mk-link{color:var(--medd);font-weight:700;text-decoration:underline;word-break:break-all}
 </style>
 </head>
 <body>
+<!-- MEDICOK 로고 정의 (한 곳에서 관리) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="mk-icon" viewBox="10.55 20.01 49.46 49.46"><path fill="currentColor" fill-rule="evenodd" d="M20.14 58.99C18.24 58.80 15.71 57.19 14.64 55.51C13.78 54.17 13.20 52.10 13.20 50.38C13.20 47.82 13.40 47.31 17.11 40.48C17.36 40.02 18.25 38.36 19.10 36.79C20.56 34.06 21.60 32.52 22.48 31.78C23.00 31.33 25.40 30.17 26.12 30.01C27.44 29.73 30.71 29.89 31.47 30.28C34.41 31.79 35.27 32.81 37.94 37.94C38.22 38.49 38.70 39.36 39.00 39.88C39.29 40.39 39.90 41.52 40.34 42.38C40.79 43.23 41.19 43.99 41.25 44.06C41.35 44.19 42.13 45.69 44.09 49.50C46.01 53.24 46.86 53.90 48.89 53.19C50.59 52.60 50.94 52.14 50.94 50.44C50.94 49.42 50.90 49.25 50.57 48.69C50.37 48.34 49.60 46.88 48.87 45.44C44.88 37.60 44.18 36.48 42.91 35.92C42.19 35.60 41.63 35.56 40.76 35.76C39.60 36.03 39.38 35.80 37.92 32.84C37.27 31.53 37.25 31.28 37.77 30.77C38.48 30.08 39.14 29.94 41.77 29.94C44.10 29.94 44.10 29.94 45.58 30.69C47.29 31.55 48.47 32.60 49.30 34.00C50.01 35.19 51.33 37.54 51.94 38.69C52.23 39.24 52.78 40.27 53.17 40.98C53.56 41.69 53.87 42.30 53.87 42.33C53.88 42.36 54.35 43.27 54.92 44.35C57.00 48.24 57.36 50.41 56.39 53.20C55.50 55.74 54.19 57.19 51.74 58.37C48.88 59.74 44.86 59.26 42.41 57.26C41.71 56.68 40.00 54.41 40.00 54.04C40.00 53.98 39.83 53.66 39.63 53.35C39.43 53.03 38.83 51.93 38.30 50.91C37.26 48.93 37.01 48.46 36.00 46.62C35.64 45.97 34.98 44.73 34.53 43.88C34.08 43.02 33.46 41.86 33.15 41.31C32.84 40.76 32.22 39.64 31.78 38.81C30.77 36.94 30.30 36.36 29.48 35.95C27.82 35.12 26.06 36.03 24.86 38.32C24.61 38.80 24.01 39.95 23.53 40.88C22.25 43.33 20.90 45.84 20.44 46.62C20.21 47.00 19.99 47.45 19.94 47.62C19.89 47.78 19.65 48.32 19.42 48.80C18.44 50.86 19.00 52.46 20.95 53.13C22.75 53.75 23.98 53.15 25.01 51.17C25.25 50.70 25.87 49.52 26.37 48.56C26.88 47.60 27.58 46.25 27.94 45.56C30.27 41.05 30.35 41.01 31.76 43.63C33.86 47.49 33.88 46.87 31.46 51.39C28.82 56.34 28.11 57.22 25.94 58.30C24.33 59.09 22.81 59.27 20.14 58.99Z"/></symbol>
+  <symbol id="mk-logo" viewBox="12.20 28.73 234.68 32.01"><path fill="currentColor" fill-rule="evenodd" d="M20.14 58.99C18.24 58.80 15.71 57.19 14.64 55.51C13.78 54.17 13.20 52.10 13.20 50.38C13.20 47.82 13.40 47.31 17.11 40.48C17.36 40.02 18.25 38.36 19.10 36.79C20.56 34.06 21.60 32.52 22.48 31.78C23.00 31.33 25.40 30.17 26.12 30.01C27.44 29.73 30.71 29.89 31.47 30.28C34.41 31.79 35.27 32.81 37.94 37.94C38.22 38.49 38.70 39.36 39.00 39.88C39.29 40.39 39.90 41.52 40.34 42.38C40.79 43.23 41.19 43.99 41.25 44.06C41.35 44.19 42.13 45.69 44.09 49.50C46.01 53.24 46.86 53.90 48.89 53.19C50.59 52.60 50.94 52.14 50.94 50.44C50.94 49.42 50.90 49.25 50.57 48.69C50.37 48.34 49.60 46.88 48.87 45.44C44.88 37.60 44.18 36.48 42.91 35.92C42.19 35.60 41.63 35.56 40.76 35.76C39.60 36.03 39.38 35.80 37.92 32.84C37.27 31.53 37.25 31.28 37.77 30.77C38.48 30.08 39.14 29.94 41.77 29.94C44.10 29.94 44.10 29.94 45.58 30.69C47.29 31.55 48.47 32.60 49.30 34.00C50.01 35.19 51.33 37.54 51.94 38.69C52.23 39.24 52.78 40.27 53.17 40.98C53.56 41.69 53.87 42.30 53.87 42.33C53.88 42.36 54.35 43.27 54.92 44.35C57.00 48.24 57.36 50.41 56.39 53.20C55.50 55.74 54.19 57.19 51.74 58.37C48.88 59.74 44.86 59.26 42.41 57.26C41.71 56.68 40.00 54.41 40.00 54.04C40.00 53.98 39.83 53.66 39.63 53.35C39.43 53.03 38.83 51.93 38.30 50.91C37.26 48.93 37.01 48.46 36.00 46.62C35.64 45.97 34.98 44.73 34.53 43.88C34.08 43.02 33.46 41.86 33.15 41.31C32.84 40.76 32.22 39.64 31.78 38.81C30.77 36.94 30.30 36.36 29.48 35.95C27.82 35.12 26.06 36.03 24.86 38.32C24.61 38.80 24.01 39.95 23.53 40.88C22.25 43.33 20.90 45.84 20.44 46.62C20.21 47.00 19.99 47.45 19.94 47.62C19.89 47.78 19.65 48.32 19.42 48.80C18.44 50.86 19.00 52.46 20.95 53.13C22.75 53.75 23.98 53.15 25.01 51.17C25.25 50.70 25.87 49.52 26.37 48.56C26.88 47.60 27.58 46.25 27.94 45.56C30.27 41.05 30.35 41.01 31.76 43.63C33.86 47.49 33.88 46.87 31.46 51.39C28.82 56.34 28.11 57.22 25.94 58.30C24.33 59.09 22.81 59.27 20.14 58.99ZM202.15 57.86C199.10 57.42 195.79 55.52 193.80 53.07C192.72 51.73 191.20 48.69 191.00 47.45C190.61 45.10 190.76 41.89 191.31 40.39C192.61 36.90 194.24 34.94 197.75 32.66C200.06 31.17 205.20 30.56 207.65 31.50C208.01 31.64 208.67 31.84 209.11 31.94C211.35 32.47 214.75 35.63 216.27 38.61C216.85 39.74 216.99 40.19 217.56 42.75C218.05 44.92 217.47 48.16 216.16 50.56C213.27 55.88 207.90 58.68 202.15 57.86ZM104.06 56.83C101.88 56.14 100.41 54.54 99.49 51.85C99.22 51.07 99.21 50.95 99.22 43.59C99.22 36.12 99.22 36.12 99.76 34.99C100.38 33.69 100.79 33.28 102.17 32.54C103.06 32.06 103.06 32.06 111.56 32.02C117.71 32.00 120.20 32.03 120.56 32.13C122.48 32.69 123.01 34.85 121.57 36.27C120.84 36.99 120.74 37.00 112.98 37.00C106.41 37.01 105.90 37.02 105.44 37.24C103.82 37.98 103.63 40.59 105.14 41.59C105.67 41.94 105.67 41.94 113.12 42.00C120.56 42.06 120.56 42.06 121.18 42.38C122.84 43.21 122.82 45.61 121.13 46.60C120.56 46.94 120.56 46.94 113.12 47.00C105.73 47.06 105.68 47.06 105.25 47.34C103.83 48.22 103.83 50.78 105.25 51.66C105.68 51.94 105.73 51.94 113.19 52.00C121.50 52.07 121.08 52.03 121.82 52.90C122.89 54.18 122.61 55.73 121.16 56.59C120.56 56.94 120.56 56.94 112.56 56.96C106.34 56.98 104.45 56.95 104.06 56.83ZM131.84 56.86C130.16 56.47 128.51 55.26 127.88 53.95C127.10 52.34 127.11 52.53 127.12 43.06C127.13 33.71 127.13 33.77 127.84 32.98C128.70 32.03 128.45 32.07 134.29 32.02C141.74 31.97 143.00 32.16 145.99 33.79C147.22 34.46 149.40 36.62 150.00 37.75C150.13 37.99 150.38 38.38 150.55 38.62C151.68 40.12 152.22 42.91 151.99 46.00C151.88 47.61 151.85 47.73 151.14 49.33C149.35 53.40 145.33 56.37 140.92 56.87C139.57 57.03 132.50 57.02 131.84 56.86ZM177.06 56.87C173.46 56.46 169.32 53.51 167.63 50.13C163.77 42.45 168.77 33.10 177.25 32.12C179.13 31.91 186.84 31.97 187.63 32.20C189.67 32.81 189.98 35.51 188.15 36.59C187.56 36.94 187.56 36.94 182.56 37.02C179.43 37.07 177.36 37.15 177.01 37.24C170.86 38.85 169.22 46.71 174.25 50.46C176.10 51.84 177.03 52.00 183.00 52.00C187.42 52.00 187.75 52.04 188.46 52.66C189.89 53.92 189.57 55.95 187.81 56.76C187.27 57.01 179.07 57.09 177.06 56.87ZM66.65 56.74C66.17 56.55 65.50 55.98 65.27 55.57C64.97 55.03 64.99 37.58 65.29 36.41C65.99 33.70 67.64 32.12 69.77 32.10C70.75 32.09 70.99 32.17 72.21 32.95C73.55 33.80 76.28 38.79 76.99 41.67C77.07 42.01 77.27 42.54 77.43 42.86C77.59 43.18 77.90 43.95 78.11 44.57C79.16 47.67 79.37 48.12 79.74 48.12C80.27 48.12 80.74 47.14 82.02 43.31C82.23 42.69 82.50 41.99 82.62 41.75C82.74 41.51 82.93 41.00 83.05 40.61C83.16 40.22 83.42 39.58 83.62 39.19C83.83 38.80 84.00 38.40 84.00 38.30C84.00 37.96 85.51 35.22 86.20 34.30C89.07 30.49 93.32 31.65 94.24 36.50C94.48 37.74 94.74 48.25 94.67 53.41C94.65 55.22 94.07 56.32 92.92 56.76C91.80 57.18 90.17 56.37 89.93 55.27C89.89 55.09 89.82 54.85 89.77 54.75C89.73 54.65 89.66 51.58 89.63 47.94C89.56 41.28 89.52 40.75 89.11 40.75C88.88 40.75 88.39 41.40 88.18 41.98C88.06 42.30 87.75 43.04 87.49 43.62C87.23 44.21 86.98 44.88 86.94 45.12C86.89 45.37 86.70 45.93 86.51 46.38C86.32 46.82 86.10 47.52 86.01 47.94C85.92 48.35 85.69 49.00 85.50 49.38C85.31 49.75 85.09 50.37 85.00 50.75C84.91 51.13 84.71 51.70 84.54 52.03C84.38 52.36 84.16 53.00 84.05 53.46C83.39 56.33 80.45 57.69 77.80 56.34C76.41 55.63 76.19 55.28 74.87 51.62C74.68 51.11 74.42 50.38 74.28 50.00C74.14 49.62 73.95 48.98 73.84 48.56C73.73 48.15 73.38 47.11 73.06 46.25C72.74 45.39 72.29 44.15 72.07 43.50C71.58 42.09 70.75 40.34 70.54 40.28C70.10 40.15 70.06 40.67 70.00 47.94C69.93 55.87 69.98 55.43 69.05 56.24C68.34 56.87 67.43 57.06 66.65 56.74ZM158.30 56.69C157.52 56.28 157.00 55.61 156.87 54.80C156.70 53.73 156.71 34.95 156.89 34.12C157.45 31.52 160.82 31.49 161.57 34.07C161.88 35.15 161.78 54.76 161.46 55.40C160.87 56.57 159.32 57.21 158.30 56.69ZM223.54 56.51C222.92 56.07 222.56 55.50 222.37 54.68C222.17 53.83 222.19 34.86 222.39 34.07C222.81 32.40 224.61 31.62 225.95 32.53C227.13 33.33 227.25 33.79 227.25 37.36C227.25 40.64 227.46 40.91 229.26 39.95C229.70 39.72 230.43 39.33 230.88 39.10C231.32 38.87 231.94 38.53 232.25 38.35C235.71 36.34 242.32 33.01 243.02 32.92C244.50 32.73 245.86 33.79 245.87 35.13C245.88 36.00 244.48 37.58 243.24 38.10C242.84 38.26 241.20 39.20 239.62 40.15C239.11 40.47 238.35 40.91 237.94 41.13C233.15 43.76 232.76 44.09 233.36 45.06C233.51 45.32 234.02 45.67 234.95 46.17C235.70 46.58 236.59 47.09 236.94 47.31C237.28 47.53 237.87 47.88 238.25 48.09C239.38 48.70 241.64 50.01 242.31 50.43C242.66 50.65 243.25 50.98 243.64 51.16C244.84 51.74 245.88 53.06 245.87 54.00C245.87 54.33 245.29 55.43 244.95 55.74C244.36 56.29 242.47 56.23 241.63 55.63C241.46 55.51 240.67 55.09 239.88 54.70C238.23 53.89 237.95 53.75 236.06 52.71C235.31 52.30 234.04 51.62 233.25 51.19C232.46 50.76 231.33 50.14 230.75 49.81C228.87 48.76 227.63 48.40 227.40 48.84C227.33 48.96 227.25 50.38 227.21 52.00C227.13 55.64 227.04 55.90 225.72 56.57C224.89 57.00 224.18 56.98 223.54 56.51ZM206.85 52.39C209.72 51.39 211.37 49.73 212.26 46.97C212.93 44.91 212.89 43.91 212.08 41.54C211.14 38.81 208.48 36.73 205.14 36.11C202.37 35.59 198.44 37.57 196.86 40.27C195.48 42.64 195.42 46.23 196.73 48.44C199.02 52.31 202.85 53.81 206.85 52.39ZM141.88 51.66C143.87 50.93 145.38 49.66 146.24 48.00C148.50 43.66 146.31 38.79 141.44 37.29C140.13 36.89 132.70 36.95 132.36 37.36C131.98 37.83 132.05 51.07 132.44 51.50C132.86 51.98 133.08 52.00 137.19 51.96C140.85 51.92 141.25 51.90 141.88 51.66Z"/></symbol>
+</defs></svg>
 <div class="app">
 <!-- 모바일 상단 -->
 <div class="mob-top">
   <div class="mob-hdr">
     <div class="mob-logo">
-      <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
-        <path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
-        <path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-      <div class="mob-wm"><span class="mob-mn">MEDICOK</span><span class="mob-ms">#하루건식</span></div>
+      <svg class="mk-logo" height="16" width="117.3" role="img" aria-label="MEDICOK"><use href="#mk-logo"/></svg>
     </div>
     <div class="mob-acts">
       <button class="mob-cbtn" onclick="openCons()"><i class="ti ti-headset" style="font-size:12px"></i>상담사</button>
@@ -285,12 +377,7 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
 <aside class="sidebar">
   <div class="sb-logo">
     <div class="med-logo">
-      <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
-        <path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
-        <path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-      <div class="med-wm"><span class="med-name">MEDICOK</span><span class="med-brand">#하루건식</span></div>
+      <svg class="mk-logo" height="26" width="190.6" role="img" aria-label="MEDICOK"><use href="#mk-logo"/></svg>
     </div>
     <div class="sb-desc">건강검진 기반 맞춤형 영양 상담</div>
   </div>
@@ -325,13 +412,9 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
   <div class="ch-hdr">
     <div class="hl">
       <div class="ai-av">
-        <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
-          <path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
-          <path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
-        </svg>
+        <svg class="mk-ic" width="24" height="24" aria-hidden="true"><use href="#mk-icon"/></svg>
       </div>
-      <div><div class="ai-nm">MEDICOK #하루건식 AI</div><div class="ai-st"><span class="dot"></span>Claude AI 연결됨</div></div>
+      <div><div class="ai-nm">MEDICOK AI 상담사</div><div class="ai-st"><span class="dot"></span>Claude AI 연결됨</div></div>
     </div>
     <div class="hbtns">
       <button class="cons-btn" onclick="openCons()"><i class="ti ti-headset"></i>전문 상담사 연결</button>
@@ -364,10 +447,12 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
       <button class="lang-btn" data-lang="ja" onclick="setLang('ja')">日本語</button>
       <button class="lang-btn" data-lang="zh" onclick="setLang('zh')">中文</button>
     </div>
+    <div class="vstat" id="vstat" role="status" aria-live="polite"><span class="vdot"></span><span id="vstatTx"></span></div>
     <div class="ir">
       <textarea class="mi" id="mi" placeholder="건강 상태나 검진 수치를 자유롭게 입력하세요..." rows="1"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
         oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+      <button class="vbtn" id="vbtn" type="button" onclick="toggleVoice()" aria-label="음성으로 입력" title="음성으로 입력"><i class="ti ti-microphone"></i></button>
       <button class="sbtn" id="sbtn" onclick="sendMsg()"><i class="ti ti-send"></i></button>
     </div>
     <div class="disc">본 서비스는 의학적 진단을 대체하지 않습니다. 건강 이상 시 전문의와 상담하세요. | (주)에스더블유헬스케어 고객센터 1666-6030</div>
@@ -459,8 +544,18 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
       <div class="ctit">전문 상담사 연결</div>
       <div class="cdesc">MEDICOK 전문 상담사가 직접 상담해 드립니다.<br>아래 정보를 입력하시면 더 정확한 상담이 가능합니다.</div>
       <div class="cphone"><i class="ti ti-phone" style="font-size:16px"></i>고객센터 1666-6030</div>
+      <a class="csite" href="https://www.medicok.co.kr/" target="_blank" rel="noopener"><i class="ti ti-external-link"></i>상담 없이 바로 구독하려면 메디콕 사이트로</a>
     </div>
     <div class="notice"><strong>⚠️ 상담 전 고지사항</strong>본 서비스는 건강기능식품 정보 제공 목적이며, 의학적 진단·처방을 대체하지 않습니다. 입력 정보는 상담 목적으로만 활용됩니다.</div>
+    <div class="sec-tit">신청자 정보</div>
+    <div class="cprof" id="csProf">
+      <div class="cprof-top"><span class="cprof-lbl">나의 건강 관심사에서 불러온 정보</span><button type="button" class="cprof-edit" onclick="editProfFromCons()"><i class="ti ti-pencil"></i>수정</button></div>
+      <div class="cprof-row"><span>나이·성별</span><b id="csPAge"></b></div>
+      <div class="cprof-row"><span>관심사</span><div class="cprof-tags" id="csPTags"></div></div>
+    </div>
+    <div class="fg"><div class="fl">이름<em class="req">필수</em></div><input class="fin" id="csName" maxlength="20" placeholder="예: 홍길동" autocomplete="name"></div>
+    <div class="fg"><div class="fl">휴대폰 번호<em class="req">필수</em></div><input class="fin" id="csPhone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000" autocomplete="tel" oninput="fmtPhone(this)"></div>
+    <div class="fg"><div class="fl">통화 가능한 시간</div><div class="rg"><label class="rl"><input type="radio" name="ctime" value="언제든 가능" checked> 언제든</label><label class="rl"><input type="radio" name="ctime" value="오전(09~12시)"> 오전</label><label class="rl"><input type="radio" name="ctime" value="오후(13~18시)"> 오후</label></div></div>
     <div class="sec-tit">상담 정보 입력</div>
     <div class="fg"><div class="fl">임신 / 수유 여부</div><div class="rg"><label class="rl"><input type="radio" name="preg" value="대상아님" checked> 대상아님</label><label class="rl"><input type="radio" name="preg" value="임신중"> 임신중</label><label class="rl"><input type="radio" name="preg" value="수유중"> 수유중</label></div></div>
     <div class="fg"><div class="fl">음주 / 흡연 여부</div><div class="ckg"><label class="ckl"><input type="checkbox" id="csDrink"> 음주중</label><label class="ckl"><input type="checkbox" id="csSmoke"> 흡연중</label></div></div>
@@ -469,10 +564,19 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
     <div class="fg"><div class="fl">복용중인 의약품 (50자)</div><textarea class="cta" id="csMed" placeholder="처방약 또는 일반약" maxlength="50" oninput="updateCC('csMed','ccMed')"></textarea><div class="cc"><span id="ccMed">0</span>/50</div></div>
     <div class="fg"><div class="fl">알레르기 / 특이체질 (50자)</div><textarea class="cta" id="csAlg" placeholder="알레르기 반응이나 특이체질" maxlength="50" oninput="updateCC('csAlg','ccAlg')"></textarea><div class="cc"><span id="ccAlg">0</span>/50</div></div>
     <div class="fg"><div class="fl">식습관 / 수면 / 운동습관 (50자)</div><textarea class="cta" id="csLife" placeholder="식습관, 수면시간, 운동 빈도" maxlength="50" oninput="updateCC('csLife','ccLife')"></textarea><div class="cc"><span id="ccLife">0</span>/50</div></div>
+    <div class="sec-tit" style="margin-top:6px">개인정보 동의</div>
+    <label class="agr"><input type="checkbox" id="csAgree1"><span><b>[필수]</b> 개인정보 수집·이용에 동의합니다</span></label>
+    <div class="agr-d">수집 항목: 이름, 휴대폰 번호, 나이, 성별, 통화 가능한 시간 · 이용 목적: 전문 상담사 상담 연결 · 보유 기간: 상담 완료 후 1년 (요청하시면 바로 삭제)</div>
+    <label class="agr"><input type="checkbox" id="csAgree2"><span><b>[필수]</b> 민감정보(건강정보) 수집·이용에 동의합니다</span></label>
+    <div class="agr-d">수집 항목: 건강 관심사, 임신·수유, 음주·흡연, 섭취 중인 건강기능식품, 보유 질환, 복용 중인 의약품, 알레르기·특이체질, 생활습관 · 이용 목적: 맞춤 상담 · 보유 기간: 위와 같음</div>
+    <label class="agr"><input type="checkbox" id="csChat"><span><b>[선택]</b> 최근 AI 상담 대화 내용도 상담사에게 함께 전달합니다</span></label>
+    <div class="agr-d">동의하지 않으실 수 있어요. 필수 항목에 동의하지 않으면 온라인 상담 신청은 어렵지만, 전화(1666-6030)로는 상담받으실 수 있어요.</div>
+    <input type="text" id="csHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+    <div class="cerr" id="csErr" role="alert"></div>
     <div class="mbtns">
       <button class="bcancel" onclick="closeCons()">닫기</button>
       <button class="bcall" onclick="window.location.href='tel:16666030'"><i class="ti ti-phone"></i>전화 1666-6030</button>
-      <button class="bsubmit" onclick="submitCons()">상담 요청</button>
+      <button class="bsubmit" id="csSubmit" onclick="submitCons()">상담 요청</button>
     </div>
   </div>
 </div>
@@ -539,7 +643,7 @@ function showWelcome() {
   bbl.className = 'bbl';
 
   var p1 = document.createElement('p');
-  p1.innerHTML = '안녕하세요! <strong>MEDICOK #하루건식</strong> AI 상담사입니다 🌿';
+  p1.innerHTML = '안녕하세요! <strong>MEDICOK</strong> AI 상담사입니다 🌿';
   bbl.appendChild(p1);
   bbl.appendChild(document.createElement('br'));
   var p2 = document.createElement('p');
@@ -557,10 +661,10 @@ function showWelcome() {
   var grid = document.createElement('div');
   grid.className = 'sgrid';
   var CARDS = [
-    {em:'🐟', t:'오메가3', d:'콜레스테롤·중성지방·혈행', b:'강력 권장', bc:'bs', q:'오메가3 효능, 부족 증상, 복용법을 자세히 알려주세요'},
-    {em:'☀️', t:'비타민D3', d:'면역·뼈 건강·기력', b:'필수 보충', bc:'bs', q:'비타민D 효능, 부족 증상, 복용법을 자세히 알려주세요'},
-    {em:'💊', t:'마그네슘', d:'수면·혈압·근육 이완', b:'권장', bc:'br', q:'마그네슘 효능, 부족 증상, 복용법을 자세히 알려주세요'},
-    {em:'⚡', t:'코엔자임Q10', d:'항산화·에너지·심장', b:'고려', bc:'bm', q:'코엔자임Q10 효능, 부족 증상, 복용법을 자세히 알려주세요'}
+    {em:'🐟', t:'오메가3', d:'혈중 중성지질·혈행·건조한 눈', b:'강력 권장', bc:'bs', q:'오메가3 효능, 부족 증상, 복용법을 자세히 알려주세요'},
+    {em:'☀️', t:'비타민D3', d:'뼈 건강·칼슘 흡수', b:'필수 보충', bc:'bs', q:'비타민D 효능, 부족 증상, 복용법을 자세히 알려주세요'},
+    {em:'💊', t:'마그네슘', d:'에너지 이용·신경·근육', b:'권장', bc:'br', q:'마그네슘 효능, 부족 증상, 복용법을 자세히 알려주세요'},
+    {em:'⚡', t:'코엔자임Q10', d:'항산화·높은 혈압 감소', b:'고려', bc:'bm', q:'코엔자임Q10 효능, 부족 증상, 복용법을 자세히 알려주세요'}
   ];
   CARDS.forEach(function(card) {
     var sc = document.createElement('div');
@@ -583,7 +687,7 @@ function mkAv(role) {
   var d = document.createElement('div');
   d.className = 'mv ' + role;
   if (role === 'ai') {
-    d.innerHTML = '<svg width="14" height="14" viewBox="0 0 40 40" fill="none"><path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 30 Q5 35 10 35 Q15 35 15 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/><path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/></svg>';
+    d.innerHTML = '<svg class="mk-ic" width="18" height="18" aria-hidden="true"><use href="#mk-icon"/></svg>';
   } else {
     d.innerHTML = '<i class="ti ti-user"></i>';
   }
@@ -593,15 +697,32 @@ function mkTime() { var d = document.createElement('div'); d.className = 'mtime'
 function scrollBottom() { var c = document.getElementById('msgs'); c.scrollTop = c.scrollHeight; }
 
 // 텍스트 노드로 추가 (글자 깨짐 방지)
+// 메디콕 사이트 주소(medicok.co.kr)만 링크로 바꿈. 다른 주소는 글자 그대로
+function appendLinked(parent, text) {
+  var re = /(?:https?:\/\/)?(?:www\.)?medicok\.co\.kr(?:\/[^\s)\]<>"']*)?/gi, last = 0, m;
+  while ((m = re.exec(text))) {
+    var url = m[0].replace(/[.,!?。]+$/, '');
+    if (m.index > last) parent.appendChild(document.createTextNode(text.slice(last, m.index)));
+    var a = document.createElement('a');
+    a.className = 'mk-link';
+    a.href = 'https://www.medicok.co.kr' + (url.replace(/^(?:https?:\/\/)?(?:www\.)?medicok\.co\.kr/i, '') || '/');
+    a.target = '_blank'; a.rel = 'noopener';
+    a.textContent = url;
+    parent.appendChild(a);
+    last = m.index + url.length;
+    re.lastIndex = last;
+  }
+  if (last < text.length) parent.appendChild(document.createTextNode(text.slice(last)));
+}
 function appendText(parent, text) {
   var parts = text.split('**');
   for (var i = 0; i < parts.length; i++) {
     if (!parts[i]) continue;
     if (i % 2 === 0) {
-      parent.appendChild(document.createTextNode(parts[i]));
+      appendLinked(parent, parts[i]);
     } else {
       var s = document.createElement('strong');
-      s.appendChild(document.createTextNode(parts[i]));
+      appendLinked(s, parts[i]);
       parent.appendChild(s);
     }
   }
@@ -690,7 +811,7 @@ function showTyping() {
   var c = document.getElementById('msgs');
   var d = document.createElement('div');
   d.className = 'tw-wrap'; d.id = 'typing';
-  d.innerHTML = '<div class="mv ai"><svg width="14" height="14" viewBox="0 0 40 40" fill="none"><path d="M5 30 L5 10 L14 10 L20 22 L26 10 L35 10 L35 30" stroke="#5B5BD6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tw-bbl"><span></span><span></span><span></span></div>';
+  d.innerHTML = '<div class="mv ai"><svg class="mk-ic" width="18" height="18" aria-hidden="true"><use href="#mk-icon"/></svg></div><div class="tw-bbl"><span></span><span></span><span></span></div>';
   c.appendChild(d); scrollBottom();
 }
 function removeTyping() { var e = document.getElementById('typing'); if (e) e.remove(); }
@@ -710,7 +831,10 @@ function openModal() {
   document.getElementById('selCnt').textContent = prof.ids.length;
   document.getElementById('modal').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  if (consReturn) { consReturn = false; openCons(); }
+}
 
 function toggleInterest(id) {
   var btn = document.querySelector('.ibtn[data-id="' + id + '"]');
@@ -781,12 +905,155 @@ function getAllTags() {
 function getTagLabels() { return getAllTags().map(function(t) { return t.label; }); }
 
 // ── 상담사 모달 ──
-function openCons() { document.getElementById('consModal').classList.add('open'); }
+var consReturn = false, consSending = false;
+var CONS_TEXT = [['csSupp','ccSupp'],['csDis','ccDis'],['csMed','ccMed'],['csAlg','ccAlg'],['csLife','ccLife']];
+
+function openCons() {
+  fillConsProfile();
+  consErr('');
+  document.getElementById('consModal').classList.add('open');
+}
 function closeCons() { document.getElementById('consModal').classList.remove('open'); }
 function updateCC(id, ccId) { document.getElementById(ccId).textContent = document.getElementById(id).value.length; }
+
+// 건강관심사(prof)를 상담 창에 불러오기
+function fillConsProfile() {
+  var age = [prof.age ? prof.age + '세' : '', prof.gender].filter(Boolean).join(' · ');
+  var ag = document.getElementById('csPAge');
+  ag.textContent = age || '입력 안 함';
+  ag.style.color = age ? '' : 'var(--hint)';
+  var te = document.getElementById('csPTags'); te.innerHTML = '';
+  var tags = getAllTags();
+  if (!tags.length) {
+    var e = document.createElement('span'); e.className = 'cprof-empty'; e.textContent = '선택 안 함 (수정을 눌러 고를 수 있어요)'; te.appendChild(e);
+  } else {
+    tags.forEach(function(t) { var s = document.createElement('span'); s.className = 'tag ' + t.cls; s.textContent = t.label; te.appendChild(s); });
+  }
+  var nm = document.getElementById('csName');
+  if (prof.name) nm.value = prof.name;
+}
+function editProfFromCons() { consReturn = true; closeCons(); openModal(); }
+
+function fmtPhone(el) {
+  var d = el.value.replace(/\D/g, '').slice(0, 11);
+  if (d.length < 4) el.value = d;
+  else if (d.length < 8) el.value = d.slice(0, 3) + '-' + d.slice(3);
+  else if (d.length === 10) el.value = d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6);
+  else el.value = d.slice(0, 3) + '-' + d.slice(3, 7) + '-' + d.slice(7);
+  el.classList.remove('bad');
+}
+function consErr(msg, focusId) {
+  var b = document.getElementById('csErr');
+  b.textContent = msg || '';
+  b.classList.toggle('show', !!msg);
+  if (focusId) {
+    var f = document.getElementById(focusId);
+    if (f.classList.contains('fin')) f.classList.add('bad');
+    f.focus();
+    if (f.scrollIntoView) f.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  } else if (msg && b.scrollIntoView) {
+    b.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+}
+
+// 최근 AI 상담 대화 (검진 파일 원문·이미지는 빼고 글만, 최근 8개)
+function consChatSummary() {
+  return chatHistory.slice(-8).map(function(m) {
+    var t = '';
+    if (typeof m.content === 'string') t = m.content;
+    else (m.content || []).forEach(function(c) {
+      if (c.type === 'text' && c.text) {
+        if (c.text.indexOf('[파일: ') === 0) t += '(건강검진 파일 첨부) ';
+        else t += c.text + ' ';
+      } else if (c.type === 'image') t += '(이미지 첨부) ';
+    });
+    t = t.replace(/\s+/g, ' ').trim();
+    if (t.length > 400) t = t.slice(0, 400) + '…';
+    return { role: m.role === 'assistant' ? 'ai' : 'user', text: t };
+  }).filter(function(m) { return m.text; });
+}
+
 function submitCons() {
-  closeCons();
-  addSysMsg('📋 상담 정보가 접수되었습니다.\n\n전문 상담사 연결까지 잠시 기다려 주세요.\n\n직접 전화 상담: ☎ 1666-6030\n운영시간: 평일 09:00~18:00 (주말·공휴일 휴무)');
+  if (consSending) return;
+  var name = document.getElementById('csName').value.trim();
+  var phone = document.getElementById('csPhone').value.replace(/\D/g, '');
+  document.getElementById('csName').classList.remove('bad');
+  if (!name) return consErr('이름을 입력해 주세요.', 'csName');
+  if (!/^01[016789]\d{7,8}$/.test(phone)) return consErr('연락받으실 휴대폰 번호를 정확히 입력해 주세요.', 'csPhone');
+  if (!document.getElementById('csAgree1').checked) return consErr('개인정보 수집·이용에 동의해 주세요.', 'csAgree1');
+  if (!document.getElementById('csAgree2').checked) return consErr('민감정보(건강정보) 수집·이용에 동의해 주세요.', 'csAgree2');
+  consErr('');
+
+  var pregEl = document.querySelector('input[name="preg"]:checked');
+  var timeEl = document.querySelector('input[name="ctime"]:checked');
+  var withChat = document.getElementById('csChat').checked;
+  var data = {
+    name: name,
+    phone: phone,
+    callTime: timeEl ? timeEl.value : '',
+    age: prof.age || '',
+    gender: prof.gender || '',
+    interests: getTagLabels(),
+    pregnancy: pregEl ? pregEl.value : '',
+    drink: document.getElementById('csDrink').checked,
+    smoke: document.getElementById('csSmoke').checked,
+    supplements: document.getElementById('csSupp').value.trim(),
+    diseases: document.getElementById('csDis').value.trim(),
+    medications: document.getElementById('csMed').value.trim(),
+    allergies: document.getElementById('csAlg').value.trim(),
+    lifestyle: document.getElementById('csLife').value.trim(),
+    chat: withChat ? consChatSummary() : [],
+    agree: { privacy: true, sensitive: true, chat: withChat },
+    lang: currentLang,
+    hp: document.getElementById('csHp').value
+  };
+
+  var btn = document.getElementById('csSubmit');
+  consSending = true; btn.disabled = true; btn.textContent = '보내는 중…';
+  var done = function() { consSending = false; btn.disabled = false; btn.textContent = '상담 요청'; };
+  var fail = function() {
+    done();
+    consErr('지금은 온라인 상담 신청을 보내지 못했어요. 잠시 후 다시 시도하시거나 고객센터(☎ 1666-6030, 평일 09:00~18:00)로 전화 주세요.');
+  };
+  fetch('/api/consult', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function(res) {
+    return res.json().catch(function() { return {}; }).then(function(j) { return { ok: res.ok, j: j }; });
+  }).then(function(r) {
+    if (!r.ok || !r.j || !r.j.ok) return fail();
+    done();
+    // 신청자 이름을 건강관심사에도 반영
+    if (!prof.name) { prof.name = name; renderSidebar(); }
+    closeCons();
+    var masked = phone.slice(0, 3) + '-****-' + phone.slice(-4);
+    var ageG = [data.age ? data.age + '세' : '', data.gender].filter(Boolean).join(' · ');
+    var filled = ['supplements', 'diseases', 'medications', 'allergies', 'lifestyle'].filter(function(k) { return data[k]; }).length;
+    var lines = [
+      '📋 상담 신청이 접수되었어요.' + (r.j.id ? ' (접수번호 ' + r.j.id + ')' : ''),
+      '',
+      '전문 상담사가 남겨 주신 번호로 연락드릴게요.',
+      '',
+      '상담사에게 전달된 정보',
+      '· 이름: ' + name,
+      '· 연락처: ' + masked,
+      '· 나이·성별: ' + (ageG || '입력 안 함'),
+      '· 관심사: ' + (data.interests.length ? data.interests.join(', ') : '선택 안 함'),
+      '· 통화 가능한 시간: ' + data.callTime,
+      '· 상담 정보: 임신·수유 ' + data.pregnancy + ', 음주 ' + (data.drink ? '예' : '아니오') + ', 흡연 ' + (data.smoke ? '예' : '아니오') + (filled ? ', 작성 항목 ' + filled + '개' : ''),
+      '· AI 상담 대화: ' + (withChat && data.chat.length ? '함께 전달' : '전달 안 함'),
+      '',
+      '급하시면 ☎ 1666-6030 (평일 09:00~18:00, 주말·공휴일 휴무)'
+    ];
+    addSysMsg(lines.join('\n'));
+    // 다음 신청을 위해 상담 입력값·동의 초기화 (이름·관심사는 유지)
+    CONS_TEXT.forEach(function(p) { document.getElementById(p[0]).value = ''; updateCC(p[0], p[1]); });
+    ['csDrink', 'csSmoke', 'csAgree1', 'csAgree2', 'csChat'].forEach(function(id) { document.getElementById(id).checked = false; });
+    document.querySelector('input[name="preg"][value="대상아님"]').checked = true;
+    document.querySelector('input[name="ctime"][value="언제든 가능"]').checked = true;
+    document.getElementById('csPhone').value = '';
+  }).catch(fail);
 }
 
 // ── 하단 시트 ──
@@ -928,7 +1195,7 @@ function sendMsg() {
 }
 function resetChat() { if (!confirm('상담 내용을 초기화할까요?')) return; chatHistory = []; showWelcome(); }
 function exportChat() {
-  var lines = ['MEDICOK #하루건식 AI 상담 내역', '생성: ' + nowStr(), '────────'];
+  var lines = ['MEDICOK AI 상담 내역', '생성: ' + nowStr(), '────────'];
   chatHistory.forEach(function(m) {
     var role = m.role === 'user' ? '사용자' : 'MEDICOK AI';
     var content = typeof m.content === 'string' ? m.content : m.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('\n');
@@ -936,7 +1203,7 @@ function exportChat() {
   });
   var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' }));
-  a.download = 'MEDICOK-하루건식-상담내역.txt'; a.click();
+  a.download = 'MEDICOK-AI-상담내역.txt'; a.click();
 }
 
 // ── 시스템 프롬프트 ──
@@ -944,29 +1211,33 @@ function getSysPrompt() {
   var parts = [prof.name, prof.age ? prof.age + '세' : '', prof.gender].filter(Boolean);
   var tags = getTagLabels();
   var p = '';
-  p += 'MEDICOK #하루건식 AI 건강기능식품 전문 상담사입니다.\n\n';
+  p += 'MEDICOK AI 건강기능식품 전문 상담사입니다. (챗봇 이름: MEDICOK AI 상담사 / 메디콕 AI 상담사)\n';
+  p += '- 하루건식은 메디콕의 맞춤형 소분(1일분 개별 포장) 서비스 이름입니다. 소분 안내 등 필요한 경우에만 언급하세요.\n\n';
   p += '[사용자 건강 프로필]\n';
   p += '- 이름/나이/성별: ' + (parts.join(' ') || '미입력') + '\n';
   p += '- 건강 관심사: ' + (tags.join(', ') || '미입력') + '\n\n';
   p += '[핵심 역할]\n';
   p += '1. 건강 관심사, 건강검진 결과, 증상을 분석합니다\n';
-  p += '2. 아래 제품 DB에서 가장 적합한 MEDICOK #하루건식 제품을 추천합니다\n';
+  p += '2. 아래 제품 DB에서 가장 적합한 MEDICOK 제품을 추천합니다\n';
   p += '3. 제품명, 기능, 추천 이유, 섭취법을 함께 안내합니다\n';
   p += '4. 복수 추천 시 1순위·2순위로 구분합니다\n';
   p += '5. 부족 시 신체 증상도 설명합니다\n\n';
-  p += '[관심사별 추천 가이드]\n';
-  p += '간 건강→리버투씨슬&비 / 활력·피로→에너지투비타민,홍삼 / 체지방→콜레우스포스콜리,카테킨&바나바\n';
-  p += '콜레스테롤→장용성알티지오메가3,코엔자임Q10부스터 / 혈당→카테킨&바나바,혈당&프로바이오틱스\n';
-  p += '혈압→코엔자임Q10부스터 / 뇌건강→브레인포스파티딜세린,홍삼 / 눈건강→아이투루아\n';
-  p += '뼈건강→본투칼슘플러스,퓨어비타민D3 / 위건강→위케어꾸지뽕 / 장건강→100억프로바이오틱스\n';
-  p += '관절·근육→메디콕보스맥스 / 면역→프로폴리스&징크,퓨어비타민D3,리포좀비타민C\n';
-  p += '모발·손톱→비오틴부스터 / 수면→릴랙스테아닌&홍경천 / 스트레스→릴랙스테아닌&홍경천\n';
-  p += '여성건강→에스트로for퀸,감마리놀렌산,우먼투비타민,활성엽산 / 피부→히알루론산,리포좀비타민C\n';
-  p += '남성건강→맨파워쏘팔코사놀\n\n';
+  p += '[관심사별 추천 가이드 - 소분 제품 28종 기준]\n';
+  p += '간 건강→리버투씨슬&비 / 활력·피로→에너지투비타민, 홍삼(피로개선), 리버투씨슬&비\n';
+  p += '체지방 관리→카테킨&바나바, 콜레우스 포스콜리 / 콜레스테롤→카테킨&바나바(혈중 콜레스테롤), 장용성 알티지 오메가3(혈중 중성지질)\n';
+  p += '혈당 관리→혈당&프로바이오틱스, 카테킨&바나바 / 혈압 관리→코엔자임Q10부스터\n';
+  p += '뇌 건강→PS앤징코, 장용성 알티지 오메가3(기억력), 홍삼(기억력) / 눈 건강→아이투루아, 장용성 알티지 오메가3(건조한 눈)\n';
+  p += '뼈 건강→본투칼마디, 퓨어 비타민D3 / 위 건강→위케어 꾸지뽕 / 장 건강→100억 프로바이오틱스, 혈당&프로바이오틱스\n';
+  p += '관절/근육→보스맥스(관절), 마그퀵200·본투칼마디(신경과 근육 기능) / 면역력→프로폴리스&징크, 홍삼\n';
+  p += '모발/손톱→비오틴(에너지 대사에 필요한 비타민으로 안내) / 수면→테아닌(긴장완화), 마그퀵200(신경·근육 기능) - 수면 개선 기능성 제품은 없음\n';
+  p += '스트레스→테아닌 / 여성 건강→우먼투비타민, 감마리놀렌산, 회화나무추출물(갱년기), 활성 엽산, 철분부스터\n';
+  p += '피부→히알루론산, 감마리놀렌산(면역 과민반응 피부), 리포좀 비타민C / 남성 건강→맨파워쏘팔코사놀 / 종합 영양→올투비타엔미네랄\n';
+  p += '패키지로 원하면→간편팩 25종 중 연령·목적에 맞는 팩 추천\n\n';
   p += '[섭취 안내 원칙]\n';
   p += '- 모든 제품: 충분한 물과 함께 식후 섭취\n';
+  p += '- 소분(하루건식)·간편팩은 하루 섭취량이 한 포(한 팩)에 담겨 있으므로 "하루 한 포를 식후에"로 안내하고, 정·캡슐 개수를 추측해서 말하지 말 것\n';
   p += '- 권장 시간: 아침 또는 점심 식후\n';
-  p += '- 저녁 예외: 마그네슘, 릴랙스 테아닌&홍경천 → 저녁 식후 또는 취침 전\n';
+  p += '- 저녁 예외: 마그퀵200, 테아닌 → 저녁 식후 또는 취침 전\n';
   p += '- 분할 복용 안내 금지: 1일 2정도 아침 식후 한 번에\n';
   p += '- 공복 복용 안내 금지\n\n';
   p += '[다국어 응답 규칙 - 최우선 준수]\n';
@@ -978,81 +1249,313 @@ function getSysPrompt() {
   var langMap = {ko:'한국어', en:'English', ja:'日本語', zh:'中文(简体)'};
   p += '- 현재 설정 언어: ' + (langMap[currentLang] || '한국어') + '\n';
   p += '- 설정 언어와 질문 언어가 다를 경우 설정 언어를 우선합니다\n';
-  p += '- 제품명(MEDICOK #하루건식 브랜드명)은 원문 유지, 설명은 해당 언어로 번역\n\n';
+  p += '- 제품명(MEDICOK 브랜드명)은 원문 유지, 설명은 해당 언어로 번역\n\n';
   p += '[지침]\n';
-  p += '- 추천 시 "MEDICOK #하루건식 [제품명]"으로 표기\n';
+  p += '- 추천 시 "MEDICOK [제품명]"으로 표기\n';
   p += '- 심각한 이상은 전문의 상담 권고\n';
-  p += '- 쿠폰·결제 문의: 고객센터 1666-6030\n';
+  p += '- 구독 방법(간편팩·맞춤형 하이케어)·쿠폰·적립금 질문은 구독 방법 안내 DB대로 단계별로 답할 것. 예전 쿠폰 방식(결제 링크 수신, 빌링 방식 2-1/2-2, 적립금 자동 재구매 정책)은 더 이상 안내하지 말 것\n';
+  p += '- 그 밖의 결제·쿠폰 문의: 고객센터 1666-6030 (평일 09:00~18:00)\n';
+  p += '- 상담사 연결이 아니라 사이트에서 직접 구독하고 싶다고 하면 메디콕 사이트 https://www.medicok.co.kr/ 를 알려 줄 것. 상담사 상담을 원하면 화면의 [전문 상담사 연결] 버튼이나 고객센터 1666-6030을 안내\n';
   p += '- SW헬스케어 회사/사업/단품 제품 문의는 getSWCompanyDB() 내용 참고\n';
   p += '- 단품 제품(글램콜라겐, 미네랄비타붐키즈, 파로바이오틱스 등)도 정확히 안내\n';
+  p += '- 간편팩(패키지) 문의는 간편팩 DB 참고, 소분 제품은 28종 DB만 사용 (단종·옛 제품명 사용 금지)\n';
+  p += '- 옛 이름으로 물으면 새 이름으로 안내: 본투칼슘플러스→본투칼마디, 브레인 포스파티딜세린→PS앤징코, 에스트로for퀸→회화나무추출물, 릴랙스 테아닌&홍경천→테아닌, 비오틴부스터→비오틴, 코엔자임Q10→코엔자임Q10부스터\n';
+  p += '- 함께 추천할 때 확인할 점(비타민D 중복, 성별 전용, 의약품 복용)을 반드시 지킬 것\n';
   p += '- 답변: 마크다운(##, **굵게**, - 목록) 사용\n\n';
   p += getProductDB();
-  p += getCouponDB();
+  p += getGanpyeonDB();
+  p += getGuideDB();
   p += getSWCompanyDB();
   return p;
 }
 
 function getProductDB() {
-  var db = '=== MEDICOK #하루건식 소분 제품 27종 ===\n';
-  db += '제조원: 코스맥스 / 콜마 | 판매원: (주)에스더블유헬스케어 | 고객센터: 1666-6030\n';
-  db += '보관: 직사광선 피해 서늘한 곳 | GMP/ISO/FSSC 인증\n\n';
-  db += '[01] 감마리놀렌산\n- 1일: 1,050mg/1캡슐 | 섭취: 아침 식후\n- 기능: 월경 전 불편한 상태 개선, 면역과민반응(피부) 개선\n- 주성분: 감마리놀렌산 210mg (보리지/달맞이꽃종자유, 뉴질랜드산)\n- 부족: 월경 전 유방통·부종·감정기복, 피부 건조·트러블\n- 주의: 임산부·수유부 전문가 상담, 알레르기 체질 원재료 확인\n\n';
-  db += '[02] 100억 프로바이오틱스\n- 1일: 450mg/1캡슐 | 섭취: 아침 식후 (냉장보관)\n- 기능: 유산균 증식·유해균 억제, 배변활동 원활, 장 건강\n- 주성분: 7종 복합 프로바이오틱스 100억 CFU (DANISCO 균주)\n- 부족: 변비·설사 반복, 장 가스·더부룩함, 면역 저하\n- 주의: 항생제 복용 시 2시간 간격\n\n';
-  db += '[03] 리버투씨슬&비\n- 1일: 600mg/1캡슐 | 섭취: 아침 식후\n- 기능: 간 건강(실리마린), 에너지 대사·생성(비타민B군)\n- 주성분: 밀크씨슬추출물 260mg(실리마린 130mg, USP Pharmacotech사), 비타민B1·B2·B6·판토텐산(DSM)\n- 부족: 간 수치 이상, 만성피로, 소화불량, 에너지 부족\n- 주의: 국화과 알레르기 주의, 간 관련 약물 복용 시 전문의 상담\n\n';
-  db += '[04] 릴랙스 테아닌&홍경천\n- 1일: 800mg/1캡슐 | 섭취: 저녁 식후 또는 취침 전\n- 기능: 스트레스 긴장완화(식약처 2중 인정), 피로개선\n- 주성분: L-테아닌 200mg, 홍경천추출물(로사빈 4.2mg)\n- 부족: 스트레스·긴장, 수면 장애, 집중력 저하, 피로 지속\n- 주의: 항불안제·수면제 복용 시 의사 상담\n\n';
-  db += '[05] 맨파워쏘팔코사놀 (남성 전용)\n- 1일: 500mg/1캡슐 | 섭취: 아침 식후\n- 기능: 전립선 건강, 지구력 증진, 정상적인 면역기능\n- 주성분: 쏘팔메토열매추출물, 옥타코사놀 20mg, 아연, 셀렌\n- 부족: 전립선 비대(잦은소변·잔뇨감), 체력·지구력 저하\n- 주의: 여성·임산부 섭취 금지, 전립선 약 복용 시 전문의 상담\n\n';
-  db += '[06] 비오틴부스터\n- 1일: 400mg/1정 | 섭취: 아침 식후\n- 기능: 지방·탄수화물·단백질 에너지대사, 에너지 생성\n- 주성분: 바이오틴 2,000ug(Quali-Biotin), 판토텐산 2mg, 묵주추출물, 생선콜라겐, L-시스틴\n- 부족: 탈모·모발 약화, 피부 트러블, 손발톱 갈라짐\n- 주의: 생선·조개류 알레르기 주의\n\n';
-  db += '[07] 본투칼슘플러스\n- 1일: 1,000mg/1정 | 섭취: 아침 식후\n- 기능: 골다공증 발생 위험 감소, 뼈·치아 형성·유지, 신경·근육\n- 주성분: 칼슘 210mg(Aquamin 해조칼슘), 비타민K2(MK-7) 70ug, 비타민D3 10ug, 망간 3mg\n- 부족: 뼈 약화·골절, 골다공증, 근육경련, 치아 약화\n- 주의: 항응고제(와파린) 복용 시 의사 상담\n\n';
-  db += '[08] 브레인 포스파티딜세린\n- 1일: 340mg/1캡슐 | 섭취: 아침 식후\n- 기능: 노화로 인한 인지력(기억력) 개선\n- 주성분: 포스파티딜세린 300mg(대두 70% 순도), 9중 비타민미네랄\n- 부족: 기억력 저하, 집중력 감소, 인지기능 저하\n- 주의: 대두 알레르기 주의\n\n';
-  db += '[09] 장용성 알티지 오메가3\n- 1일: 1캡슐/rTG형 | 섭취: 아침 식후 (장용성·비린내 없음)\n- 기능: 혈중 중성지방 감소, 혈행 개선, 건조한 눈 개선\n- 주성분: EPA 500mg+DHA 200mg (AlaskOmega rTG형, 알래스카산), 비타민E\n- 부족: 혈중 중성지방 상승, 혈행 불량·손발 저림, 눈 건조\n- 주의: 항응고제 복용 시 전문의 상담, 수술 전 2주 중단\n\n';
-  db += '[10] 에너지투비타민\n- 1일: 1,090mg/1정 | 섭취: 아침 식후\n- 기능: 에너지 생성, 피로 개선, 항산화\n- 주성분: 비타민B1·B2·B6·C·D·E, 나이아신, 비오틴, 판토텐산\n- 부족: 만성피로, 무기력, 입술·구내염, 에너지 부족\n\n';
-  db += '[11] 에스트로for퀸\n- 1일: 800mg/2정 | 섭취: 아침 식후\n- 기능: 갱년기 여성 건강(뼈), 갱년기 신체변화 불편감 개선\n- 주성분: 회화나무열매추출물 350mg, 대두이소플라본 29mg\n- 부족: 안면홍조, 수면 장애, 감정기복, 뼈 약화, 질 건조\n- 주의: 호르몬 치료 중·임산부·유방암 과거력 시 전문의 상담\n\n';
-  db += '[12] 아이투루아\n- 1일: 350mg/1캡슐 | 섭취: 아침 식후\n- 기능: 눈 피로 개선, 황반 건강, 어두운 곳 시각 적응\n- 주성분: 마리골드꽃추출물(루테인·지아잔틴, MaQxan), 아스타잔틴(AstaBeet)\n- 부족: 눈 피로·충혈, 침침함, 야간시력 저하, 황반 건강 저하\n\n';
-  db += '[13] 올투비타엔미네랄\n- 1일: 4정 | 섭취: 아침 식후\n- 기능: 22종 영양소 33종 기능성 멀티비타민미네랄\n- 주성분: 비타민A·C·D·E·K, B군, 칼슘·철·아연·마그네슘·셀렌 등 22종+프리바이오틱스\n- 부족: 전반적 영양 불균형\n- 주의: 철분 함유 어린이 주의\n\n';
-  db += '[14] 우먼투비타민\n- 1일: 800mg/1정 | 섭취: 아침 식후\n- 기능: 여성 특화 16종 멀티(뼈·치아, 항산화, 면역, 철분, 피부·모발)\n- 주성분: 비타민A·C·D3·E·K, B군, 칼슘·철·아연·엽산·비오틴 등 16종\n- 부족: 여성 영양 불균형, 생리 후 철분 부족, 피부·모발 약화\n\n';
-  db += '[15] 위케어 꾸지뽕\n- 1일: 300mg/1캡슐 | 섭취: 아침 식후\n- 기능: 위 점막 기능 도움\n- 주성분: 꾸지뽕열매추출물 100mg, 나이아신 23mg\n- 부족: 속 더부룩함, 소화불량, 위 불편감\n\n';
-  db += '[16] 철분 부스터\n- 1일: 300mg/1정 | 섭취: 아침 식후\n- 기능: 혈액 생성, 에너지 생성, 산소 운반\n- 주성분: 철 24mg (1일 권장량 200%), 이노시톨, 과일야채혼합분말\n- 부족: 빈혈(어지럼증·두근거림·창백), 피로, 손발 차가움\n- 주의: 어린이 보관 주의, 항생제·제산제와 2시간 간격\n\n';
-  db += '[17] 카테킨&바나바\n- 1일: 480mg/1정 | 섭취: 아침 식후\n- 기능: 혈당 상승 억제, 항산화, 체지방 감소, 콜레스테롤 감소\n- 주성분: 녹차추출물(카테킨) 300mg, 바나바잎추출물(코로솔산) 0.45mg\n- 부족: 식후 혈당 스파이크, 체지방 증가\n- 주의: 당뇨약 복용 시 저혈당 위험, 반드시 의사 상담\n\n';
-  db += '[18] 코엔자임Q10 부스터\n- 1일: 300mg/1정 | 섭취: 아침 식후\n- 기능: 높은 혈압 감소, 항산화\n- 주성분: 코엔자임Q10 100mg (98% 고순도, 12주 임상 수축기혈압 감소 확인)\n- 부족: 혈압 상승, 피로·무기력, 심장 기능 저하 (40대 이후 급감)\n- 주의: 혈압약·항응고제 복용 시 의사 상담. 스타틴 복용 시 필수 보충\n\n';
-  db += '[19] 퓨어 비타민D3\n- 1일: 1정/4,000IU | 섭취: 아침 식후\n- 기능: 골다공증 위험 감소, 면역기능, 뼈 형성 유지\n- 주성분: 비타민D3 4,000IU (DSM/Quali-D 고흡수 원료)\n- 부족: 뼈 통증·골절, 잦은 감기, 우울감, 근육 약화, 피로\n- 주의: 신장·심장질환 시 의사 상담\n\n';
-  db += '[20] 프로폴리스&징크\n- 1일: 700mg/1캡슐 | 섭취: 아침 식후\n- 기능: 항산화, 정상적인 면역기능, 세포 보호\n- 주성분: 총플라보노이드 20mg (호주산 프로폴리스, Royal Jelly Australia), 아연 3mg\n- 부족: 면역 저하, 잦은 감기, 항산화 능력 저하\n- 주의: 꿀·벌 알레르기 주의\n\n';
-  db += '[21] 혈당&프로바이오틱스\n- 1일: 450mg/1캡슐 | 섭취: 아침 식후\n- 기능: 식후 혈당 상승 억제 + 장 건강 복합\n- 주성분: 바나바잎추출물(코로솔산), 7종 프로바이오틱스 100억 CFU\n- 부족: 식후 혈당 급등, 장 건강 이상\n- 주의: 당뇨약 복용 시 반드시 의사 상담\n\n';
-  db += '[22] 활성엽산\n- 1일: 300mg/1정 | 섭취: 아침 식후\n- 기능: 세포·혈액 생성, 태아 신경관 발달, 혈중 호모시스테인 정상 유지\n- 주성분: 엽산 400ug DEF (Quatrefolic 활성형 5-MTHF)\n- 부족: 거대적아구성 빈혈, 태아 신경관 결손 위험\n- 주의: 임산부 필수 권장, 항경련제 복용 시 의사 상담\n\n';
-  db += '[23] 히알루론산\n- 1일: 300mg/1정 | 섭취: 아침 식후\n- 기능: 피부 보습\n- 주성분: 히알루론산 120mg (유산균 배양 발효 공법)\n- 부족: 피부 건조·당김, 잔주름, 탄력 저하\n\n';
-  db += '[24] 홍삼\n- 1일: 600mg/1캡슐 | 섭취: 아침 식후\n- 기능: 면역력 증진, 피로개선, 기억력 개선, 항산화, 혈액흐름\n- 주성분: 홍삼(진세노사이드 Rg1/Rb1 각 1mg, Rg3 0.3mg), 총진세노사이드 4mg\n- 부족: 면역 저하, 만성피로, 기억력 감퇴, 혈액순환 불량\n- 주의: 항응고제·혈압약·당뇨약 복용 시 의사 상담\n\n';
-  db += '[25] 콜레우스포스콜리\n- 1일: 750mg/1정 | 섭취: 아침 식후\n- 기능: 체지방 감소\n- 주성분: 포스콜린 50mg (콜레우스포스콜리 뿌리추출물)\n- 부족: 체지방 과다, 복부비만\n- 주의: 혈압약 복용 시 주의, 임산부 섭취 금지\n\n';
-  db += '[26] 리포좀 비타민C\n- 1일: 1,200mg/2정 | 섭취: 아침 식후 2정 한 번에\n- 기능: 결합조직 형성, 철 흡수 증진, 항산화\n- 주성분: 비타민C 500mg (Liposovit-C 리포좀 제형, Bart사 독자기술)\n- 부족: 잦은 감기, 피로, 피부 탄력 저하, 잇몸 출혈\n- 주의: 신장 질환 시 과다 섭취 주의\n\n';
-  db += '[27] 메디콕 보스맥스\n- 1일: 900mg/1정 | 섭취: 아침 식후\n- 기능: 관절 건강 (2024년 식약처 개별인정 제2024-15호)\n- 주성분: 보스웰리아추출물 500mg(AKBA/KBSA 84mg/g), 비타민D3/K2(MK-7)/B1/판토텐산/비오틴/망간\n- 임상: TNF-a 감소, CRP 감소, WOMAC/VAS 통증 감소 확인\n- 부족: 관절 통증·염증, 뻣뻣함, 연골 약화\n- 주의: 항응고제 복용 시 전문의 상담\n\n';
-  return db;
+  return [
+    "=== MEDICOK 맞춤형 소분 제품 28종 (하루건식 소분 서비스) ===",
+    "기준 자료: 제품 설명 28종 최종본(2026.10.20) · 제품자료(2026.08.26 상품기획팀) 라벨 함량",
+    "제조원: 코스맥스 / 콜마 | 판매원: (주)에스더블유헬스케어 | 고객센터: 1666-6030",
+    "보관: 직사광선을 피해 서늘한 곳 | 위생적인 1일 1포 소분 포장",
+    "※ 기능성 문구는 식약처 인정 표현 그대로 사용. 아래 DB에 없는 효과(치료·예방·수면 개선 등)는 말하지 말 것.",
+    "",
+    "■ 케어 영역별 제품 분류 (8개 영역)",
+    "- 장·소화: 100억 프로바이오틱스, 혈당&프로바이오틱스, 위케어 꾸지뽕",
+    "- 기초 영양: 에너지투비타민, 올투비타엔미네랄, 우먼투비타민, 리포좀 비타민C, 퓨어 비타민D3, 활성 엽산, 철분부스터, 마그퀵200, 비오틴",
+    "- 뼈·관절: 보스맥스, 본투칼마디",
+    "- 혈행·활력: 장용성 알티지 오메가3, 코엔자임Q10부스터, 홍삼, 리버투씨슬&비",
+    "- 눈·두뇌: 아이투루아, PS앤징코",
+    "- 체지방 관리: 카테킨&바나바, 콜레우스 포스콜리",
+    "- 남성·여성 케어: 맨파워쏘팔코사놀(남성 전용), 감마리놀렌산, 회화나무추출물(갱년기 여성)",
+    "- 면역·피부·휴식: 프로폴리스&징크, 히알루론산, 테아닌",
+    "",
+    "[01] 100억 프로바이오틱스 (장·소화)",
+    "- 기능성: 유산균 증식 및 유해균 억제 · 배변활동 원활 · 장 건강에 도움을 줄 수 있음",
+    "- 함량: 프로바이오틱스 100억 CFU 보장 (7종 복합 유산균: 소장 3·대장 3·장 환경 1 + 혼합유산균 17종)",
+    "- 원료: DANISCO · 미국 (세계 3대 프로바이오틱스 전문기업)",
+    "- 특징: 유산균 생체보호막 특허기술, FDA GRAS 균주",
+    "",
+    "[02] 리버투씨슬&비 (혈행·활력)",
+    "- 기능성: 밀크씨슬 추출물 - 간 건강에 도움을 줄 수 있음 / 비타민B1 - 탄수화물과 에너지 대사에 필요",
+    "- 함량: 밀크씨슬추출물(실리마린 130mg, 일일섭취량 100%, 실리마린 순도 50%), 비타민B1·B2·B6·판토텐산",
+    "- 원료: US PHARMATECH · 미국 (NSF·FDA·USDA 인증 보유 제조사)",
+    "- 특징: 밀크씨슬 + 비타민B 4종, 총 5종 기능성",
+    "",
+    "[03] 리포좀 비타민C (기초 영양)",
+    "- 기능성: 결합조직 형성과 기능유지에 필요, 철의 흡수에 필요, 항산화 작용을 하여 유해산소로부터 세포를 보호하는데 필요",
+    "- 함량: 비타민C 500mg (1정당, 일일섭취량 대비 500%)",
+    "- 원료: BART · 폴란드 (Liposovit®C 리포좀 제형 기술)",
+    "- 특징: 리포좀 구조에서 천천히, 지속적으로 방출 / Gulfood 2021 수상",
+    "",
+    "[04] 맨파워쏘팔코사놀 (남성 전용)",
+    "- 기능성: 쏘팔메토열매추출물 - 전립선 건강의 유지에 도움을 줄 수 있음 / 옥타코사놀 함유 유지 - 지구력 증진에 도움을 줄 수 있음 / 아연·셀렌 - 정상적인 면역기능에 필요, 유해산소로부터 세포를 보호하는데 필요",
+    "- 함량: 쏘팔메토(로르산 80mg), 옥타코사놀 20mg, 아연 8.5mg, 셀렌 55㎍ (4중 기능성)",
+    "- 원료: Global Merchants · 인도 / US Pharmatech · 미국, 제조사 코스맥스바이오",
+    "",
+    "[05] 보스맥스 (뼈·관절)",
+    "- 기능성: 보스웰리아추출물 - 관절건강에 도움을 줄 수 있음 (2024년 식약처 개별인정형) / 비타민D - 칼슘과 인이 흡수되고 이용되는데 필요, 뼈의 형성과 유지에 필요",
+    "- 함량: 보스웰리아추출물 500mg, 비타민B1·비타민D(10㎍)·비타민K2(All-trans), 판토텐산, 망간, 비오틴 (7종 원료)",
+    "- 원료: Arjuna · 인도",
+    "",
+    "[06] 본투칼마디 (뼈·관절)",
+    "- 기능성: 칼슘 - 뼈와 치아 형성에 필요, 신경과 근육 기능 유지에 필요 / 비타민D - 칼슘과 인이 흡수되고 이용되는데 필요",
+    "- 함량: 해조칼슘 210mg(순도 98% 식물유래), 마그네슘 105mg(칼슘:마그네슘 2:1), 비타민D 10㎍, 비타민K 70㎍, 망간 3mg",
+    "- 원료: 아이슬란드 북서부 빌더랄더 채취 해조칼슘 · Superior Powders, 유기농 인증",
+    "",
+    "[07] 아이투루아 (눈·두뇌)",
+    "- 기능성: 마리골드꽃추출물 - 노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있음 / 헤마토코쿠스추출물 - 눈의 피로도 개선에 도움을 줄 수 있음",
+    "- 함량: 루테인 20mg, 아스타잔틴 4mg, 비타민A 490㎍, 베타카로틴 1.26mg (350mg 작은 연질캡슐)",
+    "- 원료: KATRA PHYTOCHEM · 인도 / AstaMaz NZ · 뉴질랜드",
+    "",
+    "[08] 에너지투비타민 (기초 영양)",
+    "- 기능성: 비타민B1 - 탄수화물과 에너지 대사에 필요 / 비타민B2 - 체내 에너지 생성에 필요",
+    "- 함량: 고함량 비타민B군 8종 + 비타민C·D·E·K (비타민B1·B12 일일섭취량 대비 8,333%)",
+    "- 원료: DSM Quali® · 독일·스위스·영국·프랑스",
+    "- 특징: 에너지 대사와 생성에 필요한 고함량 비타민B",
+    "",
+    "[09] 올투비타엔미네랄 (기초 영양)",
+    "- 기능성(예): 비타민D - 뼈의 형성과 유지에 필요 / 아연 - 정상적인 면역기능에 필요",
+    "- 함량: 비타민 13종 + 미네랄 10종 = 23종 (21종이 일일섭취기준 100% 이상), 칼슘·마그네슘 포함, 1일 2정",
+    "- 원료: DSM Quali® 위주 · 9개국 원료",
+    "- 특징: 하루 두 정으로 비타민·미네랄을 한 번에",
+    "",
+    "[10] 우먼투비타민 (기초 영양)",
+    "- 기능성: 철 - 체내 산소운반과 혈액생성에 필요 / 엽산 - 세포와 혈액생성에 필요",
+    "- 함량: 비타민 13종 + 아연·철(12mg)·셀렌, 1일 1정 500mg 작은 정제 (칼슘 미포함 - 필요 시 본투칼마디로 별도 구성)",
+    "- 원료: 독일·인도·영국·스위스·한국·프랑스",
+    "",
+    "[11] 위케어 꾸지뽕 (장·소화)",
+    "- 기능성: 위 불편감 개선에 도움을 줄 수 있음 (식약처 개별인정형 원료)",
+    "- 함량: 꾸지뽕잎추출물 100mg(루틴 0.23mg), 300mg 작은 정제, 양배추·아티초크 추출물 함유, 부형제 무첨가",
+    "- 원료: hy(에치와이) · 원료 원산지 중국",
+    "",
+    "[12] 철분부스터 (기초 영양)",
+    "- 기능성: 철 - 체내 산소운반과 혈액생성에 필요, 에너지 생성에 필요",
+    "- 함량: 철(피로인산제이철, 비헴철) 12mg (일일섭취량 100%), 하루 한 알 300mg 작은 정제",
+    "- 원료: DR.PAUL LOHMANN · 독일 (130년 이상 무기염 제조 경험)",
+    "",
+    "[13] 카테킨&바나바 (체지방 관리)",
+    "- 기능성: 녹차추출물 - 항산화·체지방 감소·혈중 콜레스테롤 개선에 도움을 줄 수 있음 / 바나바잎추출물 - 식후 혈당상승 억제에 도움을 줄 수 있음",
+    "- 함량: 카테킨 300mg(순도 70%), 코로솔산 0.45mg",
+    "- 원료: BIOMED INGREDIENTS · UMALAXMI ORGANICS · 인도",
+    "- 특징: 체지방과 식후 혈당을 함께",
+    "",
+    "[14] 코엔자임Q10부스터 (혈행·활력)",
+    "- 기능성: 항산화 · 높은 혈압 감소에 도움을 줄 수 있음",
+    "- 함량: 코엔자임Q10 100mg (일일 최대함량, 순도 98%), 1캡슐",
+    "- 원료: Meteoric Biopharmaceuticals · 인도",
+    "- 특징: 나이가 들수록 줄어드는 코엔자임Q10 보충",
+    "",
+    "[15] 퓨어 비타민D3 (기초 영양)",
+    "- 기능성: 칼슘과 인이 흡수되고 이용되는데 필요, 뼈의 형성과 유지에 필요, 골다공증발생 위험 감소에 도움을 줌",
+    "- 함량: 비타민D3 100㎍(4,000IU, 일일섭취량 대비 1,000%), 350mg 연질캡슐",
+    "- 원료: DSM Quali®-D · 스위스",
+    "- ★ 100㎍은 비타민D 상한섭취량(100㎍)과 같음 → 비타민D 함유 제품과 함께 추천하지 말 것",
+    "",
+    "[16] 프로폴리스&징크 (면역·피부·휴식)",
+    "- 기능성: 프로폴리스 - 항산화에 도움을 줄 수 있음 / 아연 - 정상적인 면역기능과 세포분열에 필요",
+    "- 함량: 총 플라보노이드 20mg, 아연 3mg, 1일 1캡슐 (2중 기능성)",
+    "- 원료: R&T Australia · 호주(유칼립투스 숲에서 양봉한 프로폴리스) / EVERZINC · 캐나다",
+    "",
+    "[17] 혈당&프로바이오틱스 (장·소화)",
+    "- 기능성: 바나바잎추출물 - 식후 혈당상승 억제에 도움을 줄 수 있음 / 프로바이오틱스 - 유산균 증식 및 유해균 억제 · 배변활동 원활 · 장 건강에 도움을 줄 수 있음",
+    "- 함량: 코로솔산 1mg, 프로바이오틱스 100억 CFU (2중 기능성)",
+    "- 원료: DANISCO · 미국 / UMALAXMI ORGANICS · 인도",
+    "- 특징: 혈당과 장 건강을 한 번에",
+    "",
+    "[18] 활성 엽산 (기초 영양)",
+    "- 기능성: 세포와 혈액생성에 필요 · 태아 신경관의 정상 발달에 필요 · 혈액의 호모시스테인 수준을 정상으로 유지하는데 필요",
+    "- 함량: 활성형 엽산(메틸테트라히드로엽산) 400㎍ DFE (일일섭취량 100%)",
+    "- 원료: Gnosis by Lesaffre · 이탈리아 (4세대 활성형 엽산, 일반 엽산 대비 생체이용률 7.6배 - 원료사 자료)",
+    "- 특징: 여성·남성 모두에게 필요한 엽산",
+    "",
+    "[19] 장용성 알티지 오메가3 (혈행·활력)",
+    "- 기능성: EPA 및 DHA 함유 유지 - 혈중 중성지질 개선 · 혈행 개선 · 기억력 개선 · 건조한 눈을 개선하여 눈 건강에 도움을 줄 수 있음",
+    "- 함량: EPA와 DHA의 합 900mg (rTG형), 비타민E 11mg, 30일분 575mg x 60캡슐",
+    "- 원료: ALASKA OMEGA · 미국 (알래스카 폴락 단일 어종 100%, 어획 후 2시간 내 추출)",
+    "- 특징: 장에서 녹는 장용성 캡슐로 비린내 부담을 줄임",
+    "",
+    "[20] 콜레우스 포스콜리 (체지방 관리)",
+    "- 기능성: 체지방 감소에 도움을 줄 수 있음",
+    "- 함량: 콜레우스포스콜리추출물(포스콜린 50mg), 100% 식물성 원료, 12주 인체적용시험",
+    "- 원료: Sami-Sabinsa Group · 인도 (아유르베다에서 오래 사용된 식물)",
+    "",
+    "[21] PS앤징코 (눈·두뇌)",
+    "- 기능성: 포스파티딜세린 - 노화로 인해 저하된 인지력 개선에 도움을 줄 수 있음 / 은행잎 추출물 - 기억력 개선 · 혈행 개선에 도움을 줄 수 있음",
+    "- 함량: 포스파티딜세린 300mg, 은행잎추출물(플라보놀 배당체 28mg), 비타민B1·B2·B6, 아연",
+    "- 원료: UNICORN NATURAL PRODUCTS · 인도 / UNIAREA · 미국",
+    "",
+    "[22] 홍삼 (혈행·활력)",
+    "- 기능성: 면역력 증진 · 피로개선에 도움을 줄 수 있음 / 혈소판 응집억제를 통한 혈액흐름 · 기억력 개선 · 항산화에 도움을 줄 수 있음 (5중 기능성)",
+    "- 함량: 6년근 홍삼 농축분말(홍삼근:홍미삼 7:3), 진세노사이드 Rg1·Rb1·Rg3의 합 4mg",
+    "- 원료: 대동고려삼 · 국내산",
+    "",
+    "[23] 히알루론산 (면역·피부·휴식)",
+    "- 기능성: 피부보습에 도움을 줄 수 있음",
+    "- 함량: 히알루론산 120mg (일일섭취량 100%), 1일 1정 300mg",
+    "- 원료: PANACEA · 인도 (닭벼슬이 아닌 유산균 배양 원료, 비동물성)",
+    "",
+    "[24] 감마리놀렌산 (남성·여성 케어)",
+    "- 기능성: 월경 전 변화에 의한 불편한 상태 개선에 도움을 줄 수 있음 / 면역 과민반응에 의한 피부 상태 개선에 도움을 줄 수 있음",
+    "- 함량: 감마리놀렌산 210mg (보라지유, 저온압착 추출)",
+    "- 원료: ZOR · 네덜란드 (오일 전문 기업)",
+    "",
+    "[25] 비오틴 (기초 영양)",
+    "- 기능성: 지방, 탄수화물, 단백질 대사와 에너지 생성에 필요",
+    "- 함량: 비오틴 7,000㎍ (일일섭취량 대비 23,333%), 판토텐산, 맥주효모 160mg, 400mg 작은 제형",
+    "- 원료: 캐나다 프리미엄 브랜드 직수입",
+    "- ※ 모발·손톱 관련 기능성은 인정되지 않았으므로 \"에너지 대사에 필요한 비타민\"으로만 안내",
+    "",
+    "[26] 회화나무추출물 (갱년기 여성)",
+    "- 기능성: 회화나무열매추출물 - 갱년기 여성의 건강에 도움을 줄 수 있음 / 대두이소플라본 - 뼈 건강에 도움을 줄 수 있음",
+    "- 함량: 회화나무열매추출물 350mg(일일섭취량 100%), 대두이소플라본 24mg(NON-GMO 대두), 비타민D 10㎍",
+    "- 원료: Botanic Healthcare · 인도 / ADM · 미국",
+    "",
+    "[27] 테아닌 (면역·피부·휴식)",
+    "- 기능성: 스트레스로 인한 긴장완화에 도움을 줄 수 있음",
+    "- 함량: L-테아닌 250mg (일일 최대 섭취량), 단일 성분 설계",
+    "- 원료: 원료 원산지 인도 (식약처 기능성 인정 원료 · 미국 FDA GRAS 등재 원료)",
+    "",
+    "[28] 마그퀵200 (기초 영양)",
+    "- 기능성: 에너지 이용에 필요, 신경과 근육 기능 유지에 필요",
+    "- 함량: 마그네슘 200mg (일일섭취량 63%), 산화·글루콘산·L-젖산 마그네슘 3종",
+    "- 특징: 3종 마그네슘으로 사람마다 다른 흡수율 차이를 보완",
+    "",
+    "■ 함께 추천할 때 확인할 점",
+    "- 비타민D: 퓨어 비타민D3(100㎍)는 단독으로 상한섭취량과 같음. 보스맥스·본투칼마디·에너지투비타민·올투비타엔미네랄·우먼투비타민·회화나무추출물(각 10㎍)과 같이 추천하지 말 것",
+    "- 성별: 맨파워쏘팔코사놀은 남성 전용, 회화나무추출물은 갱년기 여성용",
+    "- 같은 기능 중복: 100억 프로바이오틱스와 혈당&프로바이오틱스는 둘 다 프로바이오틱스 100억 CFU이므로 보통 하나만 추천",
+    "- 의약품 복용 중(혈액응고 억제제·당뇨약·혈압약 등), 임신·수유 중, 질환 치료 중인 분은 섭취 전 의사·약사 또는 메디콕 관리사와 상담하도록 안내",
+    "- 알레르기·특이체질은 원재료 확인 후 섭취하도록 안내"
+  ].join('\n') + '\n\n';
 }
 
-function getCouponDB() {
-  var c = '=== 하루건식 소비자 쿠폰 사용 매뉴얼 (Ver 1.0) ===\n\n';
-  c += '[STEP 1] 결제 링크(URL) 받기\n';
-  c += '- 쿠폰 뒷면 링크 주소 또는 QR코드로 접속\n';
-  c += '- 카카오 간편 인증 및 상담 예약 가능\n';
-  c += '- 고객센터(1666-6030) 유선 상담 완료 후 결제 링크(URL) 수신\n';
-  c += '- 링크는 상담 완료 후 발송됩니다\n\n';
-  c += '[STEP 2] 쿠폰 등록하기\n';
-  c += '- 수신한 결제 링크(URL) 접속\n';
-  c += '- [적립금 및 쿠폰등록] 버튼 클릭 후 쿠폰 코드 입력\n';
-  c += '- 결제 방식 2가지 중 1가지 선택\n\n';
-  c += '[결제 방식 2-1] 정기구독 (빌링 있음)\n';
-  c += '- 카드 등록 O | 쿠폰 금액 우선 차감 후 카드 자동 결제\n';
-  c += '- 특징: 지속 이용 가능, 쿠폰 소진 후에도 구독 유지\n\n';
-  c += '[결제 방식 2-2] 적립금 소진까지 이용 (빌링 없음)\n';
-  c += '- 카드 등록 X | 적립금(쿠폰금액) 소진 시까지만 이용\n';
-  c += '- 추가 구매 희망 시 고객센터 신청 필요\n\n';
-  c += '[STEP 3] 적립금 재구매 정책 (방식 2-2 해당)\n';
-  c += 'A. 적립금 >= 이전 구매 금액 → 자동 재구매 (별도 고객 액션 없음)\n';
-  c += 'B. 적립금 < 이전 구매 금액 → 재구매 불가 (고객센터 연락 후 결제 가능)\n\n';
-  c += '[참고사항]\n';
-  c += '- 잔여 쿠폰 금액 확인: 고객센터 유선 문의\n';
-  c += '- 결제 후 초과 금액: 등록된 카드로 결제\n\n';
-  c += '[고객센터]\n';
-  c += '- 전화: 1666-6030\n';
-  c += '- 운영: 평일 09:00~18:00 (주말·공휴일 휴무)\n';
-  return c;
+function getGanpyeonDB() {
+  return [
+    "=== MEDICOK 간편팩 (건강고민별 패키지) ===",
+    "■ 간편팩이란",
+    "- 나이·성별·목적별로 미리 구성해 둔 영양제 패키지를 골라, 하루 한 팩으로 섭취하는 정기구독 상품 (총 25종)",
+    "- 맞춤형 하이케어와의 차이: 간편팩 = 건강고민별 패키지를 직접 골라 구독 / 맞춤형 하이케어 = 건강검진 결과를 분석해 맞춤 영양제를 추천받아 구독",
+    "- 섭취팩 선택: 20일 팩(평일에만 섭취) 또는 30일 팩(매일 섭취)",
+    "- 패키지 안의 영양제는 빼거나, 추가하기로 더 담을 수 있음",
+    "- 정기구독 시 할인 혜택이 적용됨 (메디콕 간편팩 페이지 기준 40% 할인 표시)",
+    "- 가격은 구독 채널·프로모션에 따라 다를 수 있으므로 정확한 금액은 결제 화면 또는 고객센터에서 확인하도록 안내 (금액을 임의로 말하지 말 것)",
+    "- 결제 수단: 카카오페이, 네이버페이, 신용·체크카드",
+    "- 건강기능식품관리사가 주문을 확인한 뒤 결제를 진행하며, 관리사와 언제든 상담하고 다음 회차 제품도 바꿀 수 있음",
+    "",
+    "■ 간편팩 25종 (팩 이름 - 대상 - 핵심 관리 영역)",
+    "- 기본팩 - 누구나 - 영양 밸런스·장·혈행",
+    "- 오피스팩 - 사무직·화면을 오래 보는 분 - 눈·간·활력",
+    "- 남성팩 - 30~40대 남성 - 활력·장·간·항산화",
+    "- 여성팩 - 30~40대 여성 - 영양·장·위·혈행",
+    "- 여성뷰티팩 - 피부 관리가 필요한 여성 - 피부 보습·항산화·면역",
+    "- 여성매직팩 - 20~30대 여성 - 월경 전 불편감·철분·혈행",
+    "- 임신초기팩 - 임신 초기 예비맘 - 예비맘 영양·장",
+    "- 임신 중후기팩 - 임신 중·후기 - 영양·혈행·장",
+    "- 여성 갱년기팩 - 갱년기 여성 - 갱년기·뼈 건강",
+    "- 전립선건강팩 - 50대 이상 남성 - 전립선·지구력·간·뼈",
+    "- 수험생팩 - 공부·집중이 필요한 수험생 - 인지력·면역·체력·장",
+    "- 다이어트팩 - 체지방 관리가 필요한 분 - 체지방·장·활력",
+    "- GLP케어팩 - 다이어트 주사를 맞는 분의 보충 영양 - 활력·혈행·뼈·장·항산화",
+    "- 활력팩 - 피로한 직장인 - 피로·간·항산화·장",
+    "- 시니어팩 - 60대 이상 - 관절·위·혈행·혈당",
+    "- 20대 여성팩 - 간·장·피부",
+    "- 20대 남성팩 - 간·장",
+    "- 30대 여성팩 - 피부·간·장·혈행",
+    "- 30대 남성팩 - 활력·간·장·혈행",
+    "- 40대 여성팩 - 눈·간·혈당·활력",
+    "- 40대 남성팩 - 간·눈·혈당·혈행",
+    "- 50대 여성팩 - 갱년기·혈행·간·혈당",
+    "- 50대 남성팩 - 간·눈·전립선·혈행",
+    "- 60세 이상 여성팩 - 관절·혈당·위·혈행",
+    "- 60세 이상 남성팩 - 간·눈·관절·혈행",
+    "",
+    "■ 구성 예시: 40대 남성팩 (5종)",
+    "- 종합비타미네랄: 올투비타엔미네랄 (30일분 800mg x 60정)",
+    "- 밀크씨슬: 리버투씨슬&비 (30일분 600mg x 30정)",
+    "- 루테인: 아이투루아 (30일분 350mg x 30캡슐)",
+    "- 혈당프로바이오틱스: 혈당&프로바이오틱스 (30일분 450mg x 30캡슐)",
+    "- 오메가3: 장용성 알티지 오메가3 (30일분 575mg x 60캡슐)",
+    "",
+    "■ 간편팩 안내 원칙",
+    "- 고객의 나이·성별·고민을 듣고 위 25종 중 맞는 팩을 1~2개 추천하고, 핵심 관리 영역과 관련된 소분 제품의 기능성을 설명",
+    "- 40대 남성팩 외 팩의 정확한 구성 제품은 간편팩 페이지의 패키지 구성 화면에서 확인하도록 안내 (구성을 지어내지 말 것)",
+    "- GLP케어팩: 의약품과 함께 먹는 제품처럼 표현하지 말고, 식사량이 줄어든 시기의 영양·컨디션 관리를 돕는 패키지로 안내. 주사 치료 중이면 담당 의사와 상담 권유",
+    "- 임신초기팩·임신 중후기팩: 임신 중에는 섭취 전 담당 의사와 상담하도록 함께 안내",
+    "- 검진 결과를 바탕으로 더 정확히 맞추고 싶은 고객에게는 맞춤형 하이케어도 함께 안내"
+  ].join('\n') + '\n\n';
+}
+
+function getGuideDB() {
+  return [
+    "=== MEDICOK 구독 방법 안내 (최신 가이드 영상 기준) ===",
+    "■ 두 가지 구독 방법",
+    "- 메디콕 페이지에서 두 가지 중 고를 수 있음",
+    "  · 간편팩 [간편팩 바로가기] - 하루 한 번, 간편하게: 건강고민별로 구성된 패키지를 골라 구독",
+    "  · 맞춤형 하이케어 [맞춤형 하이케어 추천 바로가기] - 내 몸 상태가 궁금하다면: 건강검진 결과로 맞춤 영양제를 추천받아 구독",
+    "- 메디콕은 필요한 영양제를 하루 한 포로 소분해 주는 구독형 건강기능식품 브랜드이며, 맞춤형건강기능식품관리사의 상담·검토 후 결제와 구독이 진행됨",
+    "- 상담사 연결 대신 사이트에서 직접 구독하고 싶다고 하면 메디콕 사이트 주소 https://www.medicok.co.kr/ 를 알려 주고, 사이트에서 [간편팩 바로가기] 또는 [맞춤형 하이케어 추천 바로가기]로 진행하도록 안내",
+    "- QR코드나 그 밖의 접속 링크 주소는 안내하지 말 것 (안내할 수 있는 주소는 https://www.medicok.co.kr/ 하나뿐). 사이트 이용이 어려우면 고객센터(1666-6030)로 안내",
+    "",
+    "■ 간편팩 구독 방법 (본인 확인 → 간편팩 고르기 → 구독 신청, 12단계)",
+    "1. 메디콕 페이지에서 [간편팩 바로가기]를 누른다",
+    "2. 섭취자명, 생년월일 8자리, 성별, 휴대전화번호를 입력하고 [인증코드 SMS 전송]을 누른다 (상담정보는 선택 입력)",
+    "3. 문자로 받은 인증코드 4자리를 입력하고 [확인]을 누른다 (문자가 안 오면 [재전송])",
+    "4. 나이·목적별 패키지 중 건강고민에 맞는 간편팩을 누른다",
+    "5. 팩에 들어 있는 영양제와 설명을 확인하고 [장바구니 담기]를 누른다 (정기구독 할인 금액도 바로 보임)",
+    "6. 섭취팩을 고른다: 20일 팩(평일에만 섭취) 또는 30일 팩(매일 섭취). 영양제는 체크를 풀어 빼거나 [추가하기]로 더 담을 수 있다. [다음]을 누른다",
+    "7. 담은 영양제를 확인하고 배송지 정보 옆 [입력하기]를 누른다",
+    "8. 받는 분 이름과 번호를 확인하고 [주소검색]을 누른다",
+    "9. 도로명과 건물번호로 주소를 검색해 고르고 상세주소를 입력한 뒤 [완료]를 누른다 (기본 배송지로 설정 가능)",
+    "10. 배송지와 정기구독 할인이 적용된 결제 금액을 확인한다",
+    "11. 결제 수단(카카오페이, 네이버페이, 신용·체크카드)을 골라 등록한다",
+    "12. 결제 동의에 체크하고 [주문 결제 등록]을 누른다 → 건강기능식품관리사가 주문을 확인한 뒤 결제를 진행",
+    "- 마무리: 관리사와는 언제든 상담할 수 있고, 다음 회차 제품도 바꿀 수 있음",
+    "",
+    "■ 맞춤형 하이케어 구독 방법 (본인인증 → 건강 리포트 확인 → 영양제 구독 신청, 14단계)",
+    "1. 메디콕 페이지에서 [맞춤형 하이케어 추천 바로가기]를 누른다",
+    "2. 최근 10년 건강검진 기록으로 내 건강 리포트를 만들어 줌 → [지금 참여하기]를 누른다",
+    "3. [전체 동의]에 체크하고 [다음]을 누른다",
+    "4. 카카오, 패스, 토스, 네이버 중 평소 쓰는 인증 방법을 고르고 [진행하기]를 누른다",
+    "5. 이름, 생년월일 8자리, 성별, 통신사와 휴대폰 번호를 입력하고 [다음]을 누른다",
+    "6. 휴대폰으로 온 인증 요청 알림을 열어 동의하고 [인증하기]를 누른 뒤, 다시 돌아와 동의에 체크하고 [인증 완료]를 누른다",
+    "7. 검진 데이터를 자동으로 불러온다 (20~40초 정도 걸리므로 화면을 닫지 말고 기다리기)",
+    "8. 흡연, 음주, 가족력, 현재 앓고 있는 질환, 암 여부 등 5가지 질문에 답하고 [분석 리포트 받기]를 누른다",
+    "9. 분석이 끝나면 [결과리포트 바로보기]를 누른다 (리포트 링크는 카카오톡 알림톡으로도 발송됨)",
+    "10. 본인 확인을 위해 이름과 생년월일을 입력하고 [리포트 열람하기]를 누른다",
+    "11. 종합분석부터 영양제 가이드까지 내 건강 리포트를 확인하고, 아래 보라색 버튼 [내게 필요한 영양제 추천받기]를 누른다",
+    "12. 추천 영양제를 확인하고 필요 없는 제품은 체크를 푼다. 섭취팩은 20일 팩(평일에만 섭취) 또는 30일 팩(매일 섭취) 중에서 고른다",
+    "13. 배송지와 정기구독 할인이 적용된 결제 금액을 확인하고 결제 수단을 고른다 (카카오페이, 네이버페이, 신용·체크카드, 상담 후 결제정보 등록/결제하기)",
+    "14. 상담 유형을 골라 신청을 마무리한다",
+    "   · 유선 상담: [전화 상담] 선택 후 [상담 신청하기] → 상담을 통해 구독결제 여부를 정할 수 있음. 결제정보는 구독을 원할 때만 사용되고, 제품 변경에 따라 최종 구독금액을 조정할 수 있음",
+    "   · 문자 상담: [주문 및 섭취가이드 안내(SMS/온라인)] 선택 → 결제 동의 체크 후 [주문 결제 등록] → 건강기능식품관리사가 검토 후 등록한 결제수단으로 결제 (영업일 기준 당일~최대 3일 소요)",
+    "",
+    "■ 쿠폰 · 적립금 사용법 (최신)",
+    "- 쿠폰과 적립금은 구독신청정보(주문) 화면의 [쿠폰 · 적립금] 칸에서 사용 (간편팩·맞춤형 하이케어 공통)",
+    "- 쿠폰 등록: [쿠폰 · 적립금] 칸의 [쿠폰 등록 ›]을 눌러 쿠폰번호를 입력",
+    "- 쿠폰 적용: [할인쿠폰 적용]에서 사용 가능한 쿠폰을 선택",
+    "- 적립금: [적립금 사용]에서 보유 적립금을 사용 (3,000원부터 사용 가능)",
+    "- 결제 금액 칸에서 정기구독 할인과 사용 적립금이 빠진 총 결제 금액을 확인",
+    "- 쿠폰이 등록되지 않거나 잔액·유효기간 등 위 내용 외의 쿠폰 문의는 고객센터(1666-6030, 평일 09:00~18:00, 주말·공휴일 휴무)로 안내"
+  ].join('\n') + '\n\n';
 }
 
 function getSWCompanyDB() {
@@ -1206,3 +1709,104 @@ function getSWCompanyDB() {
 }
 
 </script>
+
+<script>
+// ── 음성 입력 (브라우저 내장 음성 인식) ──
+var VoiceRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+var voiceRec = null, voiceOn = false, voiceBase = '', voiceFinal = '', voiceErr = false, voiceTimer = null;
+var voiceAborted = false, voiceSendTimer = null;
+var VOICE_LANG = { ko: 'ko-KR', en: 'en-US', ja: 'ja-JP', zh: 'zh-CN' };
+
+function voiceStatus(text, warn, hideAfter) {
+  var box = document.getElementById('vstat');
+  clearTimeout(voiceTimer);
+  if (!text) { box.classList.remove('show'); return; }
+  document.getElementById('vstatTx').textContent = text;
+  box.classList.toggle('warn', !!warn);
+  box.classList.add('show');
+  if (hideAfter) voiceTimer = setTimeout(function () { box.classList.remove('show'); }, hideAfter);
+}
+
+function voiceResize(mi) { mi.style.height = 'auto'; mi.style.height = Math.min(mi.scrollHeight, 100) + 'px'; }
+
+function toggleVoice() {
+  var btn = document.getElementById('vbtn');
+  var mi = document.getElementById('mi');
+  if (!VoiceRec) {
+    voiceStatus('이 브라우저에서는 음성 입력을 쓸 수 없어요. 크롬, 사파리, 삼성 인터넷에서 이용해 주세요.', true, 5000);
+    return;
+  }
+  clearTimeout(voiceSendTimer);
+  if (voiceOn) { voiceRec.stop(); return; }
+  if (isLoading) return;
+  voiceRec = new VoiceRec();
+  voiceRec.lang = VOICE_LANG[currentLang] || 'ko-KR';
+  voiceRec.interimResults = true;
+  voiceRec.continuous = false;
+  voiceRec.maxAlternatives = 1;
+  voiceBase = mi.value.trim() ? mi.value.trim() + ' ' : '';
+  voiceFinal = ''; voiceErr = false; voiceAborted = false;
+  voiceRec.onstart = function () {
+    voiceOn = true; btn.classList.add('on');
+    btn.setAttribute('aria-label', '음성 입력 멈추기');
+    voiceStatus('듣고 있어요. 말씀이 끝나면 자동으로 멈춰요.');
+  };
+  voiceRec.onresult = function (e) {
+    // 매번 전체 결과를 처음부터 다시 조립 (중복 방지)
+    var fin = '', interim = '';
+    for (var i = 0; i < e.results.length; i++) {
+      var t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) fin += t; else interim += t;
+    }
+    voiceFinal = fin;
+    mi.value = voiceBase + voiceFinal + interim;
+    voiceResize(mi);
+  };
+  voiceRec.onerror = function (e) {
+    voiceErr = true;
+    var m = {
+      'not-allowed': '마이크 사용이 허용되지 않았어요. 브라우저 설정에서 마이크를 허용해 주세요.',
+      'service-not-allowed': '마이크 사용이 허용되지 않았어요. 브라우저 설정에서 마이크를 허용해 주세요.',
+      'no-speech': '말소리가 들리지 않았어요. 마이크 버튼을 다시 누르고 말씀해 주세요.',
+      'audio-capture': '마이크를 찾을 수 없어요. 마이크 연결을 확인해 주세요.',
+      'network': '인터넷 연결을 확인한 뒤 다시 시도해 주세요.',
+      'aborted': ''
+    };
+    var msg = (e.error in m) ? m[e.error] : '음성 인식 중 문제가 생겼어요. 다시 시도해 주세요.';
+    if (msg) voiceStatus(msg, true, 5000); else voiceStatus('');
+  };
+  voiceRec.onend = function () {
+    voiceOn = false; btn.classList.remove('on');
+    btn.setAttribute('aria-label', '음성으로 입력');
+    // 보내기·엔터로 이미 보낸 경우: 입력창을 다시 채우지 않음
+    if (voiceAborted) { voiceStatus(''); return; }
+    mi.value = (voiceBase + voiceFinal).trim() || mi.value.trim();
+    voiceResize(mi);
+    if (voiceFinal.trim() && !voiceErr) {
+      // 말을 끝내면 잠시 뒤 자동 전송 (그사이 입력창을 고치면 취소)
+      voiceStatus('말씀하신 내용을 보낼게요.', false, 2500);
+      voiceSendTimer = setTimeout(function () {
+        if (!isLoading && mi.value.trim()) sendMsg();
+      }, 700);
+    }
+    else if (!voiceErr) voiceStatus('');
+  };
+  try { voiceRec.start(); }
+  catch (err) { voiceStatus('음성 인식을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.', true, 4000); }
+}
+
+// 보내기·엔터 시 음성 인식 중이면 멈춤, 입력창을 고치면 자동 전송 취소, 좁은 화면은 짧은 안내 문구
+(function () {
+  var stop = function () { clearTimeout(voiceSendTimer); if (voiceOn && voiceRec) { voiceAborted = true; voiceRec.abort(); } };
+  document.getElementById('mi').addEventListener('input', function () {
+    if (voiceSendTimer) { clearTimeout(voiceSendTimer); voiceSendTimer = null; voiceStatus('자동 전송을 취소했어요. 고친 뒤 보내기를 눌러 주세요.', false, 3500); }
+  });
+  document.getElementById('sbtn').addEventListener('click', stop);
+  document.getElementById('mi').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) stop(); });
+  if (window.matchMedia && window.matchMedia('(max-width:480px)').matches) {
+    document.getElementById('mi').placeholder = '궁금한 점을 입력하세요';
+  }
+})();
+</script>
+</body>
+</html>

@@ -12,9 +12,11 @@ function postJSON(hostname, path, headers, payload) {
       hostname, port: 443, path, method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body), ...headers }
     }, pr => {
-      let d = '';
-      pr.on('data', c => d += c);
-      pr.on('end', () => resolve({ status: pr.statusCode, body: d }));
+      // 한글 깨짐 방지: 조각(Buffer)을 모두 모은 뒤 한 번에 UTF-8로 변환
+      const chunks = [];
+      pr.on('data', c => chunks.push(c));
+      pr.on('end', () => resolve({ status: pr.statusCode, body: Buffer.concat(chunks).toString('utf8') }));
+      pr.on('error', reject);
     });
     r.on('error', reject);
     r.setTimeout(55000, () => r.destroy(new Error('응답 시간이 초과되었습니다. 잠시 후 다시 시도해 주세요.')));
