@@ -329,6 +329,58 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
 .fin.bad{border-color:#E5484D;background:#FFF8F8}
 .bsubmit:disabled{opacity:.6;cursor:wait}
 .bbl a.mk-link{color:var(--medd);font-weight:700;text-decoration:underline;word-break:break-all}
+
+/* ── v1.8 첫 인사 · 화면 효율 ── */
+.bbl.wel{padding:12px 14px}
+.wel-t{font-size:15px;line-height:1.5}
+.wel-s{font-size:13.5px;line-height:1.55;color:var(--sub);margin-top:2px}
+.wchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.wchip{display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 12px;background:var(--medl);border:1px solid var(--medm);border-radius:99px;font-family:inherit;font-size:13px;font-weight:700;color:var(--medd);cursor:pointer;white-space:nowrap;transition:background .15s}
+.wchip:hover{background:var(--medm)}
+.wchip i{font-size:15px}
+.abtn{display:none}
+.mob-lang{display:none}
+.disc-s{display:none}
+@media(max-width:768px){
+  .mob-hdr{min-height:48px;padding:4px 6px 2px 14px}
+  .mob-cbtn{min-height:36px}
+  .mob-btn{width:40px;height:40px}
+  .mob-lang{display:block;height:36px;margin:0 2px 0 0;padding:0 22px 0 10px;border:1px solid var(--bd);border-radius:12px;background:var(--sf) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%237B7A99' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--sub);cursor:pointer}
+  .mob-pr{padding:0 12px 6px}
+  .mob-prc{min-height:44px;padding:5px 6px 5px 12px;border-radius:14px}
+  .mob-prl{display:flex;align-items:center;gap:8px;overflow:hidden}
+  .mob-prn{margin-bottom:0;flex-shrink:0;max-width:60%;font-size:13px}
+  .mob-prt{flex-wrap:nowrap;overflow:hidden;min-width:0}
+  .mob-prt>span:not(.tag){display:none}
+  .mob-prt .tag{flex-shrink:0;font-size:10.5px;padding:2px 7px}
+  .mob-prr{margin-left:6px}
+  .mob-prr>div{display:flex;align-items:baseline;gap:3px;min-width:0;padding:4px 8px;border-radius:10px}
+  .mob-sn{font-size:15px}
+  .mob-sl{font-size:10px}
+  .mob-q{padding:0 12px 8px;gap:5px}
+  .mob-qb,.mob-mb{min-height:36px;padding:0 11px;font-size:12.5px}
+  .mob-qb i{font-size:14px}
+  .ia{padding:8px 10px calc(6px + env(safe-area-inset-bottom))}
+  .dz{position:absolute!important;width:1px;height:1px;padding:0;margin:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);border:0;white-space:nowrap}
+  .lang-bar{display:none}
+  .ir{gap:6px}
+  .abtn{display:flex;width:44px;height:44px;flex-shrink:0;align-items:center;justify-content:center;background:var(--sf);border:1px solid var(--bd);border-radius:14px;color:var(--sub);font-size:20px;cursor:pointer}
+  .abtn:active{background:var(--medl);color:var(--medd)}
+  .mi{min-height:44px;padding:10px 12px}
+  .vbtn,.sbtn{width:44px;height:44px;border-radius:14px}
+  .disc{margin-top:4px;font-size:10.5px;line-height:1.4}
+  .disc-l{display:none}
+  .disc-s{display:inline}
+  .bbl.wel{padding:10px 12px}
+  .wel-t{font-size:14.5px}
+  .wel-s{font-size:13px}
+  .wchips{gap:5px;margin-top:8px}
+  .wchip{min-height:34px;padding:0 10px;font-size:12.5px}
+}
+@media(max-width:360px){
+  .mob-lang{padding:0 18px 0 7px;font-size:12px;background-position:right 6px center}
+  .mob-cbtn{padding:0 8px}
+}
 </style>
 </head>
 <body>
@@ -346,9 +398,10 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
     </div>
     <div class="mob-acts">
       <button class="mob-cbtn" onclick="openCons()"><i class="ti ti-headset" style="font-size:12px"></i>상담사</button>
-      <button class="mob-btn" onclick="openModal()"><i class="ti ti-edit"></i></button>
-      <button class="mob-btn" onclick="exportChat()"><i class="ti ti-download"></i></button>
-      <button class="mob-btn" onclick="resetChat()"><i class="ti ti-refresh"></i></button>
+      <select class="mob-lang" id="mobLang" onchange="setLang(this.value)" aria-label="언어 선택">
+        <option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option>
+      </select>
+      <button class="mob-btn" onclick="resetChat()" aria-label="대화 새로 시작"><i class="ti ti-refresh"></i></button>
     </div>
   </div>
   <div class="mob-pr">
@@ -365,6 +418,7 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
   </div>
   <div class="mob-q">
     <button class="mob-qb" onclick="qa('내 건강 관심사에 맞는 영양제를 추천해주세요')"><i class="ti ti-sparkles"></i>맞춤 추천</button>
+    <button class="mob-qb" onclick="qa('내 나이·성별·건강 관심사에 맞는 간편팩을 추천해주세요')"><i class="ti ti-package"></i>간편팩 추천</button>
     <button class="mob-qb" onclick="qa('콜레스테롤 관리에 좋은 제품을 추천해주세요')"><i class="ti ti-heart-rate-monitor"></i>콜레스테롤</button>
     <button class="mob-qb" onclick="qa('비타민D 부족 증상과 복용법을 알려주세요')"><i class="ti ti-sun"></i>비타민D</button>
     <button class="mob-qb" onclick="qa('혈압 관리에 도움이 되는 제품은?')"><i class="ti ti-activity"></i>혈압</button>
@@ -391,6 +445,7 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
   <div class="sb-tp">
     <div class="slbl" style="margin-bottom:10px">빠른 상담</div>
     <button class="tbtn" onclick="qa('내 건강 관심사에 맞는 영양제를 추천해주세요')"><i class="ti ti-report-medical"></i>맞춤 영양제 추천</button>
+    <button class="tbtn" onclick="qa('내 나이·성별·건강 관심사에 맞는 간편팩을 추천해주세요')"><i class="ti ti-package"></i>나에게 맞는 간편팩</button>
     <button class="tbtn" onclick="qa('건강검진 결과를 분석해 주세요')"><i class="ti ti-file-analytics"></i>검진 결과 분석</button>
     <button class="tbtn" onclick="qa('콜레스테롤 관리에 좋은 제품을 추천해주세요')"><i class="ti ti-heart-rate-monitor"></i>콜레스테롤 관리</button>
     <button class="tbtn" onclick="qa('비타민D 부족 증상과 복용법을 알려주세요')"><i class="ti ti-sun"></i>비타민D 보충</button>
@@ -449,13 +504,14 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
     </div>
     <div class="vstat" id="vstat" role="status" aria-live="polite"><span class="vdot"></span><span id="vstatTx"></span></div>
     <div class="ir">
+      <button class="abtn" id="abtn" type="button" onclick="document.getElementById('fileInput').click()" aria-label="건강검진 결과 파일 올리기" title="건강검진 결과 파일 올리기"><i class="ti ti-paperclip"></i></button>
       <textarea class="mi" id="mi" placeholder="건강 상태나 검진 수치를 자유롭게 입력하세요..." rows="1"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
         oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
       <button class="vbtn" id="vbtn" type="button" onclick="toggleVoice()" aria-label="음성으로 입력" title="음성으로 입력"><i class="ti ti-microphone"></i></button>
       <button class="sbtn" id="sbtn" onclick="sendMsg()"><i class="ti ti-send"></i></button>
     </div>
-    <div class="disc">본 서비스는 의학적 진단을 대체하지 않습니다. 건강 이상 시 전문의와 상담하세요. | (주)에스더블유헬스케어 고객센터 1666-6030</div>
+    <div class="disc"><span class="disc-l">본 서비스는 의학적 진단을 대체하지 않습니다. 건강 이상 시 전문의와 상담하세요. | (주)에스더블유헬스케어 고객센터 1666-6030</span><span class="disc-s">의학적 진단을 대체하지 않아요 · 고객센터 1666-6030</span></div>
   </div>
 </div>
 </div>
@@ -464,6 +520,7 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
 <div class="sheet" id="sheet">
   <div class="sh-hdl"></div>
   <div class="sh-tit">빠른 상담 주제</div>
+  <button class="sh-btn" onclick="shQa('내 나이·성별·건강 관심사에 맞는 간편팩을 추천해주세요')"><i class="ti ti-package"></i>나에게 맞는 간편팩</button>
   <button class="sh-btn" onclick="shQa('건강검진 결과를 분석해 주세요')"><i class="ti ti-file-analytics"></i>검진 결과 분석</button>
   <button class="sh-btn" onclick="shQa('갱년기 여성에게 필요한 제품은?')"><i class="ti ti-woman"></i>갱년기 영양</button>
   <button class="sh-btn" onclick="shQa('뼈 건강과 골다공증 예방 제품은?')"><i class="ti ti-bone"></i>뼈 건강</button>
@@ -475,6 +532,7 @@ button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-vis
   <button class="sh-btn" onclick="shQa('혈당 관리에 도움이 되는 제품은?')"><i class="ti ti-droplet-half-2"></i>혈당 관리</button>
   <button class="sh-btn" onclick="shQa('간 건강에 좋은 제품은?')"><i class="ti ti-heart"></i>간 건강</button>
   <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)">
+    <button class="sh-btn" onclick="closeSheet();exportChat()"><i class="ti ti-download"></i>대화 내용 저장</button>
     <button class="sh-btn" style="color:var(--med);font-weight:600" onclick="closeSheet();setTimeout(openCons,200)">
       <i class="ti ti-headset" style="color:var(--med)"></i>전문 상담사와 직접 상담하기
     </button>
@@ -627,6 +685,7 @@ window.onload = function() { showWelcome(); };
 // ── 언어 설정 ──
 function setLang(lang) {
   currentLang = lang;
+  var ml = document.getElementById('mobLang'); if (ml && ml.value !== lang) ml.value = lang;
   document.querySelectorAll('.lang-btn').forEach(function(btn) {
     btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
   });
@@ -642,38 +701,33 @@ function showWelcome() {
   var bbl = document.createElement('div');
   bbl.className = 'bbl';
 
-  var p1 = document.createElement('p');
-  p1.innerHTML = '안녕하세요! <strong>MEDICOK</strong> AI 상담사입니다 🌿';
+  bbl.classList.add('wel');
+  var p1 = document.createElement('div');
+  p1.className = 'wel-t';
+  p1.innerHTML = '안녕하세요! <strong>MEDICOK AI 상담사</strong>예요';
   bbl.appendChild(p1);
-  bbl.appendChild(document.createElement('br'));
-  var p2 = document.createElement('p');
-  p2.innerHTML = '<strong>Claude AI</strong>가 건강검진 결과를 분석하고 맞춤 제품을 추천해 드립니다.';
+  var p2 = document.createElement('div');
+  p2.className = 'wel-s';
+  p2.textContent = '건강 고민이나 검진 결과를 알려 주시면 맞춤 영양제와 간편팩을 추천해 드려요.';
   bbl.appendChild(p2);
 
-  if (lastVisit) {
-    bbl.appendChild(document.createElement('br'));
-    var lv = document.createElement('span');
-    lv.style.cssText = 'font-size:11px;color:var(--hint)';
-    lv.textContent = '지난 접속: ' + fmtTime(lastVisit);
-    bbl.appendChild(lv);
-  }
-
-  var grid = document.createElement('div');
-  grid.className = 'sgrid';
-  var CARDS = [
-    {em:'🐟', t:'오메가3', d:'혈중 중성지질·혈행·건조한 눈', b:'강력 권장', bc:'bs', q:'오메가3 효능, 부족 증상, 복용법을 자세히 알려주세요'},
-    {em:'☀️', t:'비타민D3', d:'뼈 건강·칼슘 흡수', b:'필수 보충', bc:'bs', q:'비타민D 효능, 부족 증상, 복용법을 자세히 알려주세요'},
-    {em:'💊', t:'마그네슘', d:'에너지 이용·신경·근육', b:'권장', bc:'br', q:'마그네슘 효능, 부족 증상, 복용법을 자세히 알려주세요'},
-    {em:'⚡', t:'코엔자임Q10', d:'항산화·높은 혈압 감소', b:'고려', bc:'bm', q:'코엔자임Q10 효능, 부족 증상, 복용법을 자세히 알려주세요'}
+  var row = document.createElement('div');
+  row.className = 'wchips';
+  var CHIPS = [
+    {ic:'ti-package', t:'나에게 맞는 간편팩', fn:function() { qa('내 나이·성별·건강 관심사에 맞는 간편팩을 추천해주세요'); }},
+    {ic:'ti-sparkles', t:'맞춤 영양제 추천', fn:function() { qa('내 건강 관심사에 맞는 영양제를 추천해주세요'); }},
+    {ic:'ti-file-upload', t:'검진 결과 올리기', fn:function() { document.getElementById('fileInput').click(); }}
   ];
-  CARDS.forEach(function(card) {
-    var sc = document.createElement('div');
-    sc.className = 'scard';
-    sc.innerHTML = '<div class="sn">' + card.em + ' ' + card.t + '</div><div class="sw">' + card.d + '</div><span class="sbdg ' + card.bc + '">' + card.b + '</span>';
-    sc.onclick = (function(q) { return function() { qa(q); }; })(card.q);
-    grid.appendChild(sc);
+  CHIPS.forEach(function(ch) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'wchip';
+    b.innerHTML = '<i class="ti ' + ch.ic + '"></i>';
+    b.appendChild(document.createTextNode(ch.t));
+    b.onclick = ch.fn;
+    row.appendChild(b);
   });
-  bbl.appendChild(grid);
+  bbl.appendChild(row);
 
   msg.appendChild(av); msg.appendChild(bbl);
   wrap.appendChild(msg); wrap.appendChild(mkTime());
@@ -1022,6 +1076,7 @@ function submitCons() {
   }).then(function(res) {
     return res.json().catch(function() { return {}; }).then(function(j) { return { ok: res.ok, j: j }; });
   }).then(function(r) {
+    if (r.j && r.j.error === 'too_many') { done(); return consErr('오늘 이 번호로 들어온 신청이 많아요. 고객센터(☎ 1666-6030)로 전화 주시면 바로 도와드릴게요.'); }
     if (!r.ok || !r.j || !r.j.ok) return fail();
     done();
     // 신청자 이름을 건강관심사에도 반영
@@ -1221,7 +1276,14 @@ function getSysPrompt() {
   p += '2. 아래 제품 DB에서 가장 적합한 MEDICOK 제품을 추천합니다\n';
   p += '3. 제품명, 기능, 추천 이유, 섭취법을 함께 안내합니다\n';
   p += '4. 복수 추천 시 1순위·2순위로 구분합니다\n';
-  p += '5. 부족 시 신체 증상도 설명합니다\n\n';
+  p += '5. 부족 시 신체 증상도 설명합니다\n';
+  p += '6. 제품을 추천할 때(빠른 상담 버튼 질문 포함)는 소분 제품 추천 뒤에 꼭 "📦 추천 간편팩" 항목을 붙여 간편팩 25종 중 가장 맞는 1~2개를 추천합니다\n';
+  p += '   - 고르는 기준: 사용자 나이·성별 → 건강 관심사·질문 주제가 팩의 핵심 관리 영역과 겹치는 정도 (성별 전용 팩은 다른 성별에게 추천 금지, 임신 팩은 임신 중일 때만, GLP케어팩은 다이어트 주사를 맞는다고 할 때만)\n';
+  p += '   - 형식: "- **간편팩 이름** (대상 · 핵심 관리 영역): 이 팩을 고른 이유 한 줄"\n';
+  p += '   - 구성 제품은 간편팩 DB에 나온 것(40대 남성팩)만 말하고, 나머지는 "구성은 메디콕 사이트의 팩 상세에서 확인"으로 안내 (구성 지어내기 금지)\n';
+  p += '   - 나이·성별을 모르면 질문 주제에 맞는 목적별 팩(활력팩, 다이어트팩 등)이나 기본팩을 추천하고, 나이·성별을 알려 주면 더 정확히 고를 수 있다고 한 줄 덧붙임\n';
+  p += '   - 마지막 한 줄: 20일 팩(평일)·30일 팩(매일) 선택 가능, 메디콕 사이트 https://www.medicok.co.kr/ 의 [간편팩 바로가기]에서 구독\n';
+  p += '   - 간편팩만 물으면 소분 제품 설명은 줄이고 간편팩 추천 1~2개를 중심으로 답함\n\n';
   p += '[관심사별 추천 가이드 - 소분 제품 28종 기준]\n';
   p += '간 건강→리버투씨슬&비 / 활력·피로→에너지투비타민, 홍삼(피로개선), 리버투씨슬&비\n';
   p += '체지방 관리→카테킨&바나바, 콜레우스 포스콜리 / 콜레스테롤→카테킨&바나바(혈중 콜레스테롤), 장용성 알티지 오메가3(혈중 중성지질)\n';
@@ -1261,7 +1323,8 @@ function getSysPrompt() {
   p += '- 간편팩(패키지) 문의는 간편팩 DB 참고, 소분 제품은 28종 DB만 사용 (단종·옛 제품명 사용 금지)\n';
   p += '- 옛 이름으로 물으면 새 이름으로 안내: 본투칼슘플러스→본투칼마디, 브레인 포스파티딜세린→PS앤징코, 에스트로for퀸→회화나무추출물, 릴랙스 테아닌&홍경천→테아닌, 비오틴부스터→비오틴, 코엔자임Q10→코엔자임Q10부스터\n';
   p += '- 함께 추천할 때 확인할 점(비타민D 중복, 성별 전용, 의약품 복용)을 반드시 지킬 것\n';
-  p += '- 답변: 마크다운(##, **굵게**, - 목록) 사용\n\n';
+  p += '- 답변: 마크다운(##, **굵게**, - 목록) 사용\n';
+  p += '- 대부분 휴대폰으로 봅니다: 인사·서론 없이 핵심부터, 짧은 문장, 항목은 "- "로 한두 줄씩, 전체는 휴대폰 두 화면 이내(한국어 기준 약 700자). 표(|)는 쓰지 말 것\n\n';
   p += getProductDB();
   p += getGanpyeonDB();
   p += getGuideDB();

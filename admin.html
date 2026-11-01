@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>MEDICOK 상담 신청 관리</title>
+<link rel="preload" href="/fonts/GmarketSansMedium.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'GmarketSans';font-weight:300;font-display:swap;src:url('/fonts/GmarketSansLight.woff2') format('woff2')}
+@font-face{font-family:'GmarketSans';font-weight:500;font-display:swap;src:url('/fonts/GmarketSansMedium.woff2') format('woff2')}
+@font-face{font-family:'GmarketSans';font-weight:700;font-display:swap;src:url('/fonts/GmarketSansBold.woff2') format('woff2')}
+:root{--med:#5F59FF;--medd:#3F39D9;--medl:#EEEDFF;--medm:#D9D7FF;--tx:#1A1A2E;--sub:#55546E;--hint:#8B8AA3;--bd:#E4E3F2;--mu:#F6F6FC;--sf:#fff;--bg:#F4F4FA;--red:#C62828}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'GmarketSans',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;font-size:14px}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+.hide{display:none!important}
+/* 로그인 */
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lbox{width:100%;max-width:360px;background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:28px 24px}
+.lbox h1{font-size:19px;font-weight:700;margin-bottom:6px}
+.lbox p{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:18px}
+.fin{width:100%;min-height:46px;padding:0 14px;background:var(--mu);border:1px solid var(--bd);border-radius:12px;outline:none}
+.fin:focus{border-color:var(--med);background:var(--sf)}
+.bp{min-height:46px;padding:0 18px;background:var(--med);color:#fff;border:none;border-radius:12px;font-weight:700}
+.bp:hover{background:var(--medd)}
+.bp:disabled{opacity:.6;cursor:wait}
+.bs{min-height:38px;padding:0 12px;background:var(--sf);color:var(--sub);border:1px solid var(--bd);border-radius:10px;font-weight:700;font-size:13px;white-space:nowrap}
+.bs:hover{background:var(--mu)}
+.err{color:var(--red);font-size:13px;line-height:1.5;margin-top:10px;min-height:1em}
+/* 상단 */
+.top{position:sticky;top:0;z-index:5;background:var(--sf);border-bottom:1px solid var(--bd)}
+.tbar{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tbar h1{font-size:16px;font-weight:700;margin-right:auto;white-space:nowrap}
+.tbar h1 span{color:var(--med)}
+.tools{max-width:1100px;margin:0 auto;padding:0 16px 10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tab{min-height:34px;padding:0 12px;background:var(--mu);border:1px solid var(--bd);border-radius:99px;font-size:13px;font-weight:700;color:var(--sub)}
+.tab.on{background:var(--med);border-color:var(--med);color:#fff}
+.srch{flex:1;min-width:150px;min-height:34px;padding:0 12px;background:var(--mu);border:1px solid var(--bd);border-radius:99px;outline:none;font-size:13px}
+.info{max-width:1100px;margin:12px auto 0;padding:0 16px;font-size:12.5px;color:var(--hint)}
+/* 목록 */
+.list{max-width:1100px;margin:0 auto;padding:10px 16px 40px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:14px 16px}
+.card.st-접수{border-left:4px solid var(--med)}
+.card.st-연락중{border-left:4px solid #E08A00}
+.card.st-상담완료{border-left:4px solid #2E7D32}
+.card.st-취소{border-left:4px solid #9E9E9E;opacity:.75}
+.chd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.cname{font-size:16px;font-weight:700}
+.ctel{font-size:15px;font-weight:700;color:var(--medd);text-decoration:none;font-variant-numeric:tabular-nums}
+.cmeta{font-size:12px;color:var(--hint);margin-left:auto;text-align:right;line-height:1.4}
+.badge{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--medl);color:var(--medd)}
+.grid{display:grid;grid-template-columns:110px 1fr;gap:5px 12px;font-size:13.5px;line-height:1.5}
+.grid dt{color:var(--sub)}
+.grid dd{word-break:keep-all;overflow-wrap:anywhere}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--mu);border:1px solid var(--bd)}
+details{margin-top:10px;font-size:13px}
+summary{cursor:pointer;color:var(--medd);font-weight:700}
+.chat{margin-top:8px;padding:10px 12px;background:var(--mu);border-radius:12px;line-height:1.6;white-space:pre-wrap}
+.edit{display:grid;grid-template-columns:130px 140px 1fr auto;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--bd);align-items:start}
+.edit select,.edit input,.edit textarea{min-height:38px;padding:8px 10px;background:var(--mu);border:1px solid var(--bd);border-radius:10px;outline:none;width:100%}
+.edit textarea{resize:vertical;min-height:38px;line-height:1.4}
+.edit .acts{display:flex;gap:6px}
+.saved{font-size:12px;color:#2E7D32;font-weight:700;align-self:center}
+.bdel{color:var(--red)}
+.empty{text-align:center;color:var(--hint);padding:60px 0;font-size:14px}
+/* 비밀번호 바꾸기 */
+.dlg-bg{position:fixed;inset:0;background:rgba(20,20,40,.4);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+@media(max-width:700px){
+  .top{position:static}
+  .tbar h1{width:100%}
+  .grid{grid-template-columns:92px 1fr}
+  .edit{grid-template-columns:1fr 1fr}
+  .edit textarea{grid-column:1 / -1}
+  .edit .acts{grid-column:1 / -1;justify-content:flex-end}
+  .cmeta{margin-left:0;width:100%;text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div class="login" id="vLogin">
+  <form class="lbox" id="fLogin">
+    <h1>상담 신청 관리</h1>
+    <p>MEDICOK 챗봇에서 들어온 전문 상담사 연결 신청을 봅니다. 상담 담당자만 사용해 주세요.</p>
+    <input class="fin" id="pw" type="password" placeholder="비밀번호" autocomplete="current-password" required>
+    <button class="bp" id="bLogin" type="submit" style="width:100%;margin-top:10px">들어가기</button>
+    <div class="err" id="eLogin" role="alert"></div>
+  </form>
+</div>
+
+<div class="hide" id="vMain">
+  <div class="top">
+    <div class="tbar">
+      <h1><span>MEDICOK</span> 상담 신청 관리</h1>
+      <button class="bs" type="button" id="bReload">새로고침</button>
+      <button class="bs" type="button" id="bCsv">엑셀 받기</button>
+      <button class="bs" type="button" id="bPw">비밀번호 바꾸기</button>
+      <button class="bs" type="button" id="bOut">나가기</button>
+    </div>
+    <div class="tools" id="tabs"></div>
+  </div>
+  <div class="info" id="info"></div>
+  <div class="list" id="list"></div>
+</div>
+
+<div class="dlg-bg hide" id="dPw">
+  <form class="lbox" id="fPw">
+    <h1>비밀번호 바꾸기</h1>
+    <p>바꾸면 다른 기기의 로그인은 모두 풀려요.</p>
+    <input class="fin" id="pwOld" type="password" placeholder="지금 비밀번호" autocomplete="current-password" required>
+    <input class="fin" id="pwNew" type="password" placeholder="새 비밀번호 (8자 이상)" autocomplete="new-password" minlength="8" required style="margin-top:8px">
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="bs" type="button" id="bPwCancel" style="min-height:46px">닫기</button>
+      <button class="bp" type="submit" style="flex:1">바꾸기</button>
+    </div>
+    <div class="err" id="ePw" role="alert"></div>
+  </form>
+</div>
+
+<script>
+var API = '/api/consult';
+var STATUS = ['접수', '연락중', '상담완료', '취소'];
+var token = '', rows = [], filter = '전체', query = '';
+try { token = sessionStorage.getItem('mk_admin') || ''; } catch (e) {}
+
+function $(id) { return document.getElementById(id); }
+function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
+function setToken(t) { token = t || ''; try { if (token) sessionStorage.setItem('mk_admin', token); else sessionStorage.removeItem('mk_admin'); } catch (e) {} }
+
+function call(body) {
+  return fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j._status = r.status; return j; }); });
+}
+function needLogin(j) {
+  if (j._status === 401) { setToken(''); show(false); $('eLogin').textContent = '로그인이 끝났어요. 다시 들어와 주세요.'; return true; }
+  return false;
+}
+function show(main) { $('vLogin').classList.toggle('hide', main); $('vMain').classList.toggle('hide', !main); if (!main) setTimeout(function () { $('pw').focus(); }, 50); }
+
+$('fLogin').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var b = $('bLogin'); b.disabled = true; $('eLogin').textContent = '';
+  call({ action: 'login', password: $('pw').value }).then(function (j) {
+    b.disabled = false;
+    if (!j.ok) { $('eLogin').textContent = j.error || '들어가지 못했어요.'; return; }
+    $('pw').value = ''; setToken(j.token); show(true); load();
+  }).catch(function () { b.disabled = false; $('eLogin').textContent = '인터넷 연결을 확인해 주세요.'; });
+});
+
+function load() {
+  $('info').textContent = '불러오는 중…';
+  call({ action: 'list', token: token }).then(function (j) {
+    if (needLogin(j)) return;
+    if (!j.ok) { $('info').textContent = j.error || '목록을 불러오지 못했어요.'; return; }
+    rows = j.rows || []; render();
+  }).catch(function () { $('info').textContent = '인터넷 연결을 확인해 주세요.'; });
+}
+
+function fmtTime(s) {
+  var d = new Date(s); if (isNaN(d)) return '';
+  var p = function (n) { return String(n).padStart(2, '0'); };
+  return d.getFullYear() + '.' + p(d.getMonth() + 1) + '.' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+function visible() {
+  var q = query.replace(/\s|-/g, '').toLowerCase();
+  return rows.filter(function (r) {
+    if (filter !== '전체' && r.status !== filter) return false;
+    if (!q) return true;
+    return (r.name + r.phone.replace(/-/g, '') + r.id + (r.interests || []).join('') + r.manager + r.memo).toLowerCase().indexOf(q) > -1;
+  });
+}
+
+function renderTabs() {
+  var t = $('tabs'); t.innerHTML = '';
+  ['전체'].concat(STATUS).forEach(function (s) {
+    var n = s === '전체' ? rows.length : rows.filter(function (r) { return r.status === s; }).length;
+    var b = el('button', 'tab' + (filter === s ? ' on' : ''), s + ' ' + n);
+    b.type = 'button';
+    b.onclick = function () { filter = s; render(); };
+    t.appendChild(b);
+  });
+  var sr = el('input', 'srch'); sr.type = 'search'; sr.placeholder = '이름·번호·관심사 찾기'; sr.value = query;
+  sr.oninput = function () { query = sr.value; renderList(); };
+  t.appendChild(sr);
+}
+
+function render() { renderTabs(); renderList(); }
+
+function renderList() {
+  var list = $('list'); list.innerHTML = '';
+  var v = visible();
+  $('info').textContent = '총 ' + rows.length + '건 · 보이는 신청 ' + v.length + '건 · 상담완료·취소 후 1년이 지난 신청은 자동으로 지워져요.';
+  if (!v.length) { list.appendChild(el('div', 'empty', rows.length ? '조건에 맞는 신청이 없어요.' : '아직 들어온 상담 신청이 없어요.')); return; }
+  v.forEach(function (r) { list.appendChild(card(r)); });
+}
+
+function row(dl, k, v) { dl.appendChild(el('dt', '', k)); var d = el('dd', '', v || '-'); dl.appendChild(d); return d; }
+
+function card(r) {
+  var c = el('div', 'card st-' + r.status);
+  var hd = el('div', 'chd');
+  hd.appendChild(el('span', 'badge', r.status));
+  hd.appendChild(el('span', 'cname', r.name));
+  var tel = el('a', 'ctel', r.phone); tel.href = 'tel:' + r.phone.replace(/\D/g, ''); hd.appendChild(tel);
+  hd.appendChild(el('span', 'cmeta', r.id + '\n' + fmtTime(r.created_at)));
+  hd.lastChild.style.whiteSpace = 'pre-line';
+  c.appendChild(hd);
+
+  var dl = el('dl', 'grid');
+  row(dl, '통화 가능', r.call_time);
+  row(dl, '나이·성별', [r.age ? r.age + '세' : '', r.gender].filter(Boolean).join(' · '));
+  var tg = row(dl, '관심사', ''); tg.textContent = '';
+  if ((r.interests || []).length) { var tw = el('div', 'tags'); r.interests.forEach(function (t) { tw.appendChild(el('span', 'tag', t)); }); tg.appendChild(tw); } else tg.textContent = '-';
+  row(dl, '임신·수유', r.pregnancy);
+  row(dl, '음주 · 흡연', (r.drink ? '음주함' : '음주 안 함') + ' · ' + (r.smoke ? '흡연함' : '흡연 안 함'));
+  row(dl, '섭취 중 건기식', r.supplements);
+  row(dl, '보유 질환', r.diseases);
+  row(dl, '복용 의약품', r.medications);
+  row(dl, '알레르기', r.allergies);
+  row(dl, '생활습관', r.lifestyle);
+  c.appendChild(dl);
+
+  if (r.chat && r.chat.length) {
+    var dt = el('details'); dt.appendChild(el('summary', '', '최근 AI 상담 대화 ' + r.chat.length + '개 보기'));
+    dt.appendChild(el('div', 'chat', r.chat.map(function (m) { return (m.role === 'user' ? '고객: ' : 'AI: ') + m.text; }).join('\n\n')));
+    c.appendChild(dt);
+  }
+
+  var ed = el('div', 'edit');
+  var st = el('select'); st.setAttribute('aria-label', '처리상태');
+  STATUS.forEach(function (s) { var o = el('option', '', s); o.value = s; if (s === r.status) o.selected = true; st.appendChild(o); });
+  var mg = el('input'); mg.placeholder = '담당자'; mg.maxLength = 20; mg.value = r.manager || ''; mg.setAttribute('aria-label', '담당자');
+  var mm = el('textarea'); mm.placeholder = '메모 (통화 결과, 다음 연락 예정 등)'; mm.maxLength = 500; mm.rows = 1; mm.value = r.memo || ''; mm.setAttribute('aria-label', '메모');
+  var acts = el('div', 'acts');
+  var ok = el('span', 'saved', '');
+  var sv = el('button', 'bp', '저장'); sv.type = 'button'; sv.style.minHeight = '38px';
+  var dl2 = el('button', 'bs bdel', '삭제'); dl2.type = 'button';
+  sv.onclick = function () {
+    sv.disabled = true; ok.textContent = '';
+    call({ action: 'update', token: token, id: r.id, status: st.value, manager: mg.value, memo: mm.value }).then(function (j) {
+      sv.disabled = false;
+      if (needLogin(j)) return;
+      if (!j.ok) { ok.style.color = 'var(--red)'; ok.textContent = '저장 못 함'; return; }
+      r.status = st.value; r.manager = mg.value; r.memo = mm.value;
+      c.className = 'card st-' + r.status; hd.firstChild.textContent = r.status;
+      ok.style.color = ''; ok.textContent = '저장됨'; renderTabs();
+    }).catch(function () { sv.disabled = false; ok.style.color = 'var(--red)'; ok.textContent = '저장 못 함'; });
+  };
+  dl2.onclick = function () {
+    if (!confirm(r.name + ' 님의 신청(' + r.id + ')을 지울까요? 지우면 되살릴 수 없어요.')) return;
+    call({ action: 'delete', token: token, id: r.id }).then(function (j) {
+      if (needLogin(j)) return;
+      if (!j.ok) { alert('지우지 못했어요.'); return; }
+      rows = rows.filter(function (x) { return x.id !== r.id; }); render();
+    });
+  };
+  acts.appendChild(ok); acts.appendChild(sv); acts.appendChild(dl2);
+  ed.appendChild(st); ed.appendChild(mg); ed.appendChild(mm); ed.appendChild(acts);
+  c.appendChild(ed);
+  return c;
+}
+
+// 엑셀(CSV) 받기: 지금 보이는 신청만, 수식으로 실행되지 않게 처리
+function csvCell(v) {
+  v = v === undefined || v === null ? '' : String(v);
+  if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
+  return '"' + v.replace(/"/g, '""') + '"';
+}
+$('bCsv').onclick = function () {
+  var v = visible();
+  var head = ['접수번호', '접수시각', '처리상태', '담당자', '메모', '이름', '휴대폰', '통화 가능 시간', '나이', '성별', '관심사', '임신/수유', '음주', '흡연', '섭취 중 건강기능식품', '보유 질환', '복용 의약품', '알레르기/특이체질', '생활습관', 'AI 상담 대화'];
+  var lines = [head.map(csvCell).join(',')];
+  v.forEach(function (r) {
+    lines.push([r.id, fmtTime(r.created_at), r.status, r.manager, r.memo, r.name, r.phone, r.call_time, r.age, r.gender, (r.interests || []).join(', '),
+      r.pregnancy, r.drink ? '예' : '아니오', r.smoke ? '예' : '아니오', r.supplements, r.diseases, r.medications, r.allergies, r.lifestyle,
+      (r.chat || []).map(function (m) { return (m.role === 'user' ? '고객: ' : 'AI: ') + m.text; }).join('\n')].map(csvCell).join(','));
+  });
+  var blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+  a.href = URL.createObjectURL(blob);
+  a.download = 'medicok_consult_' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+};
+
+$('bReload').onclick = load;
+$('bOut').onclick = function () { setToken(''); rows = []; show(false); };
+$('bPw').onclick = function () { $('ePw').textContent = ''; $('dPw').classList.remove('hide'); $('pwOld').focus(); };
+$('bPwCancel').onclick = function () { $('dPw').classList.add('hide'); };
+$('fPw').addEventListener('submit', function (e) {
+  e.preventDefault();
+  call({ action: 'password', token: token, oldPassword: $('pwOld').value, newPassword: $('pwNew').value }).then(function (j) {
+    if (needLogin(j)) { $('dPw').classList.add('hide'); return; }
+    if (!j.ok) { $('ePw').textContent = j.error || '바꾸지 못했어요.'; return; }
+    $('pwOld').value = ''; $('pwNew').value = ''; $('dPw').classList.add('hide');
+    $('info').textContent = '비밀번호를 바꿨어요.';
+  });
+});
+
+if (token) { show(true); load(); } else show(false);
+</script>
+</body>
+</html>
