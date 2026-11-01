@@ -331,7 +331,7 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
           <path d="M25 30 Q25 35 30 35 Q35 35 35 30" stroke="#5B5BD6" stroke-width="3" stroke-linecap="round"/>
         </svg>
       </div>
-      <div><div class="ai-nm">MEDICOK #하루건식 AI</div><div class="ai-st"><span class="dot"></span>GPT-4o 연결됨</div></div>
+      <div><div class="ai-nm">MEDICOK #하루건식 AI</div><div class="ai-st"><span class="dot"></span>Claude AI 연결됨</div></div>
     </div>
     <div class="hbtns">
       <button class="cons-btn" onclick="openCons()"><i class="ti ti-headset"></i>전문 상담사 연결</button>
@@ -348,7 +348,7 @@ html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg)
       <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.txt,.docx,.csv" multiple onchange="handleFileSel(event)">
       <div class="dz-ic"><i class="ti ti-cloud-upload"></i></div>
       <div class="dz-ti">건강검진 결과 파일 업로드</div>
-      <div class="dz-su">클릭하거나 드래그 · GPT-4o가 직접 분석합니다</div>
+      <div class="dz-su">클릭하거나 드래그 · Claude AI가 직접 분석합니다</div>
       <div class="dz-fm"><span class="fmt">PDF</span><span class="fmt">JPG/PNG</span><span class="fmt">TXT</span></div>
     </div>
     <div class="fq" id="fq"></div>
@@ -543,7 +543,7 @@ function showWelcome() {
   bbl.appendChild(p1);
   bbl.appendChild(document.createElement('br'));
   var p2 = document.createElement('p');
-  p2.innerHTML = '<strong>GPT-4o</strong>가 건강검진 결과를 분석하고 맞춤 제품을 추천해 드립니다.';
+  p2.innerHTML = '<strong>Claude AI</strong>가 건강검진 결과를 분석하고 맞춤 제품을 추천해 드립니다.';
   bbl.appendChild(p2);
 
   if (lastVisit) {
