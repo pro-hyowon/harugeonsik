@@ -3,7 +3,18 @@ const https = require('https');
 // ── 모델 설정 ──
 // CLAUDE_MODEL 환경변수로 바꿀 수 있음 (기본: claude-sonnet-5-5)
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-5-5';
-const MAX_TOKENS = 1500;
+// 답변 길이 한도 (CLAUDE_MAX_TOKENS 환경변수로 바꿀 수 있음). 1500이면 간편팩까지 추천하는 긴 답변이 중간에 끊겼음
+const MAX_TOKENS = parseInt(process.env.CLAUDE_MAX_TOKENS, 10) || 3000;
+const CUT_NOTE = '(답변이 길어 여기까지 보여 드렸어요. "이어서"라고 보내 주시면 나머지를 알려 드릴게요.)';
+
+// 한도에 걸려 끊긴 답변은 마지막 완전한 줄까지만 보여 주고 이어서 안내를 붙임
+function finishText(text, cut) {
+  text = (text || '').trim();
+  if (!cut) return text;
+  const nl = text.lastIndexOf('\n');
+  if (nl > text.length * 0.5) text = text.slice(0, nl).trim();
+  return text + '\n\n' + CUT_NOTE;
+}
 
 function postJSON(hostname, path, headers, payload) {
   const body = JSON.stringify(payload);
@@ -75,7 +86,7 @@ async function callClaude(apiKey, system, messages) {
     return { status: resp.status || 500, error: msg };
   }
   const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
-  return { status: 200, text };
+  return { status: 200, text: finishText(text, data.stop_reason === 'max_tokens') };
 }
 
 // (예비) Claude 키가 없을 때만 기존 GPT-4o 사용
@@ -98,7 +109,8 @@ async function callOpenAI(apiKey, system, messages) {
   }, { model: 'gpt-4o', max_tokens: MAX_TOKENS, messages: oMsgs });
   const data = JSON.parse(resp.body);
   if (data.error) return { status: resp.status, error: typeof data.error === 'object' ? data.error.message : data.error };
-  return { status: 200, text: data.choices?.[0]?.message?.content || '' };
+  const ch = data.choices?.[0];
+  return { status: 200, text: finishText(ch?.message?.content || '', ch?.finish_reason === 'length') };
 }
 
 export default async function handler(req, res) {
